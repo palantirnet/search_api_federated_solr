@@ -89,10 +89,7 @@ class FederatedFieldProperty extends ConfigurablePropertyBase {
     $values = [
       'field_data' => array_filter($form_state->getValue('field_data')),
     ];
-    \Drupal::logger('search_api_federated_solr')->notice('Submitted @values.',
-      array(
-        '@values' => print_r(array_filter($form_state->getValue('field_data')),TRUE),
-      ));
+
     $field->setConfiguration($values);
   }
 

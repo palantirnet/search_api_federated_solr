@@ -8,14 +8,14 @@ use Drupal\search_api_federated_solr\Plugin\search_api\processor\Property\Federa
 use Drupal\search_api\Processor\ProcessorPluginBase;
 
 /**
- * Normalize multiple content types into a single federated index.
+ * Normalize multiple content types into a single federated field.
  *
  * @see \Drupal\search_api_federated_solr\Plugin\search_api\processor\Property\FederatedFieldProperty
  *
  * @SearchApiProcessor(
  *   id = "federated_field",
  *   label = @Translation("Federated fields"),
- *   description = @Translation("Normalize multiple content types into a single federated index."),
+ *   description = @Translation("Normalize multiple content types into a single federated field."),
  *   stages = {
  *     "add_properties" = 20,
  *   },
@@ -34,7 +34,7 @@ class FederatedFields extends ProcessorPluginBase {
     if (!$datasource) {
       $definition = [
         'label' => $this->t('Federated field'),
-        'description' => $this->t('Federate content into a single field.'),
+        'description' => $this->t('Normalize multiple content types into a single federated field.'),
         'type' => 'string',
         'processor_id' => $this->getPluginId(),
       ];
@@ -69,19 +69,13 @@ class FederatedFields extends ProcessorPluginBase {
       // Get configuration for the field.
       $configuration = $federated_field->getConfiguration();
 
-      \Drupal::logger('search_api_federated_solr')->notice('Im in a field: @field.', ['@field' => print_r($federated_field->getLabel(), TRUE)]);
-
       // If there's a config item for the entity and bundle type we're in, set the value for the field.
       if(!empty($configuration['field_data'][$entity_type][$bundle_type])) {
         $token = \Drupal::token();
         $value = $token->replace($configuration['field_data'][$entity_type][$bundle_type], [$entity_type => $entity]);
 
-        \Drupal::logger('search_api_federated_solr')->notice('I set a value @value.', ['@value' => print_r($value, true)]);
-
         // Do not use setValues(), since that doesn't preprocess the values according to their data type.
         $federated_field->addValue($value);
-
-        \Drupal::logger('search_api_federated_solr')->notice('I set a value @value.', ['@value' => print_r($federated_field->getValues(), true)]);
       }
     }
   }
