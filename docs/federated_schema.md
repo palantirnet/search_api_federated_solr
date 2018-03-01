@@ -1,18 +1,46 @@
-## Expected schema
+## Configuring a Search API index for federated search
 
 Because our data is served by an external application, all sites will need to conform to a set field schema when sending data to the index. Extra fields may be sent for use by individual sites, but they will not be read by the React app.
 
-`Label` isn't sent to the index, but is recommended for consistency.
+## Expected schema
 
-| Label | Machine Name | Type | Example | Description |
-| ----- | ------------ | ---- | ------- | ----------- |
-| Federated Title | federated_title | string | The title of the item. |
-| Federated Date | federated_date | date | Usually the date the content was created. |
-| Federated Type | federated_type | string | The content type or other descriptor for faceting. |
-| Federated Terms | federated_terms | string | Terms to facet on. |
-| Federated Image | federated_image | string | An absolute url to an image which, if it exists, will be displayed with the text. Recommended image size: ___ x ___ |
-| Rendered HTML output | rendered_item | fulltext | The rendered item, with HTML stripped. |
-| URI | url | string | The absolute path to the item. |
-| Site Name | site_name | string | The descriptive name of the source site. |
-| Site | site | string | The base url of the source site, like `https://labblog.uofmhealth.edu`. This will be sent automatically by Drupal, but is required for eternal content sources.
+* Values in the **Label** column values aren't sent to the index, but are recommended for consistency
+* The **Machine Name** and **Type** column values are sent to the index, and must match the table in order for a site's content to be included correctly in results
 
+| Label | Machine Name | Type | Required? | Description |
+| ----- | ------------ | ---- | --------- | ----------- |
+| Federated Title | federated_title | string | Yes | The title of the item. Displayed as the title of each search result. |
+| Federated Date | federated_date | date | No | Usually the date the content was created.  Used to provide date-based filtering. |
+| Federated Type | federated_type | string | Yes | The shared type label for faceting. Also used to label each result. |
+| Federated Terms | federated_terms | string | No | Terms for additional, topic-based facets, mapped to shared topic terms if necessary. |
+| Federated Image | federated_image | string | No | An absolute url to an image which, if it exists, will be displayed with the text. Recommended image size: ___ x ___  |
+| Rendered HTML output | rendered_item | fulltext | Yes | The full text of the item, with HTML stripped. |
+| URI | url | string | Yes | The absolute path to the item, used to provide a link to each result. |
+| Site Name | site_name | string | Yes | The descriptive name of the source site. Used to provide site-based filtering. |
+| Site | site | string | Automatic | The base url of the source site, like `https://labblog.uofmhealth.edu`. This will be sent automatically by Drupal, and is required for external content sources. |
+
+### Configuration details
+
+* **Federated Date:** This date must be in ___ format to be used in date-based facets.
+* **Federated Type:** This should be mapped to the standard set of types: `Page`, `Patient care`, `Research`, `People`, `News`, `Events`, `Locations`, and `Multimedia`
+* **Federated Image:** Do not provide the URL to an original image, since these may be large files. Instead, provide the url to the image with a Drupal Image Style applied. Unlike Drupal, the Federated Search application won't have the ability to resize images before sending them to visitors, and using the full-size file could slow down the results pages for visitors.
+* **Rendered HTML output:**
+  * Use the `rendered_item` field provided by Search API (found in the index configuration under _Add fields > General > Rendered HTML output_), then select a view mode for each indexed entity type. Often the "Default" view mode will work; otherwise, you may need to create a custom "Search Index" view mode and configure the fields for each indexed entity type and bundle.
+    * Make sure that the **Rendered HTML output** includes the title/label for the entity, if the title should be available for full-text search and should impact the relevance of results.
+  * Strip HTML from this data by enabling the **HTML filter** in the "Processors" tab of your index configuration.
+* **URI:** Use the `search_api_url` field provided by Search API in the index configuration under _Add fields > General > URI_.
+* **Site Name:** Use the `site_name` field provided by this module (Search API Federated Solr), found in the index configuration under _Add fields > General > Site Name_.
+* **Site:** This will be sent automatically; you do not need to configure a `site` field for your Search API index.
+
+## Example: A site with page, blog post, and user profile content
+
+| Label | Machine Name | Source |
+| ----- | ------------ | ------ |
+| Federated Title | federated_title | <ul><li>Page, blog post: use the node title</li><li>Profile: use the content's "Display Name" field.</li></ul> |
+| Federated Date | federated_date | <ul><li>Page, profile: no value</li><li>Blog post: publishing date</li></ul> |
+| Federated Type | federated_type | <ul><li>Page: `Page`</li><li>Blog post: `News`</li><li>Profile: `People`</li></ul> |
+| Federated Terms | federated_terms | <ul><li>Page: no value</li><li>Blog post: tags, mapped to shared terms</li><li>Profile: specialties tags, mapped to shared terms</li></ul> |
+| Federated Image | federated_image | <ul><li>Page, blog post: use the content's "Featured Image" field.</li><li>Profile: use the content's "Profile Photo" field.</li></ul> |
+| Rendered HTML output | rendered_item | <ul><li>Page, blog post, profile: render using "Default" view mode</li></ul> |
+| URI | url | Use Search API's "URI" index field. |
+| Site Name | site_name | Use this (Search API Federated Solr) module's "Site Name" index field. |
