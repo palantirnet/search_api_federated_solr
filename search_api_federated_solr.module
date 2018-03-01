@@ -5,20 +5,16 @@
  * Contains hook implementations for the Federated Solr Search API Module.
  */
 
-use Drupal\Core\Routing\RouteMatchInterface;
-
 /**
  * Implements hook_help().
  */
-function search_api_federated_solr_help($route_name, RouteMatchInterface $route_match) {
-  switch ($route_name) {
+function search_api_federated_solr_help($path, $arg) {
+  switch ($path) {
     // Main module help for the search_api_federated_solr module.
-    case 'help.page.search_api_federated_solr':
+    case 'admin/help#search_api_federated_solr':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('Allows indexing into a single Solr search index.') . '</p>';
       return $output;
-
-    default:
   }
 }
