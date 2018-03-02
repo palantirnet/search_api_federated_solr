@@ -21,7 +21,7 @@ Because our data is served by an external application, all sites will need to co
 
 ### Configuration details
 
-* **Federated Date:** This date must be in ___ format to be used in date-based facets.
+* **Federated Date:** This date must be in `YYYY-MM-DDThh:mm:ssZ` format (as per the [Solr spec](https://lucene.apache.org/solr/guide/6_6/working-with-dates.html)) to be used in date-based facets. Drupal's modules will automatically do this conversion, but other systems may require manual conversion.
 * **Federated Type:** This should be mapped to the standard set of types: `Page`, `Patient care`, `Research`, `People`, `News`, `Events`, `Locations`, and `Multimedia`
 * **Federated Image:** Do not provide the URL to an original image, since these may be large files. Instead, provide the url to the image with a Drupal Image Style applied. Unlike Drupal, the Federated Search application won't have the ability to resize images before sending them to visitors, and using the full-size file could slow down the results pages for visitors.
 * **Rendered HTML output:**
