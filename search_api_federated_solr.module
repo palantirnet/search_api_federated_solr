@@ -3,6 +3,8 @@
 /**
  * @file search_api_federated_solr.module
  * Contains hook implementations for the Federated Solr Search API Module.
+ *
+ * @copyright Copyright (c) 2018 Palantir.net
  */
 
 /**

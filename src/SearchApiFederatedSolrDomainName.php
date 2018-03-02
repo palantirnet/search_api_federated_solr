@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @copyright Copyright (c) 2018 Palantir.net
+ */
+
+/**
  * Class SearchApiFederatedSolrDomainName
  * Provides a Search API index data alteration that adds the Domain Access domain name to each indexed item.
  */

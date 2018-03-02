@@ -8,3 +8,6 @@ This module provides additional properties for Search API indexes. These can be 
 * **Domain Name:** Add the name of the Domain Access domain that each item belongs to.
 
 After enabling these under the "Data Alterations" section, the indexed values can be customized in the "Callback settings" section of the configuration form.
+
+----
+© Copyright 2018 Palantir.net, Inc.
