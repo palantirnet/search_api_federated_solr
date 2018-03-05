@@ -7,6 +7,8 @@ core = 7.x
 
 dependencies[] = search_api_solr
 dependencies[] = token
+dependencies[] = devel
 
 files[] = search-api_federated_solr.module
+files[] = src/SearchApiFederatedSolrField.php
 files[] = src/SearchApiFederatedSolrSiteName.php

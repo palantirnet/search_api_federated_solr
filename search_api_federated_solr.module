@@ -30,6 +30,11 @@ function search_api_federated_solr_search_api_alter_callback_info() {
     'description' => t('The name of the site from which this content originated. This can be useful if indexing multiple sites with a single search index.'),
     'class' => 'SearchApiFederatedSolrSiteName',
   );
+  $callbacks['federated_field'] = array(
+    'name' => t('Federated Field'),
+    'description' => t('A token or free text field that can be customized per-bundle.'),
+    'class' => 'SearchApiFederatedSolrField',
+  );
 
   return $callbacks;
 }
