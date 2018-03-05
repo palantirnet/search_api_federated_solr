@@ -58,15 +58,33 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
 
       foreach ($bundles as $bundle_id => $bundle_label) {
 
+        $entityManager = \Drupal::service('entity_field.manager');
+        $bundle_fields = $entityManager->getFieldDefinitions($entity_type, $bundle_id);
+        $bundle_field_names = [];
 
-        // Create a config field for each bundle in our enabled datasources.
-        $form['field_data'][$entity_type][$bundle_id] = [
-          '#type' => 'textfield',
-          '#title' => $this->t('Term data for %datasource » %bundle', ['%datasource' => $datasource->label(), '%bundle' => $bundle_label]),
-          '#element_validate' => array('token_element_validate'),
-          '#token_types' => array($entity_type),
-          '#description' => $this->t('bundle id: %bundleid', ['%bundleid' => $bundle_id]),
-        ];
+        // Only add entity reference fields with a target type of taxonomy term.
+        foreach ($bundle_fields as $bundle_field) {
+          $bundle_field_type = $bundle_field->getType();
+          if ($bundle_field_type === "entity_reference") {
+            $bundle_field_settings = $bundle_field->getSettings();
+            if ($bundle_field_settings['target_type'] == 'taxonomy_term') {
+              $bundle_field_names[$bundle_field->getName()] = $bundle_field->getLabel();
+            }
+          }
+        }
+
+        // Create a config select field for each bundle with at least 1 taxonomy term entity reference field.
+        if (!empty($bundle_field_names)) {
+          $form['taxonomy_field'][$entity_type][$bundle_id] = [
+            '#type' => 'select',
+            '#title' => $this->t('Term data for %datasource » %bundle', ['%datasource' => $datasource->label(), '%bundle' => $bundle_label]),
+            '#element_validate' => array('token_element_validate'),
+            '#token_types' => array($entity_type),
+            '#options' => $bundle_field_names,
+          ];
+        }
+
+
 
         // Set the default value if something already exists in our config.
         if (isset($configuration['field_data'][$entity_type][$bundle_id])) {
