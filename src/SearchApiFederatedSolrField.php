@@ -48,7 +48,7 @@ class SearchApiFederatedSolrField extends SearchApiAbstractAlterCallback {
       $item = [
         '#type' => 'fieldset',
         '#title' => !isset($field['is_new']) ?
-          "{$field['label']} ({$field['machine_name']})" : t('New field'),
+          t("@label (%machine_name)", ['@label' => $field['label'], '%machine_name' => $field['machine_name']]) : t('New field'),
         '#collapsible' => TRUE,
         '#collapsed' => !isset($field['is_new']),
       ];
@@ -56,29 +56,31 @@ class SearchApiFederatedSolrField extends SearchApiAbstractAlterCallback {
         '#type' => 'textfield',
         '#title' => t('Label'),
         '#default_value' => $field['label'],
+        '#maxlength' => 255,
       ];
       $item['machine_name'] = [
         '#type' => 'textfield',
         '#title' => t('Machine Name'),
         '#required' => TRUE,
         '#default_value' => $field['machine_name'],
+        '#maxlength' => 32,
       ];
-      $item['multivalue'] = array(
+      $item['multivalue'] = [
         '#type' => 'radios',
         '#title' => t('Multi-value field'),
-        '#options' => array(0 => t('No'), 1 => t('Yes')),
+        '#options' => [0 => t('No'), 1 => t('Yes')],
         '#default_value' => (TRUE === isset($field['multivalue'])) ? $field['multivalue'] : 0,
         '#required' => TRUE,
         '#description' => t('Whether this field is a multi-valued field'),
-      );
-      $item['type'] = array(
+      ];
+      $item['type'] = [
         '#type' => 'select',
         '#title' => t('Data type'),
         '#options' => search_api_default_field_types(),
         '#default_value' => (TRUE === isset($field['type'])) ? $field['type'] : 'string',
         '#required' => TRUE,
         '#description' => t('Data type to save field as'),
-      );
+      ];
       $item['bundle'] = [
         '#type' => 'fieldset',
         '#title' => t('Value to index for each type'),
@@ -90,7 +92,7 @@ class SearchApiFederatedSolrField extends SearchApiAbstractAlterCallback {
       foreach ($entity_info['bundles'] as $bundle => $bundle_info) {
         $item['bundle'][$bundle] = [
           '#type' => 'textfield',
-          '#title' => "{$bundle_info['label']} ({$bundle})",
+          '#title' => t('@label (%machine_name)', ['@label' => $bundle_info['label'], '%machine_name' => $bundle]),
           '#default_value' => $field['bundle'][$bundle],
         ];
       }
@@ -140,6 +142,20 @@ class SearchApiFederatedSolrField extends SearchApiAbstractAlterCallback {
     );
 
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function configurationFormValidate(array $form, array &$values, array &$form_state) {
+    parent::configurationFormValidate($form, $values, $form_state);
+
+    foreach ($values['fields'] as $key => $field) {
+      if (preg_match('/^[0-9]|[^a-z0-9_]/i', $field['machine_name'])) {
+        $name = "callbacks][federated_field][settings][fields][{$key}][machine_name";
+        form_set_error($name, 'Federated field machine names must consist of alphanumeric or underscore characters only and not start with a digit.');
+      }
+    }
   }
 
   /**
