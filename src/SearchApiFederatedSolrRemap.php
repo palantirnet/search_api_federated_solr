@@ -70,4 +70,18 @@ class SearchApiFederatedSolrRemap extends SearchApiAbstractAlterCallback {
     return $form;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function configurationFormValidate(array $form, array &$values, array &$form_state) {
+    parent::configurationFormValidate($form, $values, $form_state);
+
+    foreach ($values['fields'] as $key => $value) {
+      if (preg_match('/^[0-9]|[^a-z0-9_]/i', $value)) {
+        $name = "callbacks][remap][settings][fields][{$key}";
+        form_set_error($name, 'Remapped field machine names must consist of alphanumeric or underscore characters only and not start with a digit.');
+      }
+    }
+  }
+
 }
