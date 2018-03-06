@@ -35,6 +35,11 @@ function search_api_federated_solr_search_api_alter_callback_info() {
     'description' => t('A token or free text field that can be customized per-bundle.'),
     'class' => 'SearchApiFederatedSolrField',
   );
+  $callbacks['remap'] = array(
+    'name' => t('Re-map Field Names'),
+    'description' => t(''),
+    'class' => 'SearchApiFederatedSolrRemap',
+  );
 
   return $callbacks;
 }
