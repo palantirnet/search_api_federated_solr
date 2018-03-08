@@ -75,6 +75,7 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
 
         // Render mapping fields if there are taxonomy term fields.
         if (!empty($bundle_field_names)) {
+          $bundle_field_names['default'] = 'Select a taxonomy term field';
           // Create a fieldset per bundle with taxonomy term reference fields.
           $form[$entity_type][$bundle_id] = [
             '#type' => 'fieldset',
@@ -90,6 +91,7 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
             '#element_validate' => array('token_element_validate'),
             '#token_types' => array($entity_type),
             '#options' => $bundle_field_names,
+            '#default_value' => 'default',
           ];
 
           // Create a fieldset for the category terms.
