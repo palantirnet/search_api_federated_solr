@@ -110,7 +110,7 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           ];
 
           // Create a categories taxonomy term entity reference autocomplete tag widget.
-          $form['field_data'][$entity_type][$bundle_id]['field_categories']['terms_ref'] = [
+          $form['field_data'][$entity_type][$bundle_id]['field_categories']['source_terms'] = [
             '#fieldset' => $entity_type . '_' . $bundle_id . '_field_categories',
             '#type' => 'entity_autocomplete',
             '#target_type' => 'taxonomy_term',
@@ -124,22 +124,22 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           ];
 
           // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_categories']['terms_ref'])) {
+          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_categories']['source_terms'])) {
             // Get the ids from the saved config value.
             $target_ids = array_map(function ($item) {
               return $item['target_id'];
-            }, $configuration['field_data'][$entity_type][$bundle_id]['field_categories']['terms_ref']);
+            }, $configuration['field_data'][$entity_type][$bundle_id]['field_categories']['source_terms']);
             // Load the term entity from the id.
             $term_entities = array_map(function ($tid) {
               return Term::load($tid);
             }, $target_ids);
 
             // The default value of an entity reference autocomplete field must be an entity object or array of entity objects.
-            $form['field_data'][$entity_type][$bundle_id]['field_categories']['terms_ref']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
+            $form['field_data'][$entity_type][$bundle_id]['field_categories']['source_terms']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
           }
 
           // Create a config text field for the categories terms mapped value.
-          $form['field_data'][$entity_type][$bundle_id]['field_categories']['mapped_value'] = [
+          $form['field_data'][$entity_type][$bundle_id]['field_categories']['destination_term'] = [
             '#fieldset' => $entity_type . '_' . $bundle_id . '_field_categories',
             '#type' => 'textfield',
             '#title' => $this->t(' » Destination categories term'),
@@ -147,8 +147,8 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           ];
 
           // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_categories']['mapped_value'])) {
-            $form['field_data'][$entity_type][$bundle_id]['field_categories']['mapped_value']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id]['field_categories']['mapped_value'];
+          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_categories']['destination_term'])) {
+            $form['field_data'][$entity_type][$bundle_id]['field_categories']['destination_term']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id]['field_categories']['destination_term'];
           }
 
           // Create a fieldset for the topic terms.
@@ -159,7 +159,7 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           ];
 
           // Create a topic taxonomy term entity reference autocomplete tag widget.
-          $form['field_data'][$entity_type][$bundle_id]['field_topics']['terms_ref'] = [
+          $form['field_data'][$entity_type][$bundle_id]['field_topics']['source_terms'] = [
             '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id . '_field_topics',
             '#type' => 'entity_autocomplete',
             '#target_type' => 'taxonomy_term',
@@ -173,22 +173,22 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           ];
 
           // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topics']['terms_ref'])) {
+          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topics']['source_terms'])) {
             // Get the ids from the saved config value.
             $target_ids = array_map(function ($item) {
               return $item['target_id'];
-            }, $configuration['field_data'][$entity_type][$bundle_id]['field_topics']['terms_ref']);
+            }, $configuration['field_data'][$entity_type][$bundle_id]['field_topics']['source_terms']);
             // Load the term entity from the id.
             $term_entities = array_map(function ($tid) {
               return Term::load($tid);
             }, $target_ids);
 
             // The default value of an entity reference autocomplete field must be an entity object or array of entity objects.
-            $form['field_data'][$entity_type][$bundle_id]['field_topics']['terms_ref']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
+            $form['field_data'][$entity_type][$bundle_id]['field_topics']['source_terms']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
           }
 
           // Create a config text field for the topic terms mapped value.
-          $form['field_data'][$entity_type][$bundle_id]['field_topics']['mapped_value'] = [
+          $form['field_data'][$entity_type][$bundle_id]['field_topics']['destination_term'] = [
             '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id . '_field_topics',
             '#type' => 'textfield',
             '#title' => $this->t(' » Destination topics term'),
@@ -196,8 +196,8 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           ];
 
           // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topics']['mapped_value'])) {
-            $form['field_data'][$entity_type][$bundle_id]['field_topics']['mapped_value']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id]['field_topics']['mapped_value'];
+          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topics']['destination_term'])) {
+            $form['field_data'][$entity_type][$bundle_id]['field_topics']['destination_term']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id]['field_topics']['destination_term'];
           }
         }
       }
