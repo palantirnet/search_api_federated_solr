@@ -3,16 +3,16 @@
 namespace Drupal\search_api_federated_solr\Plugin\search_api\processor\Property;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Field\FieldItemBase;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\FieldInterface;
 use Drupal\search_api\Processor\ConfigurablePropertyBase;
 use Drupal\search_api\Processor\ConfigurablePropertyInterface;
 use Drupal\search_api\Utility\Utility;
-use Drupal\Core\Field\FieldItemBase;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\Entity\ContentEntityBase;
 
 /**
  * Defines an "federated term" property.
