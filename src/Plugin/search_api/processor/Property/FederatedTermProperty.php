@@ -210,13 +210,19 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
    * {@inheritdoc}
    */
   public function submitConfigurationForm(FieldInterface $field, array &$form, FormStateInterface $form_state) {
-    $values = [
-      'field_data' => array_filter($form_state->getValue('field_data')),
-    ];
+    // Get all of the submitted field data.
+    $field_data =  array_filter($form_state->getValue('field_data'));
 
-    // filter out the array items where the default taxonomy term field value is still present
+    $non_empty_values = [];
+    // Filter out the data which still has the default value for the taxonomy field select.
+    $non_empty_values['field_data'] = array_map(function($entity_type) {
+      return array_filter($entity_type, function($bundle_id) {
+        return $bundle_id['taxonomy_field'] !== 'default';
+      });
+    }, $field_data);
 
-    $field->setConfiguration($values);
+    // Submit only the data for the populated fields.
+    $field->setConfiguration($non_empty_values);
   }
 
 }
