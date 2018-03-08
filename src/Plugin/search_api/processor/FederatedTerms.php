@@ -49,7 +49,7 @@ class FederatedTerms extends ProcessorPluginBase {
    */
   public function addFieldValues(ItemInterface $item) {
     // Get all of the federated fields on our item.
-    $federated_fields = $this->getFieldsHelper()
+    $federated_terms = $this->getFieldsHelper()
       ->filterForPropertyPath($item->getFields(), NULL, 'federated_term');
 
     // Get the entity object, bail if there's somehow not one.
@@ -64,18 +64,20 @@ class FederatedTerms extends ProcessorPluginBase {
     $bundle_type = $entity->bundle();
 
     // Process and set values for each federated field on the item.
-    foreach ($federated_fields as $federated_field) {
+    foreach ($federated_terms as $federated_term) {
 
       // Get configuration for the field.
-      $configuration = $federated_field->getConfiguration();
+      $configuration = $federated_term->getConfiguration();
 
       // If there's a config item for the entity and bundle type we're in, set the value for the field.
-      if(!empty($configuration[$entity_type][$bundle_type]['field_data'])) {
-        $token = \Drupal::token();
-        $value = $token->replace($configuration[$entity_type][$bundle_type]['field_data'], [$entity_type => $entity]);
+      if(!empty($configuration['field_data'][$entity_type][$bundle_type])) {
+        // get the $entity taxonomy terms
+        // check if they map to any of the source terms from the federated_term config sources
+        // if so, set the value to the mapped value for the matched source term
 
         // Do not use setValues(), since that doesn't preprocess the values according to their data type.
-        $federated_field->addValue($value);
+        $federated_term->addValue($value);
+
       }
     }
   }
