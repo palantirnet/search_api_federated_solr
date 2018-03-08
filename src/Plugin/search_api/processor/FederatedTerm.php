@@ -83,13 +83,13 @@ class FederatedTerm extends ProcessorPluginBase {
 
         // Get the term target ids.
         $entity_term_ids = array_map(function($term) {
-          return $term->target_id;
+          return (int)$term->target_id;
         }, $entity_terms);
 
         // Get the source terms from the config.
         $source_terms = $configuration['field_data'][$entity_type][$bundle_type][$taxonomy_field]['source_terms'];
         $source_term_ids = array_map(function($term) {
-          return $term['target_id'];
+          return (int)$term->target_id;
         }, $source_terms);
 
         // Check if the entity terms map to any of the source terms.
