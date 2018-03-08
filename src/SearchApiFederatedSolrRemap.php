@@ -60,11 +60,13 @@ class SearchApiFederatedSolrRemap extends SearchApiAbstractAlterCallback {
 
     $fields = $this->index->getFields();
     foreach ($fields as $key => $field) {
-      $form['fields'][$key] = [
-        '#type' => 'textfield',
-        '#title' => t('@name (%machine_name)', ['@name' => $field['name'], '%machine_name' => $key]),
-        '#default_value' => isset($this->options['fields'][$key]) ? $this->options['fields'][$key] : '',
-      ];
+      if (!in_array($key, $this->options['fields'])) {
+        $form['fields'][$key] = [
+          '#type' => 'textfield',
+          '#title' => t('@name (%machine_name)', ['@name' => $field['name'], '%machine_name' => $key]),
+          '#default_value' => isset($this->options['fields'][$key]) ? $this->options['fields'][$key] : '',
+        ];
+      }
     }
 
     return $form;
