@@ -2,23 +2,16 @@
 
 namespace Drupal\search_api_federated_solr\Plugin\search_api\processor\Property;
 
-use Drupal\Component\Utility\Html;
-use Drupal\Core\Field\FieldItemBase;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\taxonomy\Entity\Term;
-use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\FieldInterface;
 use Drupal\search_api\Processor\ConfigurablePropertyBase;
-use Drupal\search_api\Processor\ConfigurablePropertyInterface;
-use Drupal\search_api\Utility\Utility;
 
 /**
- * Defines an "federated term" property.
+ * Defines a "federated term" property.
  *
- * @see \Drupal\search_api_federated_solr\Plugin\search_api\processor\FederatedTerms
+ * @see \Drupal\search_api_federated_solr\Plugin\search_api\processor\FederatedTerm
  */
 class FederatedTermProperty extends ConfigurablePropertyBase {
 
@@ -152,15 +145,15 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           }
 
           // Create a fieldset for the topic terms.
-          $form['field_data'][$entity_type][$bundle_id]['field_topics'] = [
+          $form['field_data'][$entity_type][$bundle_id]['field_topic'] = [
             '#type' => 'fieldset',
             '#title' => $this->t('Topics terms for %bundle', ['%bundle' => $bundle_label]),
             '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id,
           ];
 
           // Create a topic taxonomy term entity reference autocomplete tag widget.
-          $form['field_data'][$entity_type][$bundle_id]['field_topics']['source_terms'] = [
-            '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id . '_field_topics',
+          $form['field_data'][$entity_type][$bundle_id]['field_topic']['source_terms'] = [
+            '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id . '_field_topic',
             '#type' => 'entity_autocomplete',
             '#target_type' => 'taxonomy_term',
             '#title' => $this->t('Source topics terms'),
@@ -173,31 +166,31 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           ];
 
           // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topics']['source_terms'])) {
+          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topic']['source_terms'])) {
             // Get the ids from the saved config value.
             $target_ids = array_map(function ($item) {
               return $item['target_id'];
-            }, $configuration['field_data'][$entity_type][$bundle_id]['field_topics']['source_terms']);
+            }, $configuration['field_data'][$entity_type][$bundle_id]['field_topic']['source_terms']);
             // Load the term entity from the id.
             $term_entities = array_map(function ($tid) {
               return Term::load($tid);
             }, $target_ids);
 
             // The default value of an entity reference autocomplete field must be an entity object or array of entity objects.
-            $form['field_data'][$entity_type][$bundle_id]['field_topics']['source_terms']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
+            $form['field_data'][$entity_type][$bundle_id]['field_topic']['source_terms']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
           }
 
           // Create a config text field for the topic terms mapped value.
-          $form['field_data'][$entity_type][$bundle_id]['field_topics']['destination_term'] = [
-            '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id . '_field_topics',
+          $form['field_data'][$entity_type][$bundle_id]['field_topic']['destination_term'] = [
+            '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id . '_field_topic',
             '#type' => 'textfield',
             '#title' => $this->t(' » Destination topics term'),
             '#description' => $this->t('The value to which the corresponding terms should map. This value will render as search filter label exactly as it appears here (i.e. with the same capitalization and punctuation).'),
           ];
 
           // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topics']['destination_term'])) {
-            $form['field_data'][$entity_type][$bundle_id]['field_topics']['destination_term']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id]['field_topics']['destination_term'];
+          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topic']['destination_term'])) {
+            $form['field_data'][$entity_type][$bundle_id]['field_topic']['destination_term']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id]['field_topic']['destination_term'];
           }
         }
       }
@@ -224,5 +217,4 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
     // Submit only the data for the populated fields.
     $field->setConfiguration($non_empty_values);
   }
-
 }
