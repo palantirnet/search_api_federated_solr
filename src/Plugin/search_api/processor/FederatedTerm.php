@@ -74,7 +74,7 @@ class FederatedTerm extends ProcessorPluginBase {
         // Get the selected taxonomy field.
         $taxonomy_field = $configuration['field_data'][$entity_type][$bundle_type]['taxonomy_field'];
         // Get the $entity's term data for that taxonomy field.
-        $entity_terms = $entity->get($taxonomy_field);
+        $entity_terms = $entity->$taxonomy_field->getValue();
 
         // If there are no taxonomy terms on this $entity, do nothing.
         if (empty($entity_terms)) {
@@ -83,13 +83,13 @@ class FederatedTerm extends ProcessorPluginBase {
 
         // Get the term target ids.
         $entity_term_ids = array_map(function($term) {
-          return (int)$term->target_id;
+          return (int)$term['target_id'];
         }, $entity_terms);
 
         // Get the source terms from the config.
         $source_terms = $configuration['field_data'][$entity_type][$bundle_type][$taxonomy_field]['source_terms'];
         $source_term_ids = array_map(function($term) {
-          return (int)$term->target_id;
+          return (int)$term['target_id'];
         }, $source_terms);
 
         // Check if the entity terms map to any of the source terms.
