@@ -50,7 +50,7 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
       foreach ($bundles as $bundle_id => $bundle_label) {
         $entityManager      = \Drupal::service('entity_field.manager');
         $bundle_fields      = $entityManager->getFieldDefinitions($entity_type, $bundle_id);
-        $bundle_field_names = [];
+        $bundle_taxonomy_field_names = [];
 
         // Only add entity reference fields with a target type of taxonomy term.
         foreach ($bundle_fields as $bundle_field) {
@@ -58,13 +58,13 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
           if ($bundle_field_type === "entity_reference") {
             $bundle_field_settings = $bundle_field->getSettings();
             if ($bundle_field_settings['target_type'] == 'taxonomy_term') {
-              $bundle_field_names[$bundle_field->getName()] = $bundle_field->getLabel();
+              $bundle_taxonomy_field_names[$bundle_field->getName()] = $bundle_field->getLabel();
             }
           }
         }
 
         // Render mapping fields if there are taxonomy term fields.
-        if (!empty($bundle_field_names)) {
+        if (!empty($bundle_taxonomy_field_names)) {
           // Create a fieldset per bundle with taxonomy term reference fields.
           $form['field_data'][$entity_type][$bundle_id] = [
             '#type' => 'fieldset',
@@ -74,8 +74,8 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
             ]),
           ];
 
-          // Define a default option for the select.
-          $bundle_field_names['default'] = 'Select a taxonomy term field';
+          // Define a default option for the taxonomy term field select.
+          $bundle_taxonomy_field_names['default'] = 'Select a taxonomy term field';
           // Determine what the selected value should be: either the default or load a saved value.
           $default = 'default';
           // Set the default value if something already exists in our config.
@@ -89,7 +89,7 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
             '#type' => 'select',
             '#title' => $this->t('Taxonomy term reference field'),
             '#description' => $this->t('Select a field to begin assigning term values'),
-            '#options' => $bundle_field_names,
+            '#options' => $bundle_taxonomy_field_names,
             '#default_value' => $default,
           ];
 
