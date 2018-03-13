@@ -4,9 +4,9 @@ namespace Drupal\search_api_federated_solr\Plugin\search_api\processor\Property;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\taxonomy\Entity\Term;
 use Drupal\search_api\Item\FieldInterface;
 use Drupal\search_api\Processor\ConfigurablePropertyBase;
+use Drupal\taxonomy\Entity\Term;
 
 /**
  * Defines a "federated term" property.
