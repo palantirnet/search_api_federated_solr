@@ -98,6 +98,8 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
 
           // Define the rest of the form elements dynamically, per taxonomy_field, and only make visible when the respective field is selected.
           foreach ($bundle_taxonomy_field_names as $bundle_taxonomy_field_id => $bundle_taxonomy_field_name) {
+
+            // Create a fieldset for the selected taxonomy field (this will also serve as the ajax wrapper).
             $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id] = [
               '#type' => 'fieldset',
               '#title' => $this->t($bundle_taxonomy_field_name . ' terms for %bundle', ['%bundle' => $bundle_label]),
@@ -114,6 +116,9 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
               ],
             ];
 
+            // Get the target bundle(s) for this field
+            $target_bundles = array_values($bundle_fields[$bundle_taxonomy_field_id]->getSettings()['handler_settings']['target_bundles']);
+
             // Create a taxonomy term entity reference autocomplete tag widget.
             $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['source_terms'] = [
               '#fieldset' => $entity_type . '_' . $bundle_id . '_' . $bundle_taxonomy_field_id,
@@ -124,7 +129,7 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
               '#default_value' => [],
               '#tags' => TRUE,
               '#selection_settings' => [
-                'target_bundles' => ['categories'],
+                'target_bundles' => $target_bundles,
               ],
             ];
 
