@@ -177,8 +177,15 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
 
     $non_empty_values = [];
     // Filter out the data which still has the default value for the taxonomy field select.
-    $non_empty_values['field_data'] = array_map(function($entity_type) {
-      return array_filter($entity_type, function($bundle_id) {
+    $non_empty_values['field_data'] = array_map(function(&$entity_type) {
+      return array_filter($entity_type, function(&$bundle_id) {
+        // Unset any child elements with no taxonomy field target_ids
+        foreach($bundle_id as $key=>$value) {
+          if (is_null($value['source_terms'])) {
+            unset($bundle_id[$key]);
+          }
+        }
+        // Remove array elements which have not had taxonomy field selected.
         return $bundle_id['taxonomy_field'] !== 'default';
       });
     }, $field_data);
