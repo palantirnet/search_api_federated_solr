@@ -93,104 +93,68 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
             '#default_value' => $default,
           ];
 
-          // Create a fieldset for the category terms.
-          $form['field_data'][$entity_type][$bundle_id]['field_categories'] = [
-            '#type' => 'fieldset',
-            '#title' => $this->t('Categories terms for %bundle', ['%bundle' => $bundle_label]),
-            '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id,
-            '#prefix' => '<div id="categories-row-wrapper">',
-            '#suffix' => '</div>',
-          ];
+          // Remove the "default" taxonomy field name from array, to avoid defining a fieldset for it
+          unset($bundle_taxonomy_field_names['default']);
 
-          // Create a categories taxonomy term entity reference autocomplete tag widget.
-          $form['field_data'][$entity_type][$bundle_id]['field_categories']['source_terms'] = [
-            '#fieldset' => $entity_type . '_' . $bundle_id . '_field_categories',
-            '#type' => 'entity_autocomplete',
-            '#target_type' => 'taxonomy_term',
-            '#title' => $this->t('Source categories terms'),
-            '#description' => $this->t('Start typing some category terms.  You can separate multiple terms with a comma.'),
-            '#default_value' => [],
-            '#tags' => TRUE,
-            '#selection_settings' => [
-              'target_bundles' => ['categories'],
-            ],
-          ];
+          // Define the rest of the form elements dynamically, per taxonomy_field, and only make visible when the respective field is selected.
+          foreach ($bundle_taxonomy_field_names as $bundle_taxonomy_field_id => $bundle_taxonomy_field_name) {
+            $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id] = [
+              '#type' => 'fieldset',
+              '#title' => $this->t($bundle_taxonomy_field_name . ' terms for %bundle', ['%bundle' => $bundle_label]),
+              '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id,
+              '#prefix' => '<div id="' . $bundle_taxonomy_field_id . '-row-wrapper">',
+              '#suffix' => '</div>',
+              // Show this fieldset only when the respective field has been chosen from the taxonomy_field select.
+              '#states' => [
+                'visible' => [
+                  'select[name="field_data[' . $entity_type . '][' .$bundle_id . '][taxonomy_field]"]' => [
+                        'value' => $bundle_taxonomy_field_id
+                      ],
+                ],
+              ],
+            ];
 
-          // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_categories']['source_terms'])) {
-            // Get the ids from the saved config value.
-            $target_ids = array_map(function ($item) {
-              return $item['target_id'];
-            }, $configuration['field_data'][$entity_type][$bundle_id]['field_categories']['source_terms']);
-            // Load the term entity from the id.
-            $term_entities = array_map(function ($tid) {
-              return Term::load($tid);
-            }, $target_ids);
+            // Create a taxonomy term entity reference autocomplete tag widget.
+            $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['source_terms'] = [
+              '#fieldset' => $entity_type . '_' . $bundle_id . '_' . $bundle_taxonomy_field_id,
+              '#type' => 'entity_autocomplete',
+              '#target_type' => 'taxonomy_term',
+              '#title' => $this->t('Source ' . $bundle_taxonomy_field_name . ' terms'),
+              '#description' => $this->t('Start typing some ' . $bundle_taxonomy_field_name . ' terms.  You can separate multiple terms with a comma.'),
+              '#default_value' => [],
+              '#tags' => TRUE,
+              '#selection_settings' => [
+                'target_bundles' => ['categories'],
+              ],
+            ];
 
-            // The default value of an entity reference autocomplete field must be an entity object or array of entity objects.
-            $form['field_data'][$entity_type][$bundle_id]['field_categories']['source_terms']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
-          }
+            // Set the default value if something already exists in our config.
+            if (isset($configuration['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['source_terms'])) {
+              // Get the ids from the saved config value.
+              $target_ids = array_map(function ($item) {
+                return $item['target_id'];
+              }, $configuration['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['source_terms']);
+              // Load the term entity from the id.
+              $term_entities = array_map(function ($tid) {
+                return Term::load($tid);
+              }, $target_ids);
 
-          // Create a config text field for the categories terms mapped value.
-          $form['field_data'][$entity_type][$bundle_id]['field_categories']['destination_term'] = [
-            '#fieldset' => $entity_type . '_' . $bundle_id . '_field_categories',
-            '#type' => 'textfield',
-            '#title' => $this->t(' » Destination categories term'),
-            '#description' => $this->t('The value to which the corresponding terms should map.'),
-          ];
+              // The default value of an entity reference autocomplete field must be an entity object or array of entity objects.
+              $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['source_terms']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
+            }
 
-          // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_categories']['destination_term'])) {
-            $form['field_data'][$entity_type][$bundle_id]['field_categories']['destination_term']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id]['field_categories']['destination_term'];
-          }
+            // Create a config text field for the terms' destination value.
+            $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['destination_term'] = [
+              '#fieldset' => $entity_type . '_' . $bundle_id . '_field_categories',
+              '#type' => 'textfield',
+              '#title' => $this->t(' » Destination ' . $bundle_taxonomy_field_name . ' term'),
+              '#description' => $this->t('The value to which the corresponding terms should map.'),
+            ];
 
-          // Create a fieldset for the topic terms.
-          $form['field_data'][$entity_type][$bundle_id]['field_topic'] = [
-            '#type' => 'fieldset',
-            '#title' => $this->t('Topics terms for %bundle', ['%bundle' => $bundle_label]),
-            '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id,
-          ];
-
-          // Create a topic taxonomy term entity reference autocomplete tag widget.
-          $form['field_data'][$entity_type][$bundle_id]['field_topic']['source_terms'] = [
-            '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id . '_field_topic',
-            '#type' => 'entity_autocomplete',
-            '#target_type' => 'taxonomy_term',
-            '#title' => $this->t('Source topics terms'),
-            '#description' => $this->t('Start typing some topic terms.  You can separate multiple terms with a comma.'),
-            '#default_value' => [],
-            '#tags' => TRUE,
-            '#selection_settings' => [
-              'target_bundles' => ['topics'],
-            ],
-          ];
-
-          // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topic']['source_terms'])) {
-            // Get the ids from the saved config value.
-            $target_ids = array_map(function ($item) {
-              return $item['target_id'];
-            }, $configuration['field_data'][$entity_type][$bundle_id]['field_topic']['source_terms']);
-            // Load the term entity from the id.
-            $term_entities = array_map(function ($tid) {
-              return Term::load($tid);
-            }, $target_ids);
-
-            // The default value of an entity reference autocomplete field must be an entity object or array of entity objects.
-            $form['field_data'][$entity_type][$bundle_id]['field_topic']['source_terms']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
-          }
-
-          // Create a config text field for the topic terms mapped value.
-          $form['field_data'][$entity_type][$bundle_id]['field_topic']['destination_term'] = [
-            '#fieldset' => 'field_data_' . $entity_type . '_' . $bundle_id . '_field_topic',
-            '#type' => 'textfield',
-            '#title' => $this->t(' » Destination topics term'),
-            '#description' => $this->t('The value to which the corresponding terms should map. This value will render as search filter label exactly as it appears here (i.e. with the same capitalization and punctuation).'),
-          ];
-
-          // Set the default value if something already exists in our config.
-          if (isset($configuration['field_data'][$entity_type][$bundle_id]['field_topic']['destination_term'])) {
-            $form['field_data'][$entity_type][$bundle_id]['field_topic']['destination_term']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id]['field_topic']['destination_term'];
+            // Set the default value if something already exists in our config.
+            if (isset($configuration['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['destination_term'])) {
+              $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['destination_term']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id]['destination_term'];
+            }
           }
         }
       }
