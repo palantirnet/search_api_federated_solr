@@ -65,14 +65,6 @@ class SearchApiFederatedSolrField extends SearchApiAbstractAlterCallback {
         '#default_value' => $field['machine_name'],
         '#maxlength' => 32,
       ];
-      $item['multivalue'] = [
-        '#type' => 'radios',
-        '#title' => t('Multi-value field'),
-        '#options' => [0 => t('No'), 1 => t('Yes')],
-        '#default_value' => (TRUE === isset($field['multivalue'])) ? $field['multivalue'] : 0,
-        '#required' => TRUE,
-        '#description' => t('Whether this field is a multi-valued field'),
-      ];
       $item['type'] = [
         '#type' => 'select',
         '#title' => t('Data type'),
