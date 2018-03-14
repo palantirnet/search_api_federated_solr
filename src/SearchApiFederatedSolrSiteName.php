@@ -47,7 +47,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
     $site_name = !empty($this->options['site_name']) ? $this->options['site_name'] : variable_get('site_name');
 
     foreach ($items as &$item) {
-      $item->site_name = $site_name;
+      $item->site_name = [$site_name];
     }
   }
 
@@ -59,8 +59,8 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
       $nid = entity_id($type, $item);
       $domain = domain_get_node_match($nid);
 
-      $federated_domain = isset($this->options['domain'][$domain['machine_name']]) ? $this->options['domain'][$domain['machine_name']] : $domain['sitename'];
-      $item->site_name = $federated_domain;
+      $federated_domain = !empty($this->options['domain'][$domain['machine_name']]) ? $this->options['domain'][$domain['machine_name']] : $domain['sitename'];
+      $item->site_name = [$federated_domain];
     }
 
   }
