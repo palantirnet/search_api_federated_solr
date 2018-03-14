@@ -16,14 +16,17 @@ class SearchApiFederatedSolrRemap extends SearchApiAbstractAlterCallback {
   public function propertyInfo() {
     $properties = [];
 
-    $fields = $this->index->getFields();
+    $source_fields = $this->index->getFields(FALSE);
 
-    foreach ($this->options['fields'] as $key => $value) {
-      if ($value && isset($fields[$key])) {
-        $properties[$value] = [
-          'label' => t('@field (remapped from @key)', ['@field' => $fields[$key]['name'], '@key' => $key]),
-          'description' => $fields[$key]['description'],
-          'type' => $fields[$key]['type'],
+    foreach (array_keys($this->federatedFields()) as $destination_key) {
+      if (!empty($this->options['remap'][$destination_key]) && isset($source_fields[$this->options['remap'][$destination_key]])) {
+        $source_key = $this->options['remap'][$destination_key];
+        $source = $source_fields[$source_key];
+
+        $properties[$destination_key] = [
+          'label' => t('@field (remapped from @key)', ['@field' => $source['name'], '@key' => $source_key]),
+          'description' => $source['description'],
+          'type' => $source['type'],
         ];
       }
     }
@@ -36,7 +39,6 @@ class SearchApiFederatedSolrRemap extends SearchApiAbstractAlterCallback {
    * {@inheritdoc}
    */
   public function alterItems(array &$items) {
-
     foreach ($items as &$item) {
       foreach ($this->options['fields'] as $key => $value) {
         if ($value && isset($item->{$key})) {
@@ -51,39 +53,56 @@ class SearchApiFederatedSolrRemap extends SearchApiAbstractAlterCallback {
    * {@inheritdoc}
    */
   public function configurationForm() {
+    watchdog('debug', 'SearchApiFederatedSolrRemap::configurationForm()');
+    //watchdog('debug', 'All fields: <pre>' . print_r($this->index->getFields(FALSE), true) . '</pre>');
+    //watchdog('debug', 'federated field options: <pre>' . print_r($this->federatedFieldOptions(), TRUE) . '</pre>');
+    //watchdog('debug', 'index field options: <pre>' . print_r($this->indexFieldOptions(), TRUE) . '</pre>');
 
-    $form['fields'] = [
+    $form['remap'] = [
       '#type' => 'fieldset',
       '#title' => t('Remap properties'),
-      '#description' => t('Enter a machine name to use instead of the original. Blank fields will not be remapped.'),
     ];
-
-    $fields = $this->index->getFields();
-    foreach ($fields as $key => $field) {
-      if (!in_array($key, $this->options['fields'])) {
-        $form['fields'][$key] = [
-          '#type' => 'textfield',
-          '#title' => t('@name (%machine_name)', ['@name' => $field['name'], '%machine_name' => $key]),
-          '#default_value' => isset($this->options['fields'][$key]) ? $this->options['fields'][$key] : '',
-        ];
-      }
+    foreach ($this->federatedFieldOptions() as $k => $title) {
+      $form['remap'][$k] = [
+        '#type' => 'select',
+        '#title' => $title,
+        '#options' => $this->indexFieldOptions(),
+        '#default_value' => isset($this->options['remap'][$k]) ? $this->options['remap'][$k] : '',
+      ];
     }
 
     return $form;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function configurationFormValidate(array $form, array &$values, array &$form_state) {
-    parent::configurationFormValidate($form, $values, $form_state);
+  protected function federatedFields() {
+    return [
+      'federated_title' => [
+        'name' => t('Federated Title'),
+        'description' => '',
+        'type' => 'string'
+      ],
+      'rendered_output' => [
+        'name' => t('Rendered Output'),
+        'description' => '',
+        'type' => 'text',
+      ]
+    ];
+  }
 
-    foreach ($values['fields'] as $key => $value) {
-      if (preg_match('/^[0-9]|[^a-z0-9_]/i', $value)) {
-        $name = "callbacks][remap][settings][fields][{$key}";
-        form_set_error($name, 'Remapped field machine names must consist of alphanumeric or underscore characters only and not start with a digit.');
-      }
+    protected function federatedFieldOptions() {
+      $options = $this->federatedFields();
+      array_walk($options, function (&$item, $key) {
+        $item = "{$item['name']} ({$key})";
+      });
+      return $options;
     }
+
+  protected function indexFieldOptions() {
+    $options = array_diff_key($this->index->getFields(FALSE), $this->federatedFields());
+    array_walk($options, function (&$item, $key) {
+      $item = "{$item['name']} ({$key})";
+    });
+    return ['- ' . t('None') . ' -'] + $options;
   }
 
 }
