@@ -9,5 +9,4 @@ dependencies[] = search_api_solr
 dependencies[] = token
 
 files[] = search-api_federated_solr.module
-files[] = src/SearchApiFederatedSolrDomainName.php
 files[] = src/SearchApiFederatedSolrSiteName.php

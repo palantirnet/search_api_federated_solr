@@ -4,10 +4,9 @@ This module provides additional properties for Search API indexes. These can be 
 
 ### Properties
 
-* **Site Name:** Add the name of the site to each indexed item.
-* **Domain Name:** Add the name of the Domain Access domain that each item belongs to.
+* **Site Name:** Add the name of the site or the Domain Access Domain to each indexed item.
 
-After enabling these under the "Data Alterations" section, the indexed values can be customized in the "Callback settings" section of the configuration form.
+After enabling this plugin under the "Data Alterations" section, the indexed values can be customized in the "Callback settings" section of the configuration form.
 
 ----
 © Copyright 2018 Palantir.net, Inc.

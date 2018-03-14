@@ -30,11 +30,6 @@ function search_api_federated_solr_search_api_alter_callback_info() {
     'description' => t('The name of the site from which this content originated. This can be useful if indexing multiple sites with a single search index.'),
     'class' => 'SearchApiFederatedSolrSiteName',
   );
-  $callbacks['domain_name'] = array(
-    'name' => t('Domain Access Domain Name'),
-    'description' => t('The name of the Domain Access domain from which this content originated. This can be useful if indexing multiple sites with a single search index.'),
-    'class' => 'SearchApiFederatedSolrDomainName',
-  );
 
   return $callbacks;
 }
