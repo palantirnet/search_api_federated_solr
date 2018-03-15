@@ -76,7 +76,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
       foreach (domain_list_by_machine_name() as $machine_name => $domain) {
         $form['domain'][$machine_name] = [
           '#type' => 'textfield',
-          '#title' => t('Domain Label'),
+          '#title' => t('%domain Domain Label', ['%domain' => $domain['sitename']]),
           '#description' => t('Map the Domain to a custom label for search.'),
           '#default_value' => !empty($this->options['domain'][$machine_name]) ? $this->options['domain'][$machine_name] : $domain['sitename'],
           '#required' => TRUE,
