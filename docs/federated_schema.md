@@ -14,7 +14,7 @@ Because our data is served by an external application, all sites will need to co
 | Federated Type | federated_type | string | Yes | single | The shared type label for faceting. Also used to label each result. |
 | Federated Terms | federated_terms | string | No | multi | Terms for additional, topic-based facets, mapped to shared topic terms if necessary. |
 | Federated Image | federated_image | string | No | single | An absolute url to an image which, if it exists, will be displayed with the text. Recommended image size: ___ x ___  |
-| Rendered HTML output | rendered_item | fulltext | Yes | single | The full text of the item, with HTML stripped. |
+| Rendered HTML output | rendered_item | fulltext | Yes | multi | The full text of the item, with HTML stripped. |
 | URI | url | string | Yes | single | The absolute path to the item, used to provide a link to each result. |
 | Site Name | site_name | string | Yes | single | The descriptive name of the source site. Used to provide site-based filtering. |
 | Site | site | string | Automatic | single | The base url of the source site, like `https://labblog.uofmhealth.edu`. This will be sent automatically by Drupal, and is required for external content sources. |
