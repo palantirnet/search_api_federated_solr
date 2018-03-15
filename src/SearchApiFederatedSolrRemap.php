@@ -80,11 +80,31 @@ class SearchApiFederatedSolrRemap extends SearchApiAbstractAlterCallback {
         'description' => '',
         'type' => 'string'
       ],
-      'rendered_output' => [
-        'name' => t('Rendered Output'),
+      'federated_date' => [
+        'name' => t('Federated Date'),
+        'description' => '',
+        'type' => 'date'
+      ],
+      'federated_type' => [
+        'name' => t('Federated Type'),
+        'description' => '',
+        'type' => 'string'
+      ],
+      'federated_terms' => [
+        'name' => t('Federated Terms'),
+        'description' => '',
+        'type' => 'string'
+      ],
+      'federated_image' => [
+        'name' => t('Federated Image'),
+        'description' => '',
+        'type' => 'uri'
+      ],
+      'rendered_item' => [
+        'name' => t('Rendered Item'),
         'description' => '',
         'type' => 'text',
-      ]
+      ],
     ];
   }
 
