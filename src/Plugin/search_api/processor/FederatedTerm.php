@@ -86,25 +86,27 @@ class FederatedTerm extends ProcessorPluginBase {
           return (int)$term['target_id'];
         }, $entity_terms);
 
-        // Get the source terms from the config.
-        $source_terms = $configuration['field_data'][$entity_type][$bundle_type][$taxonomy_field]['source_terms'];
-        $source_term_ids = array_map(function($term) {
-          return (int)$term['target_id'];
-        }, $source_terms);
+        foreach($configuration['field_data'][$entity_type][$bundle_type][$taxonomy_field] as $row) {
+          // Get the source terms from the config.
+          $source_terms = $row['source_terms'];
+          $source_term_ids = array_map(function ($term) {
+            return (int) $term['target_id'];
+          }, $source_terms);
 
-        // Check if the entity terms map to any of the source terms.
-        $intersection = array_intersect($entity_term_ids, $source_term_ids);
+          // Check if the entity terms map to any of the source terms.
+          $intersection = array_intersect($entity_term_ids, $source_term_ids);
 
-        // If there is no intersection, do nothing.
-        if (empty($intersection)) {
-          return;
+          // If there is no intersection, do nothing.
+          if (empty($intersection)) {
+            return;
+          }
+
+          // If there is intersection, set the value to the mapped value for the matched source term.
+          $value = $row['destination_term'];
+
+          // Do not use setValues(), since that doesn't preprocess the values according to their data type.
+          $federated_term->addValue($value);
         }
-
-        // If there is intersection, set the value to the mapped value for the matched source term.
-        $value = $configuration['field_data'][$entity_type][$bundle_type][$taxonomy_field]['destination_term'];
-
-        // Do not use setValues(), since that doesn't preprocess the values according to their data type.
-        $federated_term->addValue($value);
       }
     }
   }
