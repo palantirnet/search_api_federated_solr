@@ -8,7 +8,7 @@ use Drupal\search_api_federated_solr\Plugin\search_api\processor\Property\Federa
 use Drupal\search_api\Processor\ProcessorPluginBase;
 
 /**
- * Normalize multiple content types into a single federated field.
+ * Normalize multiple taxonomy terms into a single federated term.
  *
  * @see \Drupal\search_api_federated_solr\Plugin\search_api\processor\Property\FederatedTermProperty
  *
@@ -86,6 +86,8 @@ class FederatedTerm extends ProcessorPluginBase {
           return (int)$term['target_id'];
         }, $entity_terms);
 
+        // In the config object, each bundle data structure contains an array of source / destination term rows.
+        // Iterate through those rows and determine if there is a term id match.
         foreach($configuration['field_data'][$entity_type][$bundle_type][$taxonomy_field] as $row) {
           // Get the source terms from the config.
           $source_terms = $row['source_terms'];
@@ -93,19 +95,22 @@ class FederatedTerm extends ProcessorPluginBase {
             return (int) $term['target_id'];
           }, $source_terms);
 
-          // Check if the entity terms map to any of the source terms.
+          // Check if the entity term ids match any of the source term ids.
           $intersection = array_intersect($entity_term_ids, $source_term_ids);
 
-          // If there is no intersection, do nothing.
+          // If there are no matches, do nothing.
           if (empty($intersection)) {
             return;
           }
 
-          // If there is intersection, set the value to the mapped value for the matched source term.
+          // If there are matches, set the value to the mapped value for the matched source term.
           $value = $row['destination_term'];
 
-          // Do not use setValues(), since that doesn't preprocess the values according to their data type.
-          $federated_term->addValue($value);
+          // If the value has not already been added to this item, then add it.
+          $existing_values = $federated_term->getValues();
+          if (!array_search($value,$existing_values)) {
+            $federated_term->addValue($value);
+          }
         }
       }
     }
