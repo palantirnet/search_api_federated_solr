@@ -160,6 +160,21 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
                 $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id][$i]['source_terms']['#default_value'] = count($term_entities) > 1 ? $term_entities : $term_entities[0];
               }
 
+              // FAILS: Test ajax functionality with text field vs ER field by
+              // uncommenting the field below and commenting out the ER field
+              // above.
+//            $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id][$i]['source_terms'] = [
+//              '#fieldset' => $entity_type . '_' . $bundle_id . '_' . $bundle_taxonomy_field_id,
+//              '#type' => 'textfield',
+//              '#title' => $this->t('Source ' . $bundle_taxonomy_field_name . ' terms'),
+//              '#description' => $this->t('Start typing some ' . $bundle_taxonomy_field_name . ' terms.  You can separate multiple terms with a comma.'),
+//            ];
+//
+//            // Set the default value if something already exists in our config.
+//            if (isset($configuration['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id][$i]['source_terms'])) {
+//              $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id][$i]['source_terms']['#default_value'] = $configuration['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id][$i]['source_terms'];
+//            }
+
               // Create a config text field for the terms' destination value.
               $form['field_data'][$entity_type][$bundle_id][$bundle_taxonomy_field_id][$i]['destination_term'] = [
                 '#fieldset' => $entity_type . '_' . $bundle_id . '_' . $bundle_taxonomy_field_id,
