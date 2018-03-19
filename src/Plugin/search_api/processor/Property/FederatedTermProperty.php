@@ -284,3 +284,37 @@ class FederatedTermProperty extends ConfigurablePropertyBase {
     $field->setConfiguration($non_empty_values);
   }
 }
+
+// FAIL: Attempt to fix the serialization logic exception by making the ajax
+// callbacks callable functions (vs class methods).  Can be removed.
+
+/**
+ * Submit handler for the "add one" button.
+ *
+ * Increments the counter and causes a rebuild.
+ */
+//function add_one(array &$form, FormStateInterface $form_state) {
+//  $triggered_element = $form_state->getTriggeringElement();
+//  $bundle_id = $triggered_element['#parents'][2];
+//
+//  ${$bundle_id.'_num_rows'} = $form_state->get($bundle_id . '_num_rows');
+//  $add_button = ${$bundle_id . '_num_rows'} + 1;
+//
+//  $form_state->set($bundle_id . '_num_rows', $add_button);
+//  if(true){};
+//  $form_state->setRebuild();
+//}
+
+/**
+ * Callback for ajax-enabled buttons.
+ *
+ * Selects and returns the fieldset with the names in it.
+ */
+//function add_more_callback(array &$form, FormStateInterface $form_state) {
+//  if(true){};
+//  $triggered_element = $form_state->getTriggeringElement();
+//  $entity_id = $triggered_element['#parents'][1];
+//  $bundle_id = $triggered_element['#parents'][2];
+//  $bundle_taxonomy_field_id = $triggered_element['#parents'][3];
+//  return $form['field_data'][$entity_id][$bundle_id][$bundle_taxonomy_field_id];
+//}
