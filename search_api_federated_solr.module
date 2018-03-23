@@ -3,22 +3,33 @@
 /**
  * @file search_api_federated_solr.module
  * Contains hook implementations for the Federated Solr Search API Module.
+ *
+ * @copyright Copyright (c) 2018 Palantir.net
  */
-
-use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_help().
  */
-function search_api_federated_solr_help($route_name, RouteMatchInterface $route_match) {
-  switch ($route_name) {
+function search_api_federated_solr_help($path, $arg) {
+  switch ($path) {
     // Main module help for the search_api_federated_solr module.
-    case 'help.page.search_api_federated_solr':
+    case 'admin/help#search_api_federated_solr':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('Allows indexing into a single Solr search index.') . '</p>';
       return $output;
-
-    default:
   }
+}
+
+/**
+ * Implements hook_search_api_alter_callback_info().
+ */
+function search_api_federated_solr_search_api_alter_callback_info() {
+  $callbacks['site_name'] = array(
+    'name' => t('Site Name'),
+    'description' => t('The name of the site from which this content originated. This can be useful if indexing multiple sites with a single search index.'),
+    'class' => 'SearchApiFederatedSolrSiteName',
+  );
+
+  return $callbacks;
 }
