@@ -26,7 +26,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
       'site_name' => array(
         'label' => t('Site Name'),
         'description' => t('Adds the site name to the indexed data.'),
-        'type' => 'list<text>',
+        'type' => 'text',
       ),
     );
   }
@@ -47,7 +47,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
     $site_name = !empty($this->options['site_name']) ? $this->options['site_name'] : variable_get('site_name');
 
     foreach ($items as &$item) {
-      $item->site_name = [$site_name];
+      $item->site_name = $site_name;
     }
   }
 
@@ -60,7 +60,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
       $domain = domain_get_node_match($nid);
 
       $federated_domain = !empty($this->options['domain'][$domain['machine_name']]) ? $this->options['domain'][$domain['machine_name']] : $domain['sitename'];
-      $item->site_name = [$federated_domain];
+      $item->site_name = $federated_domain;
     }
 
   }
@@ -76,7 +76,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
       foreach (domain_list_by_machine_name() as $machine_name => $domain) {
         $form['domain'][$machine_name] = [
           '#type' => 'textfield',
-          '#title' => t('Domain Label'),
+          '#title' => t('%domain Domain Label', ['%domain' => $domain['sitename']]),
           '#description' => t('Map the Domain to a custom label for search.'),
           '#default_value' => !empty($this->options['domain'][$machine_name]) ? $this->options['domain'][$machine_name] : $domain['sitename'],
           '#required' => TRUE,
