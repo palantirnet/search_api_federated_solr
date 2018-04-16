@@ -35,6 +35,6 @@ This module provides new field options on Search API indexes:
 1. Configuration for federated terms happens within the taxonomy term entity edit UI itself.  Browse to a taxonomy vocabulary on your site and add an instance of the "Federated terms" field type (If you plan on sharing this field among your vocabularies, use something like "Federated terms" for the field label).
     <img src="images/add_federated_terms_to_vocabulary.png" />
 1. Edit any terms in the vocabularies to which you've just added a "Federated terms" field instance.  On the term edit form, you should now see a "Federated terms" field instance where you can add one or many "federated" terms.
-    <img src="images/add_federated_terms_to_term.png" />
+    <img src="images/add_federated_term_to_term.png" />
 1. Repeat for each term in each vocabulary which should have a federated term value.
 1. Once content which references these terms is indexed, all of their corresponding "federated terms" will appear in the `federated_terms` index property field.
