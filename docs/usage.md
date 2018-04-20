@@ -35,8 +35,8 @@ This module provides new field options on Search API indexes:
 1. Remember to save the index field configuration:
     <img src="images/save_index_field_config.png" /> 
 1. Configuration for federated terms happens within the taxonomy term entity edit UI itself.  Browse to a taxonomy vocabulary on your site and add an instance of the "Federated terms" field type (If you plan on sharing this field among your vocabularies, use something like "Federated terms" for the field label).
-    <img src="images/add_federate_terms_to_vocabulary.png" />
-    <img src="images/add_federated_termfield_label.png" />
+    <img src="images/add_federated_terms_to_vocabulary.png" />
+    <img src="images/add_federated_term_field_label.png" />
 1. Save the field settings
     <img src="images/add_federated_field_settings_save.png" />
     <img src="images/add_federated_field_save_settings_2.png" />
