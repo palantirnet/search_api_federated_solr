@@ -125,7 +125,7 @@ class FederatedTerms extends ProcessorPluginBase {
         };
       }
 
-      // Remove any duplication federated_term_destination_values.
+      // Remove any duplicate federated_term_destination_values.
       $federated_terms_destination_values = array_unique($federated_terms_destination_values);
 
       // If the value does not already exist for this item, then add it.
