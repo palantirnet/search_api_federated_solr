@@ -1,0 +1,13 @@
+search:
+  version: 1.x
+  css:
+    theme:
+      'css/styles.css': {}
+  js:
+    'js/web.js': {preprocess: false}
+    'js/mobile-search-filters.js': {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+    - core/drupal.form
