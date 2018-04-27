@@ -48,7 +48,7 @@
 
 .search-form__submit {
   padding: .5rem .7rem;
-  background-color: $maize;
+  background-color: $c-secondary;
   border-radius: 0 3px 3px 0;
   border: 1px solid $gray-light;
   border-left: 0;
@@ -64,7 +64,7 @@
   &:active,
   &:hover,
   &:focus {
-    background-color: $maize-dark;
+    background-color: $c-secondary-dark;
   }
 
   svg {

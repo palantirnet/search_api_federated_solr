@@ -135,26 +135,30 @@ $font-monospace: $courier;
 
 // Sass color variables, etc.
 $black: #222;
+$lighter-black: #333;
 $white: #fff;
 $white-60: rgba($white, .6);
 $white-30: rgba($white, .3);
 $yellow: #ff0;
-
-$blue: #00274c;
-$blue-cornflower: #0d57aa;
-$blue-midnight: #002a5b;
-$maize: #ffcb05;
-$maize-dark: #f4bb06;
 $gray-pale: #eff0f1;
 $gray-light: #e5e5e5;
 $gray-medium: #555;
 $gray-dark: #333;
 
+$c-bg-gray: #f6f6f6;
+
+$c-primary: #00274c;
+$c-primary-light: #0d57aa;
+$c-primary-dark: #002a5b;
+$c-secondary: #ffcb05;
+$c-secondary-light: #fff2c0;
+$c-secondary-dark: #f4bb06;
+
 // Use above sass variables to define defaults in normalize.scss
 $text-color: $gray-dark;
 $background-color: $white;
-$link-color: $blue-cornflower;
-$link-hover: $blue-midnight;
+$link-color: $c-primary-light;
+$link-hover: $c-primary-dark;
 
 ///////////////////////////////////////////////////////////
 

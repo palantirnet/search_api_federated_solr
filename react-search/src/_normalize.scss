@@ -216,7 +216,7 @@ h1 {
   // Set 1 unit of vertical rhythm on the top and bottom margins.
   @include leader(0);
   @include trailer(.5, $h1-font-size);
-  color: $blue;
+  color: $c-primary;
   font-weight: 700;
 }
 

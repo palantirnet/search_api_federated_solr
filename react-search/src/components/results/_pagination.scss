@@ -48,7 +48,7 @@
     padding: rhythm(.25);
 
     @include breakpoint($bp0) {
-      background-color: $maize;
+      background-color: $c-secondary;
       border-radius: 3px;
       width: rhythm(1.5);
       height: rhythm(1.5);
@@ -64,16 +64,16 @@
     &:hover,
     &:active {
       text-decoration: underline;
-      color: $blue-midnight;
-      background-color: $maize;
+      color: $c-primary-dark;
+      background-color: $c-secondary;
 
       @include breakpoint($bp0) {
         @include adjust-font-size-to($text, 1);
-        background-color: $maize-dark;
+        background-color: $c-secondary-dark;
       }
 
       svg {
-        fill: $blue-midnight;
+        fill: $c-primary-dark;
       }
     }
 
@@ -98,7 +98,7 @@
 
       &:hover,
       &:active {
-        background-color: $blue-midnight;
+        background-color: $c-primary-dark;
       }
     }
   }

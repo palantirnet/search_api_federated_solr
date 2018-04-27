@@ -44,13 +44,13 @@
 
 .search-scope__select {
   @include adjust-font-size-to($label, .8);
-  border-radius: 3px 0 0 3px;
+  border-radius: 3px;
   border: 1px solid $gray-light;
   user-select: none;
   appearance: none;
   margin-bottom: rhythm(.75);
   width: 100% !important;
-  background-image: url('imgs/chevron-small-down.svg');
+  background-image: url("imgs/chevron-small-down.svg");
   background-repeat: no-repeat;
   background-position: 90% 50%;
   background-size: .6em .6em;
