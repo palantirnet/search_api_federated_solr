@@ -2,12 +2,12 @@
 import queryString from "query-string";
 import React from "react";
 import ReactDOM from "react-dom";
-import { SolrClient } from "./solr-faceted-search-react/src/index";
+import {
+  SolrFacetedSearch,
+  SolrClient
+} from "solr-faceted-search-react";
 import FederatedSolrComponentPack from "./components/federated_solr_component_pack";
 import FederatedSolrFacetedSearch from "./components/federated-solr-faceted-search";
-
-// import search app boilerplate styles
-import './styles.css';
 
 // The search fields and filterable facets you want
 const fields = [
@@ -36,7 +36,6 @@ const highlight = {
 // @todo get the configurable options, if any, from drupal config
 // this should probably be an options object so that we can only add one global prop
 // const searchSite = 'University of Michigan Health Blog'; // uncomment to test
-const searchSite = null;
 
 /**
  * Executes search query based on the value of URL querystring "q" param.
@@ -46,7 +45,7 @@ const searchSite = null;
  */
 const searchFromQuerystring = (solrClient) => {
   // Initialize with a search based on querystring term or else load blank search.
-  const parsed = queryString.parse(window.location.search);
+  const parsed = queryString.parse(location.search);
   // We assume the querystring key for search terms is q: i.e. ?q=search%20term
   if (Object.prototype.hasOwnProperty.call(parsed,'q')) {
     solrClient.setSearchFieldValue("tm_rendered_item", parsed.q);
@@ -75,18 +74,18 @@ document.addEventListener("DOMContentLoaded", () => {
 // as well as the default handlers for interaction with the search component
     onChange: (state, handlers) =>
 // Render the faceted search component
-        ReactDOM.render(
-            <FederatedSolrFacetedSearch
-                {...state}
-                {...handlers}
-                customComponents={FederatedSolrComponentPack}
-                bootstrapCss={false}
-                onSelectDoc={(doc) => console.log(doc)}
-                truncateFacetListsAt={-1}
-                searchSite={searchSite}
-            />,
-            document.getElementById("root")
-        )
+      ReactDOM.render(
+        <FederatedSolrFacetedSearch
+            {...state}
+            {...handlers}
+            customComponents={FederatedSolrComponentPack}
+            bootstrapCss={false}
+            onSelectDoc={(doc) => console.log(doc)}
+            truncateFacetListsAt={-1}
+            searchSite={(typeof searchSite !== 'undefined') ? searchSite : null}
+        />,
+        document.getElementById("app")
+      )
   });
 
   // Check if there is a querystring param search term and make initial query.

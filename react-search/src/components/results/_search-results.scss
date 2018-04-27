@@ -1,0 +1,60 @@
+/**
+ * search-form.scss
+ * Define search results styles.
+ *
+ * @copyright Copyright (c) 2017 Palantir.net
+ */
+
+.search-results {
+  @extend %list--simple;  
+
+  li {
+    margin-bottom: rhythm(1);
+    display: flex;
+  }
+
+  em {
+    font-style: normal;
+    font-weight: 700;
+    background-color: transparentize($maize, .7);
+  }
+}
+
+.search-results__container--left {
+  flex: 1 0 0;
+  margin-right: 3%;
+}
+
+.search-results__container--right {
+  flex: 3 0 0;
+}
+
+.search-results__image {
+  // Styles specific to the search results image.
+}
+
+.search-results__label {
+  @include adjust-font-size-to($label);
+  font-weight: 500;
+  color: $gray-medium;
+}
+
+.search-results__heading {
+  font-weight: 700;
+  @include trailer(.25, $h2-font-size);
+}
+
+.search-results__teaser {
+  margin-bottom: rhythm(.5);
+}
+
+.search-results__meta {
+  @include adjust-font-size-to($label, .8);
+  margin-bottom: rhythm(.5);
+  color: $gray-medium;
+  display: block;
+}
+
+.search-results__citation {
+  font-style: normal;
+}
