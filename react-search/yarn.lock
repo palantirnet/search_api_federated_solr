@@ -16,9 +16,9 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@jesconstantine/react-scripts@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@jesconstantine/react-scripts/-/react-scripts-1.1.2.tgz#17c059f19c90e7e03e67bf0a7dbb2ceffe877666"
+"@jesconstantine/react-scripts@1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@jesconstantine/react-scripts/-/react-scripts-1.1.3.tgz#ab9f3544774a485ea6d0da87ce0926dc1a6737a3"
   dependencies:
     autoprefixer "7.1.6"
     babel-core "6.26.0"
