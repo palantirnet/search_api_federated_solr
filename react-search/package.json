@@ -2,6 +2,7 @@
   "name": "react-search",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@jesconstantine/react-scripts": "1.1.2",
     "breakpoint-sass": "^2.7.0",
