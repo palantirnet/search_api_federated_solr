@@ -16,7 +16,7 @@ class SearchController extends ControllerBase {
    */
   public function searchPage() {
     $element = array(
-      '#markup' => '<div id="app">Hello, world</div>',
+      '#markup' => '<div id="root">Hello, world</div>',
       '#attached' => array(
         'library' => array(
           'search_api_federated_solr/search',
