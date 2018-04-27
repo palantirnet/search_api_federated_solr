@@ -66,56 +66,56 @@ $h6-font-size: $label;
 
 @font-face {
   font-family: HelveticaNeue;
-  src: url("../fonts/helveticaneue-light.ttf");
+  src: url("fonts/helveticaneue-light.ttf");
   font-style: normal;
   font-weight: 300;
 }
 
 @font-face {
   font-family: HelveticaNeue;
-  src: url("../fonts/helveticaneue-lightitalic.ttf");
+  src: url("fonts/helveticaneue-lightItalic.ttf");
   font-style: italic;
   font-weight: 300;
 }
 
 @font-face {
   font-family: HelveticaNeue;
-  src: url("../fonts/helveticaneue.ttf");
+  src: url("fonts/helveticaneue.ttf");
   font-style: normal;
   font-weight: 400;
 }
 
 @font-face {
   font-family: HelveticaNeue;
-  src: url("../fonts/helveticaneue-italic.ttf");
+  src: url("fonts/helveticaneue-italic.ttf");
   font-style: italic;
   font-weight: 400;
 }
 
 @font-face {
   font-family: HelveticaNeue;
-  src: url("../fonts/helveticaneue-medium.ttf");
+  src: url("fonts/helveticaneue-medium.ttf");
   font-style: normal;
   font-weight: 500;
 }
 
 @font-face {
   font-family: HelveticaNeue;
-  src: url("../fonts/helveticaneue-mediumitalic.ttf");
+  src: url("fonts/helveticaneue-mediumItalic.ttf");
   font-style: italic;
   font-weight: 500;
 }
 
 @font-face {
   font-family: HelveticaNeue;
-  src: url("../fonts/helveticaneue-bold.ttf");
+  src: url("fonts/helveticaneue-bold.ttf");
   font-style: normal;
   font-weight: 700;
 }
 
 @font-face {
   font-family: HelveticaNeue;
-  src: url("../fonts/helveticaneue-bolditalic.ttf");
+  src: url("fonts/helveticaneue-boldItalic.ttf");
   font-style: italic;
   font-weight: 700;
 }
@@ -176,9 +176,9 @@ $indent-amount: 1em;
 // =============================================================================
 
 // Add the Singularity Grids responsive layout mixins.
-@import '../../node_modules/singularitygs/stylesheets/singularitygs';
+@import '../node_modules/singularitygs/stylesheets/singularitygs';
 // Add the Breakpoint mixin.
-@import '../../node_modules/breakpoint-sass/stylesheets/breakpoint';
+@import '../node_modules/breakpoint-sass/stylesheets/breakpoint';
 
 // Now we add our custom helper mixins.
 @import 'mixins';

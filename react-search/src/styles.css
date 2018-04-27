@@ -12,7 +12,7 @@
   font-family: HelveticaNeue;
   src: url("fonts/helveticaneue-light.ttf");
   font-style: normal;
-  font-weight: normal; }
+  font-weight: 300; }
 
 @font-face {
   font-family: HelveticaNeue;
@@ -1543,7 +1543,7 @@ aside {
 .search-scope__select {
   font-size: 0.8em;
   line-height: 1.46667em;
-  border-radius: 3px;
+  border-radius: 3px 0 0 3px;
   border: 1px solid #e5e5e5;
   user-select: none;
   appearance: none;
