@@ -2,9 +2,9 @@ search:
   version: 1.x
   css:
     theme:
-      'react-search/build/static/css/main.94d7e62a.css': {}
+      'react-search/build/static/css/main.110147f7.css': {}
   js:
-    'react-search/build/static/js/main.37ce3270.js': {preprocess: false}
+    'react-search/build/static/js/main.f05d5dc6.js': {preprocess: false}
     'js/mobile-search-filters.js': {}
   dependencies:
     - core/jquery
