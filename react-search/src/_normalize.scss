@@ -122,29 +122,29 @@ template, /* 1 */
  * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
  */
 
-a {
-  @include trans();
-  background-color: transparent; /* 1 */
-  /* stylelint-disable property-no-vendor-prefix */
-  -webkit-text-decoration-skip: objects; /* 2 */
-  /* stylelint-enable */
-  color: $link-color;
-  text-decoration: none;
-  border-bottom: 2px dashed $link-color;
-}
+//a {
+//  @include trans();
+//  background-color: transparent; /* 1 */
+//  /* stylelint-disable property-no-vendor-prefix */
+//  -webkit-text-decoration-skip: objects; /* 2 */
+//  /* stylelint-enable */
+//  color: $link-color;
+//  text-decoration: none;
+//  border-bottom: 2px dashed $link-color;
+//}
 
 /**
  * Remove the outline on focused links when they are also active or hovered
  * in all browsers (opinionated).
  */
 
-a:active,
-a:hover {
-  outline-width: 0;
-  color: $link-hover;
-  background-color: $gray-light;
-  border-bottom: 2px solid $link-hover;
-}
+//a:active,
+//a:hover {
+//  outline-width: 0;
+//  color: $link-hover;
+//  background-color: $gray-light;
+//  border-bottom: 2px solid $link-hover;
+//}
 
 /* Text-level semantics
    ========================================================================== */
