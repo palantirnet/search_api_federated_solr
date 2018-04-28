@@ -34,7 +34,7 @@ class FederatedResult extends React.Component {
         }
         <div className="search-results__container--right">
           <span className="search-results__label">{doc.ss_federated_type}</span>
-          <h2 className="search-results__heading"><a href={doc.ss_url}>{doc.ss_federated_title}</a></h2>
+          <h3 className="search-results__heading"><a href={doc.ss_url}>{doc.ss_federated_title}</a></h3>
           <div className="search-results__meta">
             <cite className="search-results__citation">{doc.ss_site_name}</cite>
             {this.dateFormat(doc.ds_federated_date)}
