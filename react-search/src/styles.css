@@ -78,7 +78,7 @@ h5, h6 {
   text-transform: uppercase; }
 
 /* Unstyle a list */
-.search-results, .pager__items {
+.search-results, .search-pager__items {
   margin: 0;
   padding: 0;
   list-style: none; }
@@ -239,29 +239,10 @@ template,
  * 1. Remove the gray background on active links in IE 10.
  * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
  */
-a {
-  transition: all 0.3s ease;
-  background-color: transparent;
-  /* 1 */
-  /* stylelint-disable property-no-vendor-prefix */
-  -webkit-text-decoration-skip: objects;
-  /* 2 */
-  /* stylelint-enable */
-  color: #0d57aa;
-  text-decoration: none;
-  border-bottom: 2px dashed #0d57aa; }
-
 /**
  * Remove the outline on focused links when they are also active or hovered
  * in all browsers (opinionated).
  */
-a:active,
-a:hover {
-  outline-width: 0;
-  color: #002a5b;
-  background-color: #e5e5e5;
-  border-bottom: 2px solid #002a5b; }
-
 /* Text-level semantics
    ========================================================================== */
 /**
@@ -1253,6 +1234,11 @@ textarea {
   display: block;
   padding-right: 1.25rem;
   padding-left: 1.25rem; }
+  .search-filters__trigger:hover, .search-filters__trigger:focus, .search-filters__trigger:active,
+  .search-accordion__title:hover,
+  .search-accordion__title:focus,
+  .search-accordion__title:active {
+    text-decoration: none; }
   .search-filters__trigger:after,
   .search-accordion__title:after {
     content: "+";
@@ -1295,7 +1281,12 @@ textarea {
   display: none; }
   @media (min-width: 900px) {
     .search-filters__title {
-      display: block; } }
+      display: block;
+      padding: 0;
+      font-size: 1.1em;
+      line-height: 1.46667em;
+      margin-top: 0em;
+      margin-bottom: 0.66667em; } }
 
 .search-filters__label,
 .search-scope__label {
@@ -1454,7 +1445,35 @@ aside {
 
 .search-results__heading {
   font-weight: 700;
-  margin-bottom: 0.33333em; }
+  margin-bottom: 0.36667em;
+  margin-bottom: .33333em;
+  margin-top: .25em;
+  padding: 0;
+  line-height: calc(100% + 50%); }
+  .search-results__heading a {
+    /**
+   * 1. Remove the gray background on active links in IE 10.
+   * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
+   */
+    transition: all 0.3s ease;
+    background-color: transparent;
+    /* 1 */
+    /* stylelint-disable property-no-vendor-prefix */
+    -webkit-text-decoration-skip: objects;
+    /* 2 */
+    /* stylelint-enable */
+    color: #0d57aa;
+    text-decoration: none;
+    border-bottom: 2px dashed #0d57aa;
+    /**
+     * Remove the outline on focused links when they are also active or hovered
+     * in all browsers (opinionated).
+     */ }
+    .search-results__heading a:active, .search-results__heading a:hover {
+      outline-width: 0;
+      color: #002a5b;
+      background-color: #e5e5e5;
+      border-bottom: 2px solid #002a5b; }
 
 .search-results__teaser {
   margin-bottom: 0.73333em; }
@@ -1567,7 +1586,10 @@ aside {
  *
  * @copyright Copyright (c) 2017 Palantir.net
  */
-.pager__items {
+.search-pager {
+  background-color: transparent; }
+
+.search-pager__items {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1576,22 +1598,22 @@ aside {
   padding: 0 2.93333em;
   margin: 4.4em 0; }
   @media (min-width: 450px) {
-    .pager__items {
+    .search-pager__items {
       justify-content: flex-start;
       border-radius: 0;
       background-color: transparent;
       padding: 0; } }
 
-.pager__item {
+.search-pager__item {
   display: inline-block;
   cursor: pointer; }
   @media (min-width: 450px) {
-    .pager__item {
+    .search-pager__item {
       margin-right: 0.51333em; } }
   @media (min-width: 900px) {
-    .pager__item {
+    .search-pager__item {
       margin-right: 0.36667em; } }
-  .pager__item a {
+  .search-pager__item a {
     font-size: 0.9em;
     line-height: 1.62963em;
     font-weight: 700;
@@ -1602,49 +1624,49 @@ aside {
     text-align: center;
     padding: 0.36667em; }
     @media (min-width: 450px) {
-      .pager__item a {
+      .search-pager__item a {
         background-color: #ffcb05;
         border-radius: 3px;
         width: 2.2em;
         height: 2.2em;
         padding: 0; } }
     @media (min-width: 900px) {
-      .pager__item a {
+      .search-pager__item a {
         font-size: 0.8em;
         line-height: 1.65em;
         width: 1.76em;
         height: 1.76em; } }
-    .pager__item a:hover, .pager__item a:active {
+    .search-pager__item a:hover, .search-pager__item a:active {
       text-decoration: underline;
       color: #002a5b;
       background-color: #ffcb05; }
       @media (min-width: 450px) {
-        .pager__item a:hover, .pager__item a:active {
+        .search-pager__item a:hover, .search-pager__item a:active {
           font-size: 1em;
           line-height: 1.46667em;
           background-color: #f4bb06; } }
-      .pager__item a:hover svg, .pager__item a:active svg {
+      .search-pager__item a:hover svg, .search-pager__item a:active svg {
         fill: #002a5b; }
-    .pager__item a svg {
+    .search-pager__item a svg {
       height: 1.3em;
       fill: #0d57aa;
       display: block; }
       @media (min-width: 450px) {
-        .pager__item a svg {
+        .search-pager__item a svg {
           height: 1em; } }
-  .pager__item.is-active a {
+  .search-pager__item.is-active a {
     font-size: 1em;
     line-height: 1.46667em; }
     @media (min-width: 450px) {
-      .pager__item.is-active a {
+      .search-pager__item.is-active a {
         background-color: #0d57aa;
         color: #fff; }
-        .pager__item.is-active a:hover, .pager__item.is-active a:active {
+        .search-pager__item.is-active a:hover, .search-pager__item.is-active a:active {
           background-color: #002a5b; } }
-  .pager__item.not-active {
+  .search-pager__item.not-active {
     display: none; }
     @media (min-width: 450px) {
-      .pager__item.not-active {
+      .search-pager__item.not-active {
         display: inline-block; } }
 
 /**
