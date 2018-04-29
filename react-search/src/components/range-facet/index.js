@@ -100,7 +100,10 @@ class FederatedRangeFacet extends React.Component {
                 onDatesChange={({ startDate, endDate }) => this.handleDatesChange(startDate,endDate)} // PropTypes.func.isRequired,
                 focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
                 onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
-                isOutsideRange={(day) => moment().diff(day) <= 0 || moment(day).isBefore(facets[0])} // allow only past dates & dates after earliest facet value
+                isOutsideRange={(day) => {
+                  const today = moment().format('YYYY-MM-DD');
+                  return day.diff(today, 'days') > 0 || moment(day).isBefore(facets[0])
+                }} // allow only past dates & dates after earliest facet value
                 minimumNights={0} // allow just 1 day (same start/end date)
                 small={true} // use the smaller theme
                 showClearDates // show the clear dates button
