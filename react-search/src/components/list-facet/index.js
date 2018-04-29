@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from "react";
 import cx from "classnames";
-import { CSSTransitionGroup } from 'react-transition-group';
+import AnimateHeight from 'react-animate-height';
+
 
 class FederatedListFacet extends React.Component {
 
@@ -63,6 +64,7 @@ class FederatedListFacet extends React.Component {
       (query.facetLimit && query.facetLimit > -1 ? "count" : "index");
 
     const expanded = !(collapse || false);
+    const height = expanded ? 'auto' : 0;
 
     const showMoreLink = truncateFacetListsAt > -1 && truncateFacetListsAt < facetValues.length ?
       <li className={cx({"list-group-item": bootstrapCss})} onClick={() => this.setState({truncateFacetListsAt: -1})}>
@@ -96,6 +98,7 @@ class FederatedListFacet extends React.Component {
           terms[pieces[0]] = {};
           terms[pieces[0]]['items'] = [];
           terms[pieces[0]]['expanded'] = (this.props.expandedHierarchies.indexOf(pieces[0]) > -1);
+          terms[pieces[0]]['height'] = terms[pieces[0]]['expanded'] ? 'auto' : 0;
         }
         // Add the object for this facet value to the array of terms for this type.
         terms[pieces[0]]['items'].push({term: pieces[1], facetValue: facetValue, facetCount: facetCounts[i]});
@@ -138,18 +141,14 @@ class FederatedListFacet extends React.Component {
               id={label.replace(/\s+/g, '-').toLowerCase()}
               onClick={this.toggleExpand.bind(this, type)}
             >{type}</a>
-            <CSSTransitionGroup
-                transitionName="slide"
-                transitionAppear={true}
-                transitionAppearTimeout={500}
-                transitionEnterTimeout={700}
-                transitionLeaveTimeout={300}>
-              {terms[type]['expanded'] && (
-                <ul className="search-accordion__content" key={`solr-list-facet-${type}-ul`}>
-                  {listFacetHierarchyTermsLis[type]}
-                </ul>
-              )}
-            </CSSTransitionGroup>
+            <AnimateHeight
+              duration={600}
+              height={terms[type]['height']}
+            >
+              <ul className="search-accordion__content" key={`solr-list-facet-${type}-ul`}>
+                {listFacetHierarchyTermsLis[type]}
+              </ul>
+            </AnimateHeight>
           </li>
         );
       });
@@ -166,30 +165,26 @@ class FederatedListFacet extends React.Component {
             id={label.replace(/\s+/g, '-').toLowerCase()}
             onClick={this.toggleExpand.bind(this)}
         >{label}</a>
-          <CSSTransitionGroup
-              transitionName="slide"
-              transitionAppear={true}
-              transitionAppearTimeout={500}
-              transitionEnterTimeout={700}
-              transitionLeaveTimeout={300}>
-            {expanded && (
-              <ul className="search-accordion__content" key={`solr-list-facet-${field}-ul`}>
-                {facetValues.filter((facetValue, i) => truncateFacetListsAt < 0 || i < truncateFacetListsAt).map((facetValue, i) => this.state.filter.length === 0 || facetValue.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1 ? (<li key={`${facetValue}_${facetCounts[i]}`}>
-                  <label className="search-accordion__checkbox-label">
-                  <input
-                    type="checkbox"
-                    name={field}
-                    value={facetValue}
-                    checked={value.indexOf(facetValue) > -1 ? true : false}
-                    onChange={() => this.handleClick(facetValue)}
-                    disabled={facetCounts[i] === 0}
-                  /> {facetValue}
-                  <span className="facet-item-amount"> ({facetCounts[i]})</span>
-                </label>
-                </li>) : null)}
-              </ul>
-            )}
-          </CSSTransitionGroup>
+        <AnimateHeight
+          duration={600}
+          height={height}
+        >
+          <ul className="search-accordion__content" key={`solr-list-facet-${field}-ul`}>
+            {facetValues.filter((facetValue, i) => truncateFacetListsAt < 0 || i < truncateFacetListsAt).map((facetValue, i) => this.state.filter.length === 0 || facetValue.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1 ? (<li key={`${facetValue}_${facetCounts[i]}`}>
+              <label className="search-accordion__checkbox-label">
+              <input
+                type="checkbox"
+                name={field}
+                value={facetValue}
+                checked={value.indexOf(facetValue) > -1 ? true : false}
+                onChange={() => this.handleClick(facetValue)}
+                disabled={facetCounts[i] === 0}
+              /> {facetValue}
+              <span className="facet-item-amount"> ({facetCounts[i]})</span>
+            </label>
+            </li>) : null)}
+          </ul>
+        </AnimateHeight>
       </li>
     );
   }

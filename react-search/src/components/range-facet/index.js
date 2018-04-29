@@ -4,7 +4,7 @@ import cx from "classnames";
 import moment from "moment";
 import 'react-dates/initialize';
 import { DateRangePicker } from 'react-dates';
-import { CSSTransitionGroup } from 'react-transition-group';
+import AnimateHeight from 'react-animate-height';
 
 class FederatedRangeFacet extends React.Component {
 
@@ -58,6 +58,7 @@ class FederatedRangeFacet extends React.Component {
     const { query, label, facets, field, value, bootstrapCss, facetSort, collapse } = this.props;
 
     const expanded = !(collapse || false);
+    const height = expanded ? 'auto' : 0;
 
     // Set better react date props for responsive behavior.
     // See: https://github.com/airbnb/react-dates/issues/262
@@ -84,13 +85,10 @@ class FederatedRangeFacet extends React.Component {
           id={label.replace(/\s+/g, '-').toLowerCase()}
           onClick={this.toggleExpand.bind(this)}
         >{label}</a>
-        <CSSTransitionGroup
-            transitionName="slide"
-            transitionAppear={true}
-            transitionAppearTimeout={500}
-            transitionEnterTimeout={700}
-            transitionLeaveTimeout={300}>
-          {expanded && (
+        <AnimateHeight
+          duration={600}
+          height={height}
+        >
           <ul className="search-accordion__content">
             <li>
               {/* See: https://github.com/airbnb/react-dates#daterangepicker */}
@@ -147,8 +145,7 @@ class FederatedRangeFacet extends React.Component {
               />
             </li>
           </ul>
-          )}
-        </CSSTransitionGroup>
+        </AnimateHeight>
       </li>
     );
   }
