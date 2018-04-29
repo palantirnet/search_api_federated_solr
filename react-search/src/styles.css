@@ -1614,6 +1614,7 @@ aside {
     .search-pager__item {
       margin-right: 0.36667em; } }
   .search-pager__item a {
+    transition: all 0.3s ease;
     font-size: 0.9em;
     line-height: 1.62963em;
     font-weight: 700;

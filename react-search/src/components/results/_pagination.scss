@@ -41,6 +41,7 @@
 
   // Link styles
   a {
+    @include trans();
     @include adjust-font-size-to(.9em, 1);
     font-weight: 700;
     display: flex;
