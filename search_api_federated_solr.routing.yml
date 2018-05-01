@@ -3,7 +3,5 @@ search_api_federated_solr.search:
   defaults:
     _controller: 'Drupal\search_api_federated_solr\Controller\SearchController::searchPage'
     _title: 'Search'
-#  requirements:
-#    _permissions: 'use search'
   requirements:
-    _access: 'TRUE'
+    _permission: 'search content'
