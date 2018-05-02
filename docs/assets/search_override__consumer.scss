@@ -3,97 +3,18 @@
  * Defines search override styles.
  *
  * To use this file:
- * - Declare font families, stacks
+ * - Declare font, stacks (using the same font families already defined in your theme styles)
  * - Define color palette
  * - Compile into a .css file (we recommend keeping this out of your global styles to avoid potential collisions) saved in your theme style directory.
- * - Define a new library for this stylesheet in your theme.libraries.yml file.
+ * - Define a new library for this stylesheet in your theme.libraries.yml file (see instructions in module readme).
  * - Attach the library to the search results page route (see instructions in module readme).
  *
- * @copyright Copyright (c) 2017 Palantir.net
+ * @copyright Copyright (c) 2018 Palantir.net
  */
 
-/*========================================================================================
-  /themes/custom/umhs_consumer/fonts
-  ======================================================================================*/
-// Example parametrics.
-// ------------------------------------------------------
-// %font-FONTNAME   {}
-// %font-sans-serif { font-family: sans-serif; }
-// %font-serif      { font-family: serif; }
-
-@font-face{
-  font-family:"Univers-45 Light";
-  src:url("/themes/custom/umhs_consumer/fonts/a91ff084-fc8b-43f4-b0ea-111254b68524.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/a91ff084-fc8b-43f4-b0ea-111254b68524.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/9fa24f1f-00d8-4d28-910f-78e925eaead6.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/d64e7bbc-e9ea-46ad-982c-6195ae4a3c61.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/d270a34d-b6b8-4c07-8454-03a6a3db7603.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/b2ea19ff-0237-4d94-a107-eaa12af161ef.svg#b2ea19ff-0237-4d94-a107-eaa12af161ef") format("svg");
-}
-@font-face{
-  font-family:"Univers-45 Light Oblique";
-  src:url("/themes/custom/umhs_consumer/fonts/2f2779cd-9c70-4724-b9b0-c88961257db4.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/2f2779cd-9c70-4724-b9b0-c88961257db4.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/aeb5cbb5-2077-4a57-88d8-1cc1e9c804e8.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/26832c6c-7609-41a6-b856-151be500486b.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/c78521a7-2342-410a-a275-e6d35b853313.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/71e4ab52-329c-40d2-89e8-d5cf99d699a5.svg#71e4ab52-329c-40d2-89e8-d5cf99d699a5") format("svg");
-}
-@font-face{
-  font-family:"Univers-55 Roman";
-  src:url("/themes/custom/umhs_consumer/fonts/6510377f-160a-4f66-aec0-2b71f05e9736.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/6510377f-160a-4f66-aec0-2b71f05e9736.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/5c8d59c2-9c85-4a22-88e3-bf3fba01dcd8.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/fc51d03b-0d7d-45df-9415-3c6270c80749.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/74bdff6d-c5de-42e8-a4d8-11ea14eddb22.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/bd04ae3d-23dc-4975-9967-e21c43e5b59f.svg#bd04ae3d-23dc-4975-9967-e21c43e5b59f") format("svg");
-}
-@font-face{
-  font-family:"Univers-55 Oblique";
-  src:url("/themes/custom/umhs_consumer/fonts/541dccf9-50f5-47bd-9ba9-a01fd9a3792b.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/541dccf9-50f5-47bd-9ba9-a01fd9a3792b.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/5bfff3ac-e569-450d-918b-d564434e5e24.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/05d2bfe7-45b3-4cf8-b313-290651409c59.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/33db2509-f09f-4704-bb16-a90dd82687f7.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/32161123-fa52-4fcf-ad65-f0958c91e0c9.svg#32161123-fa52-4fcf-ad65-f0958c91e0c9") format("svg");
-}
-@font-face{
-  font-family:"Univers-65 Bold";
-  src:url("/themes/custom/umhs_consumer/fonts/38dc895e-c366-4a3e-b212-a84a2d07a329.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/38dc895e-c366-4a3e-b212-a84a2d07a329.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/8a711a0d-3f17-4bfe-887b-6229858332b3.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/05a79c4b-9e9d-46e4-9d4b-610be05371c4.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/4e00405b-a96d-4972-bdff-2d55e1066c45.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/1e2c0a36-e8bb-4e3b-a4ca-dec00221c06e.svg#1e2c0a36-e8bb-4e3b-a4ca-dec00221c06e") format("svg");
-}
-@font-face{
-  font-family:"Univers-65 Bold Oblique";
-  src:url("/themes/custom/umhs_consumer/fonts/dca67ca5-170f-48b1-91ac-98def05d62bf.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/dca67ca5-170f-48b1-91ac-98def05d62bf.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/cc843e1a-cf1f-47e9-a03f-ef03d2b85d9a.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/653a9f79-b3ad-444c-a6c4-6bf7f1112e6e.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/59d447a0-a4b6-478d-b071-2c949371dca6.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/87ad650a-2d30-4c47-a78c-fbdac7b87a16.svg#87ad650a-2d30-4c47-a78c-fbdac7b87a16") format("svg");
-}
-@font-face{
-  font-family:"Univers-47 Light";
-  src:url("/themes/custom/umhs_consumer/fonts/30d23194-f646-428e-9323-c85f8aea47ed.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/30d23194-f646-428e-9323-c85f8aea47ed.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/58c01d2a-ce4a-4360-a61f-761e91aa67c0.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/ccd9698a-60c5-48f7-acbe-5352b4aa81d4.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/ba8ec1ac-e90e-4cea-bda8-85f718fb8fd0.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/5e991f15-a051-4a36-b07e-660ad0a9fcd7.svg#5e991f15-a051-4a36-b07e-660ad0a9fcd7") format("svg");
-}
-@font-face{
-  font-family:"Univers-47 Light Cn Obl";
-  src:url("/themes/custom/umhs_consumer/fonts/f70f7943-881f-4731-a6e9-cafb5a940b10.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/f70f7943-881f-4731-a6e9-cafb5a940b10.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/bc23ad4a-fe08-41d5-88bf-b8c54ae0583e.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/4cd45fdd-4d96-4c08-b65e-a69f772f0c38.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/5622ed6f-c907-433b-9043-4bdf6856e15a.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/fbd5ac51-1a85-429d-9829-5e0b6e965bf8.svg#fbd5ac51-1a85-429d-9829-5e0b6e965bf8") format("svg");
-}
-@font-face{
-  font-family:"Univers-57 Condensed";
-  src:url("/themes/custom/umhs_consumer/fonts/4a916908-f6f7-4df6-90a1-176fb83137d9.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/4a916908-f6f7-4df6-90a1-176fb83137d9.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/bf8f8741-5f64-4db9-a877-a44624092e68.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/7ce02c2c-45d4-4dee-90f2-f8034e29ac24.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/0955c906-88fc-47e8-8ea2-0765bdf88050.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/2fec7d2f-9df6-445b-8d59-892ed9b8ab56.svg#2fec7d2f-9df6-445b-8d59-892ed9b8ab56") format("svg");
-}
-@font-face{
-  font-family:"Univers-57 Condensed Oblique";
-  src:url("/themes/custom/umhs_consumer/fonts/5cffc0c9-7182-4258-aa01-c2a6caf09981.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/5cffc0c9-7182-4258-aa01-c2a6caf09981.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/698a5542-315d-48fb-9f66-aca46f866a6e.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/586aae2b-7435-4dd5-9eab-0844cc62adae.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/a384f1fe-497c-493f-9186-509f70194ebc.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/1824b7b0-98fe-45b6-941e-ecbf75a4e437.svg#1824b7b0-98fe-45b6-941e-ecbf75a4e437") format("svg");
-}
-@font-face{
-  font-family:"Univers-67 Bold Condensed";
-  src:url("/themes/custom/umhs_consumer/fonts/7815db54-3fc9-46f7-a082-a7db4c26b44d.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/7815db54-3fc9-46f7-a082-a7db4c26b44d.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/3bdb4597-ff70-447c-8620-8836686bf840.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/5599ac9f-d136-4277-aeee-f82aac5d527f.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/ae81ec98-60d0-408d-960f-8c3f9f74e6c7.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/6a2c8943-c768-4f87-8d9d-0b70a871e8fe.svg#6a2c8943-c768-4f87-8d9d-0b70a871e8fe") format("svg");
-}
-@font-face{
-  font-family:"Univers-67 Bold Cn Obl";
-  src:url("/themes/custom/umhs_consumer/fonts/df79d9e8-6438-4900-8414-c14b36f662e1.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/df79d9e8-6438-4900-8414-c14b36f662e1.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/a503e1fd-a8d1-4caa-89da-d125c0986f23.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/5f07f397-7e1c-4d2d-957b-a4e960af952b.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/e557874b-d914-4c4d-abe5-8ba10308bbea.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/3a0627bb-865d-4b46-b8c3-3c2781a6e42e.svg#3a0627bb-865d-4b46-b8c3-3c2781a6e42e") format("svg");
-}
-
-// First, let's create some font stacks.
-$helvetica: Helvetica, Arial, "Nimbus Sans L", sans-serif;
-$arial: Arial, Helvetica, "Nimbus Sans L", sans-serif;
-$helvetica-neue: HelveticaNeue, Helvetica, Arial, sans-serif;
-
-// For an explanation of why "sans-serif" is at the end of this list, see
-// http://meyerweb.com/eric/thoughts/2510/02/12/fixed-monospace-sizing/
-$courier: "Courier New", "DejaVu Sans Mono", monospace, sans-serif;
-
-// Now create some variables for the font stacks we want to use on this site.
-$base-font-family: $helvetica-neue; // The font family set on the html element.
-$font-monospace: $courier;
+// If you need to override font styles from your theme,
+// you can add font stack variables here.
+//$helvetica: Helvetica, Arial, "Nimbus Sans L", sans-serif;
 
 // Sass color variables, etc.
 $black: #222;
@@ -110,7 +31,6 @@ $gray-dark: #333;
 $c-border-gray: #ccc;
 $c-border-gray-dark: #b5b5b5;
 $c-bg-gray: #f6f6f6;
-//$c-bg-gray-light: #f6f6f6;
 $c-bg-gray-dark: #d8d8d8;
 
 $c-primary: #00274c;
@@ -198,7 +118,6 @@ aside {
     &:focus,
     &.js-search-accordion-open {
       color: $link-color;
-      //background-color: $c-border-gray;
       border-color: $c-border-gray-dark;
       text-decoration: none;
     }
@@ -268,7 +187,6 @@ aside {
   &__heading a {
     background-color: transparent;
     color: $link-color;
-    //font-family: "Univers-67 Bold Condensed", Arial, sans-serif !important;
     text-decoration: none;
     border-bottom: 2px dashed $link-color;
 
@@ -284,21 +202,18 @@ aside {
   /* Search results eyebrow (i.e. the content type). */
   &__label {
     color: $gray-medium;
-    //font-family: "Univers-67 Bold Condensed", Arial, sans-serif;
     font-size: .8em;
   }
 
   /* Search results metadata (i.e. the site + date) */
   &__meta {
     color: $c-tertiary;
-    //font-family: "Univers-67 Bold Condensed", Arial, sans-serif;
     font-size: .8em;
     line-height: 1.46667em;
   }
 
   /* Search result snippet text */
   &__teaser {
-    //font-family: "Georgia Regular", Georgia, serif;
     font-size: 18px;
     line-height: 1.3;
   }
