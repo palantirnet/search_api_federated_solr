@@ -3,38 +3,17 @@
  * Defines search override styles.
  *
  * To use this file:
- * - Declare font families, stacks
+ * - Declare font, stacks (using the same font families already defined in your theme styles)
  * - Define color palette
  * - Compile into a .css file (we recommend keeping this out of your global styles to avoid potential collisions) saved in your theme style directory.
- * - Define a new library for this stylesheet in your theme.libraries.yml file.
+ * - Define a new library for this stylesheet in your theme.libraries.yml file (see instructions in module readme).
  * - Attach the library to the search results page route (see instructions in module readme).
  *
- * @copyright Copyright (c) 2017 Palantir.net
+ * @copyright Copyright (c) 2018 Palantir.net
  */
 
-/*========================================================================================
-  /themes/custom/umhs_consumer/fonts
-  ======================================================================================*/
-// Example parametrics.
-// ------------------------------------------------------
-// %font-FONTNAME   {}
-// %font-sans-serif { font-family: sans-serif; }
-// %font-serif      { font-family: serif; }
-
-@font-face{
-  font-family:"Univers-55 Roman";
-  src:url("/themes/custom/umhs_consumer/fonts/6510377f-160a-4f66-aec0-2b71f05e9736.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/6510377f-160a-4f66-aec0-2b71f05e9736.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/5c8d59c2-9c85-4a22-88e3-bf3fba01dcd8.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/fc51d03b-0d7d-45df-9415-3c6270c80749.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/74bdff6d-c5de-42e8-a4d8-11ea14eddb22.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/bd04ae3d-23dc-4975-9967-e21c43e5b59f.svg#bd04ae3d-23dc-4975-9967-e21c43e5b59f") format("svg");
-}
-
-@font-face{
-  font-family:"Univers-67 Bold Condensed";
-  src:url("/themes/custom/umhs_consumer/fonts/7815db54-3fc9-46f7-a082-a7db4c26b44d.eot?#iefix");
-  src:url("/themes/custom/umhs_consumer/fonts/7815db54-3fc9-46f7-a082-a7db4c26b44d.eot?#iefix") format("eot"),url("/themes/custom/umhs_consumer/fonts/3bdb4597-ff70-447c-8620-8836686bf840.woff2") format("woff2"),url("/themes/custom/umhs_consumer/fonts/5599ac9f-d136-4277-aeee-f82aac5d527f.woff") format("woff"),url("/themes/custom/umhs_consumer/fonts/ae81ec98-60d0-408d-960f-8c3f9f74e6c7.ttf") format("truetype"),url("/themes/custom/umhs_consumer/fonts/6a2c8943-c768-4f87-8d9d-0b70a871e8fe.svg#6a2c8943-c768-4f87-8d9d-0b70a871e8fe") format("svg");
-}
-
-
-// First, let's create some font stacks.
+// If you need to override font styles from your theme,
+// you can add font stack variables here.
 $roman: "Univers-55 Roman", Arial, sans-serif;
 $universe: "Univers-67 Bold Condensed", Arial, sans-serif;
 
@@ -83,10 +62,6 @@ $bp0: 450px;
 $bp1: 600px;
 $bp2: 900px;
 $bp3: 1100px;
-
-html,p {
-  font-family: $roman;
-}
 
 /*
  * Begin search override styles
@@ -216,10 +191,19 @@ aside {
 }
 
 /**
+ * Search prompt (when there is no search term entered)
+ */
+.solr-search-results-container__prompt {
+  font-family: $roman;
+}
+
+/**
  * Search results list
  */
-.search-results-stat {
 
+/* Results count / no results text */
+.search-results-stat {
+  font-family: $roman;
 }
 
 .search-results {
