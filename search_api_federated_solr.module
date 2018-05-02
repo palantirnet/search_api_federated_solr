@@ -5,6 +5,7 @@
  * Contains hook implementations for the Federated Solr Search API Module.
  */
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -57,16 +58,17 @@ function search_api_federated_solr_search_api_solr_field_mapping_alter(\Drupal\s
 }
 
 /**
- * Implements hook_theme().
+ * Implements hook_form_FORM_ID_alter() for the federated_search_page_block_form form.
+ *
+ * Since the exposed form is a GET form, we don't want it to send the form
+ * tokens. However, you cannot make this happen in the form builder function
+ * itself, because the tokens are added to the form after the builder function
+ * is called. So, we have to do it in a form_alter.
+ *
+ * @see \Drupal\search_api_federated_solr\Form\FederatedSearchPageBlockForm
  */
-function search_api_federated_solr_theme($existing, $type, $theme, $path) {
-  $variables = array(
-    'search_api_federated_solr' => array(
-      'variables' => array(
-        'federated_search_page_url' => NULL,
-      ),
-      'template' => 'federated-search-page-form-block',
-    ),
-  );
-  return $variables;
+function search_api_federated_solr_form_federated_search_page_block_form_alter(&$form, FormStateInterface $form_state) {
+  $form['form_build_id']['#access'] = FALSE;
+  $form['form_token']['#access'] = FALSE;
+  $form['form_id']['#access'] = FALSE;
 }
