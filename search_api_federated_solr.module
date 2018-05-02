@@ -55,3 +55,18 @@ function search_api_federated_solr_search_api_solr_field_mapping_alter(\Drupal\s
     }
   };
 }
+
+/**
+ * Implements hook_theme().
+ */
+function search_api_federated_solr_theme($existing, $type, $theme, $path) {
+  $variables = array(
+    'search_api_federated_solr' => array(
+      'variables' => array(
+        'federated_search_page_url' => NULL,
+      ),
+      'template' => 'federated-search-page-form-block',
+    ),
+  );
+  return $variables;
+}
