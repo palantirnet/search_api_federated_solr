@@ -4,7 +4,7 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@jesconstantine/react-scripts": "1.1.3",
+    "@palantirnet/react-scripts": "1.1.4",
     "breakpoint-sass": "^2.7.0",
     "moment": "2.21.0",
     "node-sass-chokidar": "1.2.2",
