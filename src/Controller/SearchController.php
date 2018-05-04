@@ -16,7 +16,7 @@ class SearchController extends ControllerBase {
    */
   public function searchPage() {
     $element = array(
-      '#markup' => '<div id="root"></div>',
+      '#markup' => '<div id="root"><noscript>This search page requires Javascript in order to function.  <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">Learn how to enable Javascript in your browser.</a></noscript><p class="element-invisible" aria-hidden="true">Federated Solr Search App: If you see this message in your DevTools, it likely means there is an issue adding the app javascript library to this page.  Follow the steps in the search_api_federated_solr module README.</p></div>',
       '#attached' => array(
         'library' => array(
           'search_api_federated_solr/search',
