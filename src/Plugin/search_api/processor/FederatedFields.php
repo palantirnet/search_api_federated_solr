@@ -72,10 +72,12 @@ class FederatedFields extends ProcessorPluginBase {
       // If there's a config item for the entity and bundle type we're in, set the value for the field.
       if(!empty($configuration['field_data'][$entity_type][$bundle_type])) {
         $token = \Drupal::token();
-        $value = $token->replace($configuration['field_data'][$entity_type][$bundle_type], [$entity_type => $entity]);
+        // If the token replacement produces a value, add to this item.
+        if ($value = $token->replace($configuration['field_data'][$entity_type][$bundle_type], [$entity_type => $entity], ['clear' => true])) {
+          // Do not use setValues(), since that doesn't preprocess the values according to their data type.
+          $federated_field->addValue($value);
+        }
 
-        // Do not use setValues(), since that doesn't preprocess the values according to their data type.
-        $federated_field->addValue($value);
       }
     }
   }
