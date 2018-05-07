@@ -58,7 +58,7 @@ class FederatedListFacet extends React.Component {
 
     const facetCounts = facets.filter((facet, i) => i % 2 === 1);
     const facetValues = facets.filter((facet, i) => i % 2 === 0);
-    // Create an object of facets value: count to use for inputs.
+    // Create an object of facets {value: count} to keep consistent for inputs.
     const facetInputs = {};
     facetValues.forEach((value, i) => {
       const key = facetValues[i];
@@ -175,7 +175,7 @@ class FederatedListFacet extends React.Component {
           height={height}
         >
           <ul className="search-accordion__content" key={`solr-list-facet-${field}-ul`}>
-            {facetValues.filter((facetValue, i) => facetCounts[i] > 0 && truncateFacetListsAt < 0 || i < truncateFacetListsAt).map((facetValue, i) => this.state.filter.length === 0 || facetValue.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1 ? (<li key={`${facetValue}_${facetInputs[facetValue]}`}>
+            {facetValues.filter((facetValue, i) => facetInputs[facetValue] > 0 && truncateFacetListsAt < 0 || i < truncateFacetListsAt).map((facetValue, i) => this.state.filter.length === 0 || facetValue.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1 ? (<li key={`${facetValue}_${facetInputs[facetValue]}`}>
               <label className="search-accordion__checkbox-label">
               <input
                 type="checkbox"
