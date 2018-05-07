@@ -4,8 +4,7 @@ search:
     theme:
       'react-search/build/static/css/main.7af5dc6c.css': {}
   js:
-    'react-search/build/static/js/main.865ac0f4.js': {preprocess: false}
-    'js/mobile-search-filters.js': {}
+    'react-search/build/static/js/main.e94d0761.js': {preprocess: false}
   dependencies:
     - core/jquery
     - core/jquery.once
