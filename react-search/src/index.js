@@ -30,7 +30,24 @@ const searchFromQuerystring = (solrClient) => {
   }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+// The endpoint where config options live.
+// @see https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables
+const url = process.env.NODE_ENV === 'production' ? '/search_api_federated_solr/settings?_format=json' : '/data/settings.json';
+
+// Get configuration settings from the appropriate endpoint.
+fetch(url)
+    .then(res => res.json())
+    .then(
+        (result) => {
+          init(result); // load the app, passing in the config.
+        },
+        (error) => {
+          console.error(error);
+          init(); // load the app with the defaults.
+        }
+    );
+
+const init = (settings) => {
   const defaults = {
     // The default solr backend.
     url: "https://ss826806-us-east-1-aws.measuredsearch.com:443/solr/master/select",
@@ -60,16 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
     rows: 20
   };
 
+  const options = Object.assign(defaults, settings);
+
   // The client class
   const solrClient = new SolrClient({
-    // The solr index url to be queried by the client
-    url: defaults.url,
-    searchFields: defaults.searchFields,
-    sortFields: defaults.sortFields,
-    pageStrategy: defaults.pageStrategy,
-    rows: defaults.rows,
-    hl: defaults.hl,
-    mainQueryField: defaults.mainQueryField,
+    url: options.url,
+    searchFields: options.searchFields,
+    sortFields: options.sortFields,
+    pageStrategy: options.pageStrategy,
+    rows: options.rows,
+    hl: options.hl,
+    mainQueryField: options.mainQueryField,
 
     // The change handler passes the current query- and result state for render
     // as well as the default handlers for interaction with the search component
@@ -83,10 +101,10 @@ document.addEventListener("DOMContentLoaded", () => {
           bootstrapCss={false}
           onSelectDoc={(doc) => console.log(doc)}
           truncateFacetListsAt={-1}
-          searchSite={defaults.siteSearch}
+          searchSite={options.siteSearch}
         />,
         document.getElementById("root")
-    )
+      )
   });
 
   // Check if there is a querystring param search term and make initial query.
@@ -97,4 +115,4 @@ document.addEventListener("DOMContentLoaded", () => {
   window.onpopstate = function() {
     searchFromQuerystring(solrClient);
   };
-});
+};
