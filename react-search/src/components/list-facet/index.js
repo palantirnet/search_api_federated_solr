@@ -58,6 +58,12 @@ class FederatedListFacet extends React.Component {
 
     const facetCounts = facets.filter((facet, i) => i % 2 === 1);
     const facetValues = facets.filter((facet, i) => i % 2 === 0);
+    // Create an object of facets value: count to use for inputs.
+    const facetInputs = {};
+    facetValues.forEach((value, i) => {
+      const key = facetValues[i];
+      facetInputs[key] = facetCounts[i];
+    });
 
     const facetSortValue = facetSort ? facetSort :
       query.facetSort ? query.facetSort :
@@ -178,7 +184,7 @@ class FederatedListFacet extends React.Component {
                 checked={value.indexOf(facetValue) > -1 ? true : false}
                 onChange={() => this.handleClick(facetValue)}
               /> {facetValue}
-              <span className="facet-item-amount"> ({facetCounts[i]})</span>
+              <span className="facet-item-amount"> ({facetInputs[facetValue]})</span>
             </label>
             </li>) : null)}
           </ul>
