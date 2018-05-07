@@ -9,35 +9,6 @@ import FederatedSolrFacetedSearch from "./components/federated-solr-faceted-sear
 // import search app boilerplate styles
 import './styles.css';
 
-// The search fields and filterable facets you want
-const fields = [
-  {label: "Enter Search Term:", field: "tm_rendered_item", type: "text"},
-  {label: "Site Name", field: "ss_site_name", type: "list-facet", collapse: true},
-  {label: "Type", field: "ss_federated_type", type: "list-facet", collapse: true},
-  {label: "Date", field: "ds_federated_date", type: "range-facet", collapse: true},
-  {label: "Federated Terms", field: "sm_federated_terms", type: "list-facet", hierarchy: true},
-];
-
-// The solr field to use as the source for the main query param "q"
-const mainQueryField = "tm_rendered_item";
-
-// The sortable fields you want
-const sortFields = [
-  {label: "Relevance", field: "score"},
-  {label: "Date", field: "ds_federated_date"}
-];
-
-// Enable highlighting in search results snippets
-const highlight = {
-  fl: 'tm_rendered_item', // the highlight snippet source field(s)
-  usePhraseHighlighter: true // highlight phrase queries
-};
-
-// @todo get the configurable options, if any, from drupal config
-// this should probably be an options object so that we can only add one global prop
-// const searchSite = 'University of Michigan Health Blog'; // uncomment to test
-const searchSite = null;
-
 /**
  * Executes search query based on the value of URL querystring "q" param.
  *
@@ -60,33 +31,62 @@ const searchFromQuerystring = (solrClient) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-// The client class
-  const solrClient = new SolrClient({
-// The solr index url to be queried by the client
+  const defaults = {
+    // The default solr backend.
     url: "https://ss826806-us-east-1-aws.measuredsearch.com:443/solr/master/select",
-    searchFields: fields,
-    sortFields: sortFields,
+    // The search fields and filterable facets you want
+    searchFields: [
+      {label: "Enter Search Term:", field: "tm_rendered_item", type: "text"},
+      {label: "Site Name", field: "ss_site_name", type: "list-facet", collapse: true},
+      {label: "Type", field: "ss_federated_type", type: "list-facet", collapse: true},
+      {label: "Date", field: "ds_federated_date", type: "range-facet", collapse: true},
+      {label: "Federated Terms", field: "sm_federated_terms", type: "list-facet", hierarchy: true},
+    ],
+    // The solr field to use as the source for the main query param "q".
+    mainQueryField: "tm_rendered_item",
+    // The default site facet value.
+    siteSearch: null,
+    // The options by which to sort results.
+    sortFields: [
+      {label: "Relevance", field: "score"},
+      {label: "Date", field: "ds_federated_date"}
+    ],
+    // Enable highlighting in search results snippets.
+    hl: {
+      fl: 'tm_rendered_item', // the highlight snippet source field(s)
+      usePhraseHighlighter: true // highlight phrase queries
+    },
     pageStrategy: "paginate",
-    rows: 20,
-    hl: highlight,
-    mainQueryField: mainQueryField,
+    rows: 20
+  };
 
-// The change handler passes the current query- and result state for render
-// as well as the default handlers for interaction with the search component
+  // The client class
+  const solrClient = new SolrClient({
+    // The solr index url to be queried by the client
+    url: defaults.url,
+    searchFields: defaults.searchFields,
+    sortFields: defaults.sortFields,
+    pageStrategy: defaults.pageStrategy,
+    rows: defaults.rows,
+    hl: defaults.hl,
+    mainQueryField: defaults.mainQueryField,
+
+    // The change handler passes the current query- and result state for render
+    // as well as the default handlers for interaction with the search component
     onChange: (state, handlers) =>
-// Render the faceted search component
-        ReactDOM.render(
-            <FederatedSolrFacetedSearch
-                {...state}
-                {...handlers}
-                customComponents={FederatedSolrComponentPack}
-                bootstrapCss={false}
-                onSelectDoc={(doc) => console.log(doc)}
-                truncateFacetListsAt={-1}
-                searchSite={searchSite}
-            />,
-            document.getElementById("root")
-        )
+      // Render the faceted search component
+      ReactDOM.render(
+        <FederatedSolrFacetedSearch
+          {...state}
+          {...handlers}
+          customComponents={FederatedSolrComponentPack}
+          bootstrapCss={false}
+          onSelectDoc={(doc) => console.log(doc)}
+          truncateFacetListsAt={-1}
+          searchSite={defaults.siteSearch}
+        />,
+        document.getElementById("root")
+    )
   });
 
   // Check if there is a querystring param search term and make initial query.
