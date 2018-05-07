@@ -117,7 +117,7 @@ class FederatedListFacet extends React.Component {
       uniqueTypes.forEach((type, i) => {
         // Populate the checkbox lis react fragments for each type.
         listFacetHierarchyTermsLis[type] = [];
-        terms[type]['items'].forEach((termObj, i) => listFacetHierarchyTermsLis[type].push(
+        terms[type]['items'].forEach((termObj, i) => termObj.facetCount && listFacetHierarchyTermsLis[type].push(
           <li key={`${termObj.term}_${termObj.facetValue}_${i}`}>
             <label className="search-accordion__checkbox-label">
             <input
@@ -126,14 +126,13 @@ class FederatedListFacet extends React.Component {
                 value={termObj.facetValue}
                 checked={value.indexOf(termObj.facetValue) > -1}
                 onChange={() => this.handleClick(termObj.facetValue)}
-                disabled={termObj.facetCount === 0}
             /> {termObj.term}
             <span className="facet-item-amount"> ({termObj.facetCount})</span>
           </label>
         </li>));
 
         // Populate the accordion lis array with all of its checkboxes.
-        listFacetHierarchyLis.push(
+        listFacetHierarchyTermsLis[type].length && listFacetHierarchyLis.push(
           <li id={`solr-list-facet-${type}`} key={`solr-list-facet-${type}-${i}`}>
             <a
               tabIndex="0"
@@ -170,7 +169,7 @@ class FederatedListFacet extends React.Component {
           height={height}
         >
           <ul className="search-accordion__content" key={`solr-list-facet-${field}-ul`}>
-            {facetValues.filter((facetValue, i) => truncateFacetListsAt < 0 || i < truncateFacetListsAt).map((facetValue, i) => this.state.filter.length === 0 || facetValue.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1 ? (<li key={`${facetValue}_${facetCounts[i]}`}>
+            {facetValues.filter((facetValue, i) => facetCounts[i] > 0 && truncateFacetListsAt < 0 || i < truncateFacetListsAt).map((facetValue, i) => this.state.filter.length === 0 || facetValue.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1 ? (<li key={`${facetValue}_${facetInputs[facetValue]}`}>
               <label className="search-accordion__checkbox-label">
               <input
                 type="checkbox"
@@ -178,7 +177,6 @@ class FederatedListFacet extends React.Component {
                 value={facetValue}
                 checked={value.indexOf(facetValue) > -1 ? true : false}
                 onChange={() => this.handleClick(facetValue)}
-                disabled={facetCounts[i] === 0}
               /> {facetValue}
               <span className="facet-item-amount"> ({facetCounts[i]})</span>
             </label>
