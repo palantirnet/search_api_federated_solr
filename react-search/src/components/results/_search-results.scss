@@ -34,9 +34,10 @@
 }
 
 .search-results__label {
-  @include adjust-font-size-to($label);
+  @include adjust-font-size-to($label, .7);
   font-weight: 500;
   color: $gray-medium;
+  display: block;
 }
 
 .search-results__heading {

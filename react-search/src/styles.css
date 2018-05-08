@@ -1439,9 +1439,10 @@ aside {
 
 .search-results__label {
   font-size: 0.8em;
-  line-height: 1.83333em;
+  line-height: 1.28333em;
   font-weight: 500;
-  color: #555; }
+  color: #555;
+  display: block; }
 
 .search-results__heading {
   font-weight: 700;
