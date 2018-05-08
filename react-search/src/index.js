@@ -30,28 +30,12 @@ const searchFromQuerystring = (solrClient) => {
   }
 };
 
-// The endpoint where config options live.
-// @see https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables
-const url = process.env.NODE_ENV === 'production' ? '/search_api_federated_solr/settings?_format=json' : '/data/settings.json';
-
-// Get configuration settings from the appropriate endpoint.
-fetch(url)
-    .then(res => res.json())
-    .then(
-        (result) => {
-          init(result); // load the app, passing in the config.
-        },
-        (error) => {
-          console.error(error);
-          init(); // load the app with the defaults.
-        }
-    );
-
+// Initialize the solr client + search app with settings.
 const init = (settings) => {
   const defaults = {
-    // The default solr backend.
-    url: "https://ss826806-us-east-1-aws.measuredsearch.com:443/solr/master/select",
-    // The search fields and filterable facets you want
+    // The default solr backend must be assigned in ./.env.local.js.
+    url: "",
+    // The search fields and filterable facets.
     searchFields: [
       {label: "Enter Search Term:", field: "tm_rendered_item", type: "text"},
       {label: "Site Name", field: "ss_site_name", type: "list-facet", collapse: true},
@@ -61,7 +45,7 @@ const init = (settings) => {
     ],
     // The solr field to use as the source for the main query param "q".
     mainQueryField: "tm_rendered_item",
-    // The default site facet value.
+    // The default site search facet value.
     siteSearch: null,
     // The options by which to sort results.
     sortFields: [
@@ -116,3 +100,35 @@ const init = (settings) => {
     searchFromQuerystring(solrClient);
   };
 };
+
+// If we are in the production environment (i.e. using the build compiled js)
+// @see https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables
+if (process.env.NODE_ENV === 'production') {
+  // The endpoint where production config options live.
+  const url = '/search_api_federated_solr/settings?_format=json';
+
+  // Get configuration settings from the endpoint.
+  fetch(url)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        init(result); // Load the app, passing in the config.
+      },
+      (error) => {
+        console.error('search_api_federated_solr | Could not load configuration for search app: ', error);
+      }
+    );
+}
+// This is not production (i.e. not using the build compiled js)
+else {
+  // Get the local environment settings for the search app and initialize.
+  import('./.env.local.js')
+    .then(
+      (settings) => {
+        init(settings); // Load the app, passing in the ./.env.local.js config.
+      },
+      (error) => {
+        console.error('search_api_federated_solr | Could not load local configuration for search app: ', error);
+      }
+    );
+}
