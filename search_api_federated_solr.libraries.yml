@@ -5,6 +5,7 @@ search:
       'react-search/build/static/css/main.7af5dc6c.css': {}
   js:
     'react-search/build/static/js/main.e94d0761.js': {preprocess: false}
+    'js/mobile-search-filters.js': {}
   dependencies:
     - core/jquery
     - core/jquery.once
