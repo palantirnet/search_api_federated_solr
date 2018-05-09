@@ -5,3 +5,11 @@ search_api_federated_solr.search:
     _title: 'Search'
   requirements:
     _permission: 'search content'
+
+search_api_federated_solr.search_app.settings:
+  path: '/admin/config/search-api-federated-solr/search-app/settings'
+  defaults:
+    _form: '\Drupal\search_api_federated_solr\Form\SearchApiFederatedSolrSearchAppSettingsForm'
+    _title: 'Search API Solr Federated: Search App Settings'
+  requirements:
+    _permission: 'administer site configuration'
