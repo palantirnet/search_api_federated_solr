@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ * Install, update, and uninstall functions for the search_api_federated_solr module.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function search_api_federated_solr_field_schema($field) {
+  return array(
+    'columns' => array(
+      'value' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE
+      ),
+    ),
+  );
+}
