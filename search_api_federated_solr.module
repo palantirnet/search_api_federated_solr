@@ -24,6 +24,12 @@ function search_api_federated_solr_help($route_name, RouteMatchInterface $route_
   }
 }
 
+function search_api_federated_solr_theme($existing, $type, $theme, $path) {
+  return [
+    'search_app' => [],
+  ];
+}
+
 /**
  * Change the way the index's field names are mapped to Solr field names.
  *
