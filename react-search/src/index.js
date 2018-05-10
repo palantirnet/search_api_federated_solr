@@ -33,7 +33,7 @@ const searchFromQuerystring = (solrClient) => {
 // Initialize the solr client + search app with settings.
 const init = (settings) => {
   const defaults = {
-    // The default solr backend must be assigned in ./.env.local.js.
+    // The default solr backend must be assigned in ./.env.local.js and by the search app settings in the module.
     url: "",
     // The search fields and filterable facets.
     searchFields: [
