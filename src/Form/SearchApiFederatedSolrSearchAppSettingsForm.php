@@ -87,7 +87,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => $this->t('No results text'),
       '#default_value' => $config->get('content.no_results'),
       '#description' => $this
-        ->t('This text is shown when a query returns no results.'),
+        ->t('This text is shown when a query returns no results. (Default: "Your search yielded no results.")'),
     ];
 
 
@@ -96,7 +96,23 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Search prompt text'),
       '#default_value' => $config->get('content.search_prompt'),
       '#description' => $this
-        ->t('This text is shown when no query term has been entered.'),
+        ->t('This text is shown when no query term has been entered. (Default: "Please enter a search term.")'),
+    ];
+
+    $form['rows'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Number of search results per page'),
+      '#default_value' => $config->get('results.rows'),
+      '#description' => $this
+        ->t('The max number of results to render per search results page. (Default: 20)'),
+    ];
+
+    $form['page_buttons'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Number of pagination buttons'),
+      '#default_value' => $config->get('pagination.buttons'),
+      '#description' => $this
+        ->t('The max number of numbered pagination buttons to show at a given time. (Default: 5)'),
     ];
 
     $form['#cache'] = ['max-age' => 0];
@@ -146,6 +162,12 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
     // Set the search prompt text.
     $config->set('content.search_prompt', $form_state->getValue('search_prompt_text'));
+
+    // Set the number of rows.
+    $config->set('results.rows', $form_state->getValue('rows'));
+
+    // Set the number of pagination buttons.
+    $config->set('pagination.buttons', $form_state->getValue('page_buttons'));
 
 
     $config->save();

@@ -57,6 +57,16 @@ class SearchAppSettingsResource extends ResourceBase {
       $response_data['searchPrompt'] = $search_prompt;
     }
 
+    $rows = $config->get('results.rows');
+    if ($rows) {
+      $response_data['rows'] = $rows;
+    }
+
+    $pagination_buttons = $config->get('pagination.buttons');
+    if ($pagination_buttons) {
+      $response_data['paginationButtons'] = $pagination_buttons;
+    }
+
     $config->save();
 
     $response = new ResourceResponse($response_data);
