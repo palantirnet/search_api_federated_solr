@@ -85,7 +85,7 @@ const init = (settings) => {
           bootstrapCss={false}
           onSelectDoc={(doc) => console.log(doc)}
           truncateFacetListsAt={-1}
-          searchSite={options.siteSearch}
+          options={options}
         />,
         document.getElementById("root")
       )

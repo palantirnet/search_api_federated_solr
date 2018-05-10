@@ -47,6 +47,16 @@ class SearchAppSettingsResource extends ResourceBase {
       $config->set('facet.site_name.set_default', 0);
     }
 
+    $no_response = $config->get('content.no_results');
+    if ($no_response) {
+      $response_data['noResults'] = $no_response;
+    }
+
+    $search_prompt = $config->get('content.search_prompt');
+    if ($search_prompt) {
+      $response_data['searchPrompt'] = $search_prompt;
+    }
+
     $config->save();
 
     $response = new ResourceResponse($response_data);

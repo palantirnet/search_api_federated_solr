@@ -69,7 +69,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
     $form['set_search_site'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Set the "Site name" facet to this site.'),
+      '#title' => $this->t('Set the "Site name" facet to this site'),
       '#default_value' => $config->get('facet.site_name.set_default'),
       '#description' => $this
         ->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
@@ -80,6 +80,23 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
           ],
         ],
       ],
+    ];
+
+    $form['no_results_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('No results text'),
+      '#default_value' => $config->get('content.no_results'),
+      '#description' => $this
+        ->t('This text is shown when a query returns no results.'),
+    ];
+
+
+    $form['search_prompt_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Search prompt text'),
+      '#default_value' => $config->get('content.search_prompt'),
+      '#description' => $this
+        ->t('This text is shown when no query term has been entered.'),
     ];
 
     $form['#cache'] = ['max-age' => 0];
@@ -123,6 +140,14 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
     // Set the search app configuration setting for the solr backend url.
     $config->set('index.server_url', $server_url);
+
+    // Set the no results text.
+    $config->set('content.no_results', $form_state->getValue('no_results_text'));
+
+    // Set the search prompt text.
+    $config->set('content.search_prompt', $form_state->getValue('search_prompt_text'));
+
+
     $config->save();
 
     parent::submitForm($form, $form_state);
