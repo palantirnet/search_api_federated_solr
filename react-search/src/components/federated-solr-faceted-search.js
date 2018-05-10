@@ -117,7 +117,7 @@ FederatedSolrFacetedSearch.defaultProps = {
   truncateFacetListsAt: -1,
   showCsvExport: false,
   sidebarFilters: ['ss_site_name', 'ss_federated_type', 'ds_federated_date', 'sm_federated_terms'],
-  object: {}
+  options: {}
 };
 
 FederatedSolrFacetedSearch.propTypes = {
