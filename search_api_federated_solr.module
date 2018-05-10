@@ -35,6 +35,11 @@ function search_api_federated_solr_search_api_alter_callback_info() {
     'description' => t('A token or free text field that can be customized per-bundle.'),
     'class' => 'SearchApiFederatedSolrField',
   );
+  $callbacks['federated_term'] = array(
+    'name' => t('Federated Term'),
+    'description' => t('By adding this field to your search index configuration, you have enabled the federated terms processor to run when new items are indexed.  Next, add a "Federated Terms" field to any taxonomy vocabulary whose terms should be mapped to a "federated" term (this helps map terms across vocabularies and sites to a single "federated" term).  Then, edit terms in those vocabularies to add the federated term destination value (i.e. "Conditions>Blood Disorders").  Once that tagged content gets indexed, it will have "federated_terms" populated with any matching federated term destination values.'),
+    'class' => 'SearchApiFederatedSolrTerm',
+  );
   $callbacks['remap'] = array(
     'name' => t('Re-map Field Names'),
     'description' => t(''),
@@ -132,6 +137,4 @@ function search_api_federated_solr_field_widget_form(&$form, &$form_state, $fiel
 
   $element['value'] = $widget;
   return $element;
-}
-
 }
