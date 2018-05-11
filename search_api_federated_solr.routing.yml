@@ -1,11 +1,3 @@
-search_api_federated_solr.search:
-  path: '/search-app'
-  defaults:
-    _controller: 'Drupal\search_api_federated_solr\Controller\SearchController::searchPage'
-    _title: 'Search'
-  requirements:
-    _permission: 'search content'
-
 search_api_federated_solr.search_app.settings:
   path: '/admin/config/search-api-federated-solr/search-app/settings'
   defaults:
@@ -13,3 +5,6 @@ search_api_federated_solr.search_app.settings:
     _title: 'Search API Solr Federated: Search App Settings'
   requirements:
     _permission: 'administer site configuration'
+
+route_callbacks:
+  - '\Drupal\search_api_federated_solr\Routing\SearchApiFederatedSolrRoutes::routes'

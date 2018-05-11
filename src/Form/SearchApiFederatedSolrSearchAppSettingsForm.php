@@ -45,6 +45,14 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $index_options[$search_api_index->id()] = $search_api_index->label();
     }
 
+    $form['path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Search app path'),
+      '#default_value' => $config->get('path'),
+      '#description' => $this
+        ->t('The path for the search app (Default: "/search-app").'),
+    ];
+
     $form['search_index'] = [
       '#type' => 'select',
       '#title' => $this->t('Search API index'),
@@ -126,6 +134,15 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Retrieve the search app configuration
     $config = $this->configFactory->getEditable('search_api_federated_solr.search_app.settings');
+
+    // Set the search app path.
+    $path = $form_state->getValue('path');
+    $current_path = $config->get('path');
+    if ($path && $path !== $current_path) {
+      $config->set('path', $path);
+      $rebuild_routes = true;
+    }
+
     // Set the search app configuration setting for the default search site flag.
     $set_search_site = $form_state->getValue('set_search_site');
     $config->set('facet.site_name.set_default', $set_search_site);
@@ -171,6 +188,11 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
 
     $config->save();
+
+    if ($rebuild_routes) {
+      // Rebuild the routing information without clearing all the caches.
+      \Drupal::service('router.builder')->rebuild();
+    }
 
     parent::submitForm($form, $form_state);
   }
