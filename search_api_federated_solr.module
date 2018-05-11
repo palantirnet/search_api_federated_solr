@@ -43,3 +43,24 @@ function search_api_federated_solr_search_api_alter_callback_info() {
 
   return $callbacks;
 }
+
+/**
+ * Implements hook_menu().
+ */
+function search_api_federated_solr_menu() {
+
+  $items['search-app'] = array(
+    'title' => 'Search',
+    'page callback' => 'page_search_api_federated_solr',
+    'access arguments' => array('access content')
+  );
+
+  return $items;
+}
+
+/**
+ * Constructs the search page.
+ */
+function page_search_api_federated_solr() {
+  return array('#markup' => '<div id="root"><noscript>This search page requires Javascript in order to function.  <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">Learn how to enable Javascript in your browser.</a></noscript><p class="element-invisible" aria-hidden="true">Federated Solr Search App: If you see this message in your DevTools, it likely means there is an issue adding the app javascript library to this page.  Follow the steps in the search_api_federated_solr module README.</p></div>');
+}
