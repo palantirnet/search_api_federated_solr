@@ -1,12 +1,12 @@
 search:
   version: 1.x
+  header: true
   css:
     theme:
       'react-search/build/static/css/main.b302e886.css': {}
   js:
-    'react-search/build/static/js/main.eee4a871.js': {preprocess: false}
-  dependencies:
-    - core/jquery
-    - core/jquery.once
-    - core/drupal
-    - core/drupal.form
+    'react-search/build/static/js/main.eee4a871.js': {
+      preprocess: false,
+      minified: true,
+      weight: -1
+    }
