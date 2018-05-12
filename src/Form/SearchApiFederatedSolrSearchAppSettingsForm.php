@@ -140,7 +140,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $current_path = $config->get('path');
     if ($path && $path !== $current_path) {
       $config->set('path', $path);
-      $rebuild_routes = true;
+      $rebuild_routes = TRUE;
     }
 
     // Set the search app configuration setting for the default search site flag.
@@ -155,7 +155,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Get the index configuration object.
     $index_config = \Drupal::config('search_api.index.' . $search_index);
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
-    $config->set('index.has_site_name_property', $site_name_property ? true : false);
+    $config->set('index.has_site_name_property', $site_name_property ? TRUE : FALSE);
 
     // Get the id of the chosen index's server.
     $index_server = $index_config->get('server');
