@@ -36,6 +36,8 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $form['#validate'][] = [$this, '_form_validation_path_validate'];
+
     $config = $this->config('search_api_federated_solr.search_app.settings');
 
     $index_options = [];
@@ -215,5 +217,32 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     ];
 
     return $elem;
+  }
+
+  /**
+   * Validates that the provided search path is not in use by an existing route.
+   *
+   * @param $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   */
+  public function _form_validation_path_validate(&$form, FormStateInterface $form_state) {
+
+    if ($form_state->hasValue('path')) {
+      $path = $form_state->getValue('path');
+      // Check if a route with the config path value already exists.
+      $router = \Drupal::service('router.no_access_checks');
+      $result = FALSE;
+      try {
+        $result = $router->match($path);
+      }
+      catch (\Exception $e) {
+        // This is actually what we want, indicates the route path does not exist.
+      }
+      // If the route path exists for something other than the search route,
+      // set an error on the form.
+      if ($result && $result['_route'] !== "search_api_federated_solr.search") {
+        $form_state->setErrorByName('path', t('The path you have entered already exists'));
+      }
+    }
   }
 }
