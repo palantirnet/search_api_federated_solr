@@ -138,6 +138,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Set the search app path.
     $path = $form_state->getValue('path');
     $current_path = $config->get('path');
+    $rebuild_routes = FALSE;
     if ($path && $path !== $current_path) {
       $config->set('path', $path);
       $rebuild_routes = TRUE;
