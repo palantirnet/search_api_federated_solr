@@ -5,7 +5,7 @@ search:
     theme:
       'react-search/build/static/css/main.b302e886.css': {}
   js:
-    'react-search/build/static/js/main.eee4a871.js': {
+    'react-search/build/static/js/main.efea7dc8.js': {
       preprocess: false,
       minified: true,
       weight: -1

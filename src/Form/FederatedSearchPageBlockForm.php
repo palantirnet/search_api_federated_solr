@@ -29,16 +29,16 @@ class FederatedSearchPageBlockForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $form['q'] = array(
+    $form['search'] = array(
       '#type' => 'search',
-      '#name' => 'q',
+      '#name' => 'search',
       '#title' => $this->t('Search'),
       '#title_display' => 'invisible',
       '#size' => 15,
       '#default_value' => '',
       '#attributes' => array(
         'title' => $this->t('Enter the terms you wish to search for.'),
-        'placeholder' => '',
+        'placeholder' => 'Search',
       ),
       '#prefix' => '<div class="container-inline">',
     );

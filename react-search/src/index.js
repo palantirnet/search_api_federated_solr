@@ -19,8 +19,8 @@ const searchFromQuerystring = (solrClient) => {
   // Initialize with a search based on querystring term or else load blank search.
   const parsed = queryString.parse(window.location.search);
   // We assume the querystring key for search terms is q: i.e. ?q=search%20term
-  if (Object.prototype.hasOwnProperty.call(parsed,'q')) {
-    solrClient.setSearchFieldValue("tm_rendered_item", parsed.q);
+  if (Object.prototype.hasOwnProperty.call(parsed,'search')) {
+    solrClient.setSearchFieldValue("tm_rendered_item", parsed.search);
   }
   // Reset search fields, fetches all results from solr. Note: results will be hidden
   // since there is no search term.  See: federated-solr-faceted-search where

@@ -36,7 +36,7 @@ class FederatedTextSearch extends React.Component {
     // Get existing querystring params.
     let parsed = queryString.parse(window.location.search);
     // Update the search querystring param with the value from the search field.
-    parsed.q = this.state.value;
+    parsed.search = this.state.value;
     const stringified = queryString.stringify(parsed);
     // Update the querystring params in the browser, add path to history.
     // See: https://developer.mozilla.org/en-US/docs/Web/API/History_API#The_pushState()_method
