@@ -52,7 +52,7 @@ function search_api_federated_solr_menu() {
   $items['search-app'] = array(
     'title' => 'Search',
     'page callback' => 'page_search_api_federated_solr',
-    'access arguments' => array('access content')
+    'access arguments' => array('access content'),
   );
 
   return $items;
@@ -63,4 +63,62 @@ function search_api_federated_solr_menu() {
  */
 function page_search_api_federated_solr() {
   return array('#markup' => '<div id="root"><noscript>This search page requires Javascript in order to function.  <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">Learn how to enable Javascript in your browser.</a></noscript><p class="element-invisible" aria-hidden="true">Federated Solr Search App: If you see this message in your DevTools, it likely means there is an issue adding the app javascript library to this page.  Follow the steps in the search_api_federated_solr module README.</p></div>');
+}
+
+
+/*
+ * create search block
+ */
+
+function search_api_federated_solr_block_info() {
+  $blocks['federated_search_page_form_block'] = array(
+    'info' => t('Federated Search Page Form block'),
+  );
+  return $blocks;
+}
+
+function search_api_federated_solr_block_view($delta = '') {
+$block = array();
+switch ($delta) {
+case 'federated_search_page_form_block':
+  $block['title'] = 'Federated Search Page Form block';
+  $srchblk = drupal_get_form('search_api_federated_solr_search_block_form');
+  $block['content'] = drupal_render($srchblk);
+  break;
+  }
+  return $block;
+}
+
+/* create search form */
+
+function search_api_federated_solr_search_block_form($form, &$form_state) {
+  $form['q'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search'),
+    '#title_display' => 'invisible',
+    '#size' => 15,
+    '#default_value' => '',
+    '#attributes' => array(
+      'title' => t('Enter the terms you wish to search for.'),
+      'placeholder' => '',
+    ),
+    '#prefix' => '<div class="container-inline">',
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Search'),
+    '#name' => '',
+    '#suffix' => '</div>',
+  );
+
+
+  return $form;
+}
+
+/*
+ * create form handler
+ */
+
+function search_api_federated_solr_search_block_form_submit($form, &$form_state) {
+drupal_goto('search-app', ['query'=> ['q' => $form_state['values']['q']]]);
 }
