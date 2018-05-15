@@ -226,9 +226,8 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
   public function _form_validation_path_validate(&$form, FormStateInterface $form_state) {
-
-    if ($form_state->hasValue('path')) {
-      $path = $form_state->getValue('path');
+    $path = $form_state->getValue('path');
+    if ($path) {
       // Check if a route with the config path value already exists.
       $router = \Drupal::service('router.no_access_checks');
       $result = FALSE;
