@@ -136,7 +136,8 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
 * Create custom search form handler.
 */
 function search_api_federated_solr_search_block_form_submit($form, &$form_state) {
-  drupal_goto('search-app', ['query'=> ['search' => $form_state['values']['q']]]);
+  $search_path = variable_get('search_api_federated_solr_path', 'search-app');
+  drupal_goto($search_path, ['query'=> ['search' => $form_state['values']['q']]]);
 }
 
 
