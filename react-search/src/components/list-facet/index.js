@@ -20,8 +20,9 @@ class FederatedListFacet extends React.Component {
     // If we are in the Site name list facet.
     if (this.props.field === "ss_site_name") {
       // If there is a default search site option passed in.
-      if (this.props.searchSite) {
-        this.handleClick(this.props.searchSite);
+
+      if (this.props.options.siteSearch) {
+        this.handleClick(this.props.options.siteSearch);
       }
     }
   }

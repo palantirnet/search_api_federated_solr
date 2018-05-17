@@ -74,11 +74,11 @@ class FederatedSolrFacetedSearch extends React.Component {
               <CurrentQueryComponent {...this.props} onChange={onSearchFieldChange} />
               <SortComponent bootstrapCss={bootstrapCss} onChange={onSortFieldChange} sortFields={sortFields} />
             </div>
-            <p className={searchFields.find((sf) => sf.field === "tm_rendered_item").value ? 'solr-search-results-container__prompt element-invisible' : 'solr-search-results-container__prompt'}>Please enter a search term.</p>
+            <p className={searchFields.find((sf) => sf.field === "tm_rendered_item").value ? 'solr-search-results-container__prompt element-invisible' : 'solr-search-results-container__prompt'}>{this.props.options.searchPrompt || 'Please enter a search term.'}</p>
             <div className={searchFields.find((sf) => sf.field === "tm_rendered_item").value ? 'solr-search-results-container__wrapper' : 'solr-search-results-container__wrapper element-invisible'}>
               <ResultContainerComponent bootstrapCss={bootstrapCss}>
               <ResultHeaderComponent bootstrapCss={bootstrapCss}>
-                <ResultCount bootstrapCss={bootstrapCss} numFound={results.numFound} start={start} rows={rows} onChange={onPageChange} />
+                <ResultCount bootstrapCss={bootstrapCss} numFound={results.numFound} start={start} rows={rows} onChange={onPageChange} noResultsText={this.props.options.noResults || null} />
                 {resultPending}
               </ResultHeaderComponent>
               <ResultListComponent bootstrapCss={bootstrapCss}>
@@ -117,7 +117,7 @@ FederatedSolrFacetedSearch.defaultProps = {
   truncateFacetListsAt: -1,
   showCsvExport: false,
   sidebarFilters: ['ss_site_name', 'ss_federated_type', 'ds_federated_date', 'sm_federated_terms'],
-  searchSite: ''
+  options: {}
 };
 
 FederatedSolrFacetedSearch.propTypes = {
@@ -133,8 +133,7 @@ FederatedSolrFacetedSearch.propTypes = {
   results: PropTypes.object,
   showCsvExport: PropTypes.bool,
   truncateFacetListsAt: PropTypes.number,
-  // @todo make this prop an options/settings object vs searchSite string
-  searchSite: PropTypes.string
+  options: PropTypes.object
 };
 
 export default FederatedSolrFacetedSearch;

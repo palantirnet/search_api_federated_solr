@@ -1,0 +1,5 @@
+services:
+  search_api_federated_solr.route_subscriber:
+    class: Drupal\search_api_federated_solr\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

@@ -37,12 +37,13 @@ class FederatedPagination extends React.Component {
     const { numFound } = results;
     const pageAmt = Math.ceil(numFound / rows);
     const currentPage = start / rows;
+    const numButtons = this.props.options.paginationButtons || 5;
 
     let rangeStart = currentPage - 2 < 0 ? 0 : currentPage - 2;
-    let rangeEnd = rangeStart + 5 > pageAmt ? pageAmt : rangeStart + 5;
+    let rangeEnd = rangeStart + numButtons > pageAmt ? pageAmt : rangeStart + numButtons;
 
-    if (rangeEnd - rangeStart < 5 && rangeStart > 0) {
-      rangeStart = rangeEnd - 5;
+    if (rangeEnd - rangeStart < numButtons && rangeStart > 0) {
+      rangeStart = rangeEnd - numButtons;
       if (rangeStart < 0) { rangeStart = 0; }
     }
 

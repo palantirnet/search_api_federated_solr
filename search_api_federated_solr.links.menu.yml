@@ -1,0 +1,5 @@
+search_api_federated_solr.search_app.settings:
+  title: 'Federated Search App'
+  description: 'Manage settings for your federated search app'
+  parent: system.admin_config_search
+  route_name: search_api_federated_solr.search_app.settings

@@ -126,8 +126,8 @@ class TextFacetType extends React.Component {
     // Get current querystring params.
     let parsed = queryString.parse(window.location.search);
     // Remove the search term param, if it exists.
-    if (parsed.q) {
-      delete parsed.q;
+    if (parsed.search) {
+      delete parsed.search;
     }
     const stringified = queryString.stringify(parsed);
     // Update the querystring params in the browser, add path to history.

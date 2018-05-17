@@ -9,35 +9,6 @@ import FederatedSolrFacetedSearch from "./components/federated-solr-faceted-sear
 // import search app boilerplate styles
 import './styles.css';
 
-// The search fields and filterable facets you want
-const fields = [
-  {label: "Enter Search Term:", field: "tm_rendered_item", type: "text"},
-  {label: "Site Name", field: "ss_site_name", type: "list-facet", collapse: true},
-  {label: "Type", field: "ss_federated_type", type: "list-facet", collapse: true},
-  {label: "Date", field: "ds_federated_date", type: "range-facet", collapse: true},
-  {label: "Federated Terms", field: "sm_federated_terms", type: "list-facet", hierarchy: true},
-];
-
-// The solr field to use as the source for the main query param "q"
-const mainQueryField = "tm_rendered_item";
-
-// The sortable fields you want
-const sortFields = [
-  {label: "Relevance", field: "score"},
-  {label: "Date", field: "ds_federated_date"}
-];
-
-// Enable highlighting in search results snippets
-const highlight = {
-  fl: 'tm_rendered_item', // the highlight snippet source field(s)
-  usePhraseHighlighter: true // highlight phrase queries
-};
-
-// @todo get the configurable options, if any, from drupal config
-// this should probably be an options object so that we can only add one global prop
-// const searchSite = 'University of Michigan Health Blog'; // uncomment to test
-const searchSite = null;
-
 /**
  * Executes search query based on the value of URL querystring "q" param.
  *
@@ -48,8 +19,8 @@ const searchFromQuerystring = (solrClient) => {
   // Initialize with a search based on querystring term or else load blank search.
   const parsed = queryString.parse(window.location.search);
   // We assume the querystring key for search terms is q: i.e. ?q=search%20term
-  if (Object.prototype.hasOwnProperty.call(parsed,'q')) {
-    solrClient.setSearchFieldValue("tm_rendered_item", parsed.q);
+  if (Object.prototype.hasOwnProperty.call(parsed,'search')) {
+    solrClient.setSearchFieldValue("tm_rendered_item", parsed.search);
   }
   // Reset search fields, fetches all results from solr. Note: results will be hidden
   // since there is no search term.  See: federated-solr-faceted-search where
@@ -59,34 +30,65 @@ const searchFromQuerystring = (solrClient) => {
   }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-// The client class
-  const solrClient = new SolrClient({
-// The solr index url to be queried by the client
-    url: "https://ss826806-us-east-1-aws.measuredsearch.com:443/solr/master/select",
-    searchFields: fields,
-    sortFields: sortFields,
+// Initialize the solr client + search app with settings.
+const init = (settings) => {
+  const defaults = {
+    // The default solr backend must be assigned in ./.env.local.js and by the search app settings in the module.
+    url: "",
+    // The search fields and filterable facets.
+    searchFields: [
+      {label: "Enter Search Term:", field: "tm_rendered_item", type: "text"},
+      {label: "Site Name", field: "ss_site_name", type: "list-facet", collapse: true},
+      {label: "Type", field: "ss_federated_type", type: "list-facet", collapse: true},
+      {label: "Date", field: "ds_federated_date", type: "range-facet", collapse: true},
+      {label: "Federated Terms", field: "sm_federated_terms", type: "list-facet", hierarchy: true},
+    ],
+    // The solr field to use as the source for the main query param "q".
+    mainQueryField: "tm_rendered_item",
+    // The default site search facet value.
+    siteSearch: null,
+    // The options by which to sort results.
+    sortFields: [
+      {label: "Relevance", field: "score"},
+      {label: "Date", field: "ds_federated_date"}
+    ],
+    // Enable highlighting in search results snippets.
+    hl: {
+      fl: 'tm_rendered_item', // the highlight snippet source field(s)
+      usePhraseHighlighter: true // highlight phrase queries
+    },
     pageStrategy: "paginate",
-    rows: 20,
-    hl: highlight,
-    mainQueryField: mainQueryField,
+    rows: 20
+  };
 
-// The change handler passes the current query- and result state for render
-// as well as the default handlers for interaction with the search component
+  const options = Object.assign(defaults, settings);
+
+  // The client class
+  const solrClient = new SolrClient({
+    url: options.url,
+    searchFields: options.searchFields,
+    sortFields: options.sortFields,
+    pageStrategy: options.pageStrategy,
+    rows: options.rows,
+    hl: options.hl,
+    mainQueryField: options.mainQueryField,
+
+    // The change handler passes the current query- and result state for render
+    // as well as the default handlers for interaction with the search component
     onChange: (state, handlers) =>
-// Render the faceted search component
-        ReactDOM.render(
-            <FederatedSolrFacetedSearch
-                {...state}
-                {...handlers}
-                customComponents={FederatedSolrComponentPack}
-                bootstrapCss={false}
-                onSelectDoc={(doc) => console.log(doc)}
-                truncateFacetListsAt={-1}
-                searchSite={searchSite}
-            />,
-            document.getElementById("root")
-        )
+      // Render the faceted search component
+      ReactDOM.render(
+        <FederatedSolrFacetedSearch
+          {...state}
+          {...handlers}
+          customComponents={FederatedSolrComponentPack}
+          bootstrapCss={false}
+          onSelectDoc={(doc) => console.log(doc)}
+          truncateFacetListsAt={-1}
+          options={options}
+        />,
+        document.getElementById("root")
+      )
   });
 
   // Check if there is a querystring param search term and make initial query.
@@ -97,4 +99,36 @@ document.addEventListener("DOMContentLoaded", () => {
   window.onpopstate = function() {
     searchFromQuerystring(solrClient);
   };
-});
+};
+
+// If we are in the production environment (i.e. using the build compiled js)
+// @see https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables
+if (process.env.NODE_ENV === 'production') {
+  // The endpoint where production config options live.
+  const url = '/search_api_federated_solr/settings?_format=json';
+
+  // Get configuration settings from the endpoint.
+  fetch(url)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        init(result); // Load the app, passing in the config.
+      },
+      (error) => {
+        console.error('search_api_federated_solr | Could not load configuration for search app: ', error);
+      }
+    );
+}
+// This is not production (i.e. not using the build compiled js)
+else {
+  // Get the local environment settings for the search app and initialize.
+  import('./.env.local.js')
+    .then(
+      (settings) => {
+        init(settings); // Load the app, passing in the ./.env.local.js config.
+      },
+      (error) => {
+        console.error('search_api_federated_solr | Could not load local configuration for search app: ', error);
+      }
+    );
+}
