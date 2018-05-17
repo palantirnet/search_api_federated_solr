@@ -20,7 +20,8 @@ class SearchApiFederatedSolrTerm extends SearchApiAbstractAlterCallback {
       'federated_term' => array(
         'label' => t('Federated Term'),
         'description' => t('By adding this field to your search index configuration, you have enabled the federated terms processor to run when new items are indexed.  Next, add a "Federated Terms" field to any taxonomy vocabulary whose terms should be mapped to a "federated" term (this helps map terms across vocabularies and sites to a single "federated" term).  Then, edit terms in those vocabularies to add the federated term destination value (i.e. "Conditions>Blood Disorders").  Once that tagged content gets indexed, it will have "federated_terms" populated with any matching federated term destination values.'),
-        'type' => 'text',
+        'type' => 'list<string>',
+        'cardinality' => -1,
       ),
     );
   }
