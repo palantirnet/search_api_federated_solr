@@ -35,6 +35,11 @@ function search_api_federated_solr_search_api_alter_callback_info() {
     'description' => t('A token or free text field that can be customized per-bundle.'),
     'class' => 'SearchApiFederatedSolrField',
   );
+  $callbacks['federated_terms'] = array(
+    'name' => t('Federated Term'),
+    'description' => t('By adding this field to your search index configuration, you have enabled the federated terms processor to run when new items are indexed.  Next, add a "Federated Terms" field to any taxonomy vocabulary whose terms should be mapped to a "federated" term (this helps map terms across vocabularies and sites to a single "federated" term).  Then, edit terms in those vocabularies to add the federated term destination value (i.e. "Conditions>Blood Disorders").  Once that tagged content gets indexed, it will have "federated_terms" populated with any matching federated term destination values.'),
+    'class' => 'SearchApiFederatedSolrTerms',
+  );
   $callbacks['remap'] = array(
     'name' => t('Re-map Field Names'),
     'description' => t(''),
@@ -301,4 +306,94 @@ function search_api_federated_solr_config_endpoint() {
   }
 
   drupal_json_output($response_data);
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function search_api_federated_solr_field_info() {
+  return array(
+    // We name our field as the associative name of the array.
+    'federated_terms' => array(
+      'label' => t('Federated terms'),
+      'description' => t('Stores the solr search api federated term destination value for taxonomy terms.'),
+      'settings' => array('max_length' => 255),
+      'default_widget' => 'federated_terms_textfield',
+      'default_formatter' => 'string',
+      'cardinality' => -1,
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_validate().
+ */
+function search_api_federated_solr_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  foreach ($items as $delta => $item) {
+    if (!empty($item['value'])) {
+      if (!empty($field['settings']['max_length']) && drupal_strlen($item['value']) > $field['settings']['max_length']) {
+        $errors[$field['field_name']][$langcode][$delta][] = array(
+          'error' => 'federated_field_max_length',
+          'message' => t('%name: may not be longer than @max characters.', array(
+            '%name' => $instance['label'],
+            '%max' => $field['settings']['max_length'],
+          )),
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_widget_error().
+ */
+function search_api_federated_solr_field_widget_error($element, $error, $form, &$form_state) {
+  switch ($error['error']) {
+    case 'federated_field_max_length':
+      form_error($element, $error['message']);
+      break;
+  }
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function search_api_federated_solr_field_is_empty($item, $field) {
+  return $item['value'] === NULL || $item['value'] === '';
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function search_api_federated_solr_field_widget_info() {
+  return array(
+    'federated_terms_textfield' => array(
+      'label' => t('Federated Terms Textfield'),
+      'field types' => array('federated_terms'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function search_api_federated_solr_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $value = isset($items[$delta]['value']) ? $items[$delta]['value'] : NULL;
+
+  $widget = $element;
+  $widget['#delta'] = $delta;
+
+  if ($instance['widget']['type'] == 'federated_terms_textfield') {
+    $widget += array(
+      '#type' => 'textfield',
+      '#default_value' => $value,
+      '#description' => t('This federated term is used as a facet value in your search application.  It should consist of a hierarchy made up of a type (i.e. "Condition") and term (i.e. "Diabetes"), separated by ">".  For example: Condition>Diabetes.'),
+      '#size' => 75,
+      '#maxlength' => 255,
+      '#attributes' => ['class' => ['js-text-full', 'text-full']],
+    );
+  }
+
+  $element['value'] = $widget;
+  return $element;
 }
