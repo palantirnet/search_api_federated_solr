@@ -28,5 +28,20 @@ Each field being sent to the index should be processed using _only one or the ot
    
    <img src="images/remap_field_names.png" />
 
+## Using the "Federated terms" field
+
+1. Visit the data alterations list for your index at _Admin > Configuration > Search API > [your index] > Filters_ (path `/admin/config/search/search-api/index/YOUR_INDEX/workflow`)
+1. Check "Federated Term" and Save the Configuration:
+	<img src="images/federated_term_filter.png" />
+1. Visit the fields list for your index at _Admin > Configuration > Search API > [your index] > Fields_ (path `/admin/config/search/search-api/index/YOUR_INDEX/fields`)
+1. Check "Federated Term" (make sure the field's type is "string") and save the Configuration:
+	<img src="images/add_federated_terms_field.png" />
+1. Configuration for federated terms happens within the taxonomy term entity edit UI itself.  Browse to a taxonomy vocabulary on your site and add an instance of the "Federated terms" field type (If you plan on sharing this field among your vocabularies, use something like "Federated terms" for the field label).
+    <img src="images/add_taxonomy_field.png" />
+1. Edit any terms in the vocabularies to which you've just added a "Federated terms" field instance.  On the term edit form, you should now see a "Federated terms" field instance where you can add one or many "federated" terms.
+    <img src="images/add_federated_terms_to_taxonomy.png" />
+1. Repeat for each term in each vocabulary which should have a federated term value.
+1. Once content which references these terms is indexed, all of their corresponding "federated terms" will appear in the `federated_terms` index property field.
+
 ----
 © Copyright 2018 Palantir.net, Inc.
