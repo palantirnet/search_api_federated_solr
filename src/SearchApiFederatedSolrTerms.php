@@ -71,8 +71,9 @@ class SearchApiFederatedSolrTerms extends SearchApiAbstractAlterCallback {
       foreach ($bundle_taxonomy_fields as $taxonomy_field_id => $taxonomy_field_name) {
 
         // Iterate through each of the referenced terms.
-        if (isset($entity->$taxonomy_field_id[LANGUAGE_NONE])) {
-          foreach ($entity->$taxonomy_field_id[LANGUAGE_NONE] as $term_id) {
+        $lang = $entity->language;
+        if (isset($entity->$taxonomy_field_id[$lang])) {
+          foreach ($entity->$taxonomy_field_id[$lang] as $term_id) {
             $entity_term = taxonomy_term_load($term_id['target_id']);
             $entity_term_fields = field_info_instances('taxonomy_term', $entity_term->vocabulary_machine_name);
 
