@@ -1,15 +1,15 @@
 <?php
 
 /**
-* @file search_api_federated_solr.module
-* Contains hook implementations for the Federated Solr Search API Module.
-*
-* @copyright Copyright (c) 2018 Palantir.net
-*/
+ * @file search_api_federated_solr.module
+ * Contains hook implementations for the Federated Solr Search API Module.
+ *
+ * @copyright Copyright (c) 2018 Palantir.net
+ */
 
 /**
-* Implements hook_help().
-*/
+ * Implements hook_help().
+ */
 function search_api_federated_solr_help($path, $arg) {
   switch ($path) {
     // Main module help for the search_api_federated_solr module.
@@ -22,8 +22,8 @@ function search_api_federated_solr_help($path, $arg) {
 }
 
 /**
-* Implements hook_search_api_alter_callback_info().
-*/
+ * Implements hook_search_api_alter_callback_info().
+ */
 function search_api_federated_solr_search_api_alter_callback_info() {
   $callbacks['site_name'] = array(
     'name' => t('Site Name'),
@@ -45,8 +45,8 @@ function search_api_federated_solr_search_api_alter_callback_info() {
 }
 
 /**
-* Implements hook_menu().
-*/
+ * Implements hook_menu().
+ */
 function search_api_federated_solr_menu() {
   $search_path = variable_get('search_api_federated_solr_path', 'search-app');
 
@@ -56,7 +56,7 @@ function search_api_federated_solr_menu() {
     'access arguments' => array('access content'),
   );
 
-  $items['admin/config/search-api-federated-solr/search-app/settings'] = array(
+  $items['admin/config/search/search_api/search-api-federated-solr/search-app/settings'] = array(
     'title' => 'Search API Solr Federated: Search App Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('search_api_federated_solr_admin'),
@@ -81,8 +81,8 @@ function page_search_api_federated_solr() {
 
 
 /**
-* Implements hook_block_info().
-*/
+ * Implements hook_block_info().
+ */
 function search_api_federated_solr_block_info() {
   $blocks['federated_search_page_form_block'] = array(
     'info' => t('Federated Search Page Form block'),
@@ -91,8 +91,8 @@ function search_api_federated_solr_block_info() {
 }
 
 /**
-* Implements hook_block_view().
-*/
+ * Implements hook_block_view().
+ */
 function search_api_federated_solr_block_view($delta = '') {
   $block = array();
   switch ($delta) {
@@ -106,8 +106,8 @@ function search_api_federated_solr_block_view($delta = '') {
 }
 
 /**
-* Create custom search form.
-*/
+ * Create custom search form.
+ */
 function search_api_federated_solr_search_block_form($form, &$form_state) {
   $form['q'] = array(
     '#type' => 'textfield',
@@ -133,8 +133,8 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
 }
 
 /**
-* Create custom search form handler.
-*/
+ * Create custom search form handler.
+ */
 function search_api_federated_solr_search_block_form_submit($form, &$form_state) {
   $search_path = variable_get('search_api_federated_solr_path', 'search-app');
   drupal_goto($search_path, ['query'=> ['search' => $form_state['values']['q']]]);
@@ -142,8 +142,8 @@ function search_api_federated_solr_search_block_form_submit($form, &$form_state)
 
 
 /**
-* Create search_api_federated_solr config form.
-*/
+ * Create search_api_federated_solr config form.
+ */
 function search_api_federated_solr_admin($form, &$form_state) {
 
   // Get search indexes.
@@ -159,7 +159,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Search app path'),
     '#default_value' => variable_get('search_api_federated_solr_path', 'search-app'),
-    '#description' => t('The path for the search app (Default: "/search-app").'),
+    '#description' => t('The path for the search app (Default: "search-app").'),
   ];
 
   $form['search_api_federated_solr_search_index'] = [
@@ -211,7 +211,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
   $form['search_api_federated_solr_rows'] = [
     '#type' => 'textfield',
     '#attributes' => array(
-        ' type' => 'number', // insert space before attribute name :)
+      ' type' => 'number',
     ),
     '#title' => t('Number of search results per page'),
     '#default_value' => variable_get('search_api_federated_solr_rows'),
@@ -221,7 +221,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
   $form['search_api_federated_solr_page_buttons'] = [
     '#type' => 'textfield',
     '#attributes' => array(
-        ' type' => 'number', // insert space before attribute name :)
+      ' type' => 'number',
     ),
     '#title' => t('Number of pagination buttons'),
     '#default_value' => variable_get('search_api_federated_solr_page_buttons'),
@@ -234,8 +234,8 @@ function search_api_federated_solr_admin($form, &$form_state) {
 }
 
 /**
-* Ajax callback for search_api_federated_solr_search_index.
-*/
+ * Ajax callback for search_api_federated_solr_search_index.
+ */
 function get_site_name($form, $form_state) {
 
   if (!empty($form_state['values']['search_api_federated_solr_search_index'])) {
@@ -251,8 +251,8 @@ function get_site_name($form, $form_state) {
 
 
 /**
-* Create search_api_federated_solr config json endpoint.
-*/
+ * Create search_api_federated_solr config json endpoint.
+ */
 function search_api_federated_solr_config_endpoint() {
   $response_data = [];
 
