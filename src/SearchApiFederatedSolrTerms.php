@@ -71,22 +71,24 @@ class SearchApiFederatedSolrTerms extends SearchApiAbstractAlterCallback {
       foreach ($bundle_taxonomy_fields as $taxonomy_field_id => $taxonomy_field_name) {
 
         // Iterate through each of the referenced terms.
-        foreach ($entity->$taxonomy_field_id['und'] as $term_id) {
-          $entity_term = taxonomy_term_load($term_id['target_id']);
-          $entity_term_fields = field_info_instances('taxonomy_term', $entity_term->vocabulary_machine_name);
+        if (isset($entity->$taxonomy_field_id[LANGUAGE_NONE])) {
+          foreach ($entity->$taxonomy_field_id[LANGUAGE_NONE] as $term_id) {
+            $entity_term = taxonomy_term_load($term_id['target_id']);
+            $entity_term_fields = field_info_instances('taxonomy_term', $entity_term->vocabulary_machine_name);
 
-          // Iterate through each of the referenced term's fields.
-          foreach ($entity_term_fields as $entity_term_field) {
-            $entity_term_field_name = $entity_term_field['field_name'];
-            $entity_term_field_info = field_info_field($entity_term_field_name);
+            // Iterate through each of the referenced term's fields.
+            foreach ($entity_term_fields as $entity_term_field) {
+              $entity_term_field_name = $entity_term_field['field_name'];
+              $entity_term_field_info = field_info_field($entity_term_field_name);
 
-            // Check if the term has a federated_terms field.
-            if ($entity_term_field_info['type'] === "federated_terms") {
-              $entity_term_federated_term = $entity_term->$entity_term_field_name;
-              if (!empty($entity_term_federated_term)) {
-                foreach ($entity_term_federated_term['und'] as $federated_term) {
-                  // Add the federated_terms field's value to index.
-                  $federated_terms_destination_values[] = $federated_term['value'];
+              // Check if the term has a federated_terms field.
+              if ($entity_term_field_info['type'] === "federated_terms") {
+                $entity_term_federated_term = $entity_term->$entity_term_field_name;
+                if (!empty($entity_term_federated_term)) {
+                  foreach ($entity_term_federated_term['und'] as $federated_term) {
+                    // Add the federated_terms field's value to index.
+                    $federated_terms_destination_values[] = $federated_term['value'];
+                  }
                 }
               }
             }
