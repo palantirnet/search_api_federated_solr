@@ -15,6 +15,8 @@ class SearchController extends ControllerBase {
    *   A simple renderable array.
    */
   public function searchPage() {
+    $renderer = \Drupal::service('renderer');
+
     $config = \Drupal::configFactory()->getEditable('search_api_federated_solr.search_app.settings');
     $index_config = \Drupal::config('search_api.index.' . $config->get('index.id'));
 
@@ -74,6 +76,12 @@ class SearchController extends ControllerBase {
         ],
       ],
     ];
+
+    // Ensure that this render element cache is invalidated when search app or
+    // index config is updated.
+    $renderer->addCacheableDependency($element, $config);
+    $renderer->addCacheableDependency($element, $index_config);
+
     return $element;
   }
 
