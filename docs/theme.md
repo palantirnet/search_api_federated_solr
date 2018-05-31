@@ -6,8 +6,8 @@ There are many ways to create a custom search app theme.  The two that we recomm
     1. Move into the repo root `cd federated-search-reach`
     1. Install dependencies `yarn install`
     1. Configure your solr backend
-        1. Copy `./src/.env.js.example` into `./src/.env.js`
-        1. Configure your solr backend url in `./src/.env.js`
+        1. Copy `./src/.env.js.example` into `./src/.env.local.js`
+        1. Configure your solr backend url in `./src/.env.local.js`
     1. Spin up the dev instance `yarn start`
     1. Open the project in your IDE or code editor
     1. Start making changes to `./theme/search_theme_override` (Protip: make sure you uncomment any of the changes you make by removing the beginning `//`)
