@@ -69,11 +69,6 @@ function search_api_federated_solr_menu() {
     'type' => MENU_NORMAL_ITEM,
    );
 
-   $items['search_api_federated_solr/settings'] = array(
-    'page callback' => 'search_api_federated_solr_config_endpoint',
-    'access arguments' => array('access content'),
-  );
-
   return $items;
 }
 
@@ -81,7 +76,8 @@ function search_api_federated_solr_menu() {
 * Constructs the search page.
 */
 function page_search_api_federated_solr() {
-  return array('#markup' => '<div id="root"><noscript>This search page requires Javascript in order to function.  <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">Learn how to enable Javascript in your browser.</a></noscript><p class="element-invisible" aria-hidden="true">Federated Solr Search App: If you see this message in your DevTools, it likely means there is an issue adding the app javascript library to this page.  Follow the steps in the search_api_federated_solr module README.</p></div>');
+  $data_federated_search_app_config = search_api_federated_solr_config_json();
+  return array('#markup' => '<div id="root" data-federated-search-app-config="'.htmlspecialchars($data_federated_search_app_config).'"><noscript>This search page requires Javascript in order to function.  <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">Learn how to enable Javascript in your browser.</a></noscript><p class="element-invisible" aria-hidden="true">Federated Solr Search App: If you see this message in your DevTools, it likely means there is an issue adding the app javascript library to this page.  Follow the steps in the search_api_federated_solr module README.</p></div>');
 }
 
 
@@ -258,7 +254,7 @@ function get_site_name($form, $form_state) {
 /**
  * Create search_api_federated_solr config json endpoint.
  */
-function search_api_federated_solr_config_endpoint() {
+function search_api_federated_solr_config_json() {
   $response_data = [];
 
   $search_index = variable_get('search_api_federated_solr_search_index');
@@ -305,7 +301,7 @@ function search_api_federated_solr_config_endpoint() {
     $response_data['paginationButtons'] = $pagination_buttons;
   }
 
-  drupal_json_output($response_data);
+  return json_encode($response_data, JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 }
 
 /**
