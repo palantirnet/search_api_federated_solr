@@ -1,20 +1,10 @@
 /**
- * search-override.scss
- * Defines search override styles.
- *
- * To use this file:
- * - Declare font, stacks (using the same font families already defined in your theme styles)
- * - Define color palette
- * - Compile into a .css file (we recommend keeping this out of your global styles to avoid potential collisions) saved in your theme style directory.
- * - Define a new library for this stylesheet in your theme.libraries.yml file (see instructions in module readme).
- * - Attach the library to the search results page route (see instructions in module readme).
- *
- * @copyright Copyright (c) 2018 Palantir.net
+ * Custom search override styles.
  */
 
-// If you need to override font styles from your theme,
-// you can add font stack variables here.
-//$helvetica: Helvetica, Arial, "Nimbus Sans L", sans-serif;
+// Fonts
+// Ensure your font stack variables is match your site font stacks.
+//$helvetica-neue: HelveticaNeue, Helvetica, Arial, sans-serif;
 
 // Sass color variables, etc.
 $black: #222;
@@ -22,7 +12,6 @@ $lighter-black: #333;
 $white: #fff;
 $white-60: rgba($white, .6);
 $white-30: rgba($white, .3);
-$yellow: #ff0;
 $gray-pale: #eff0f1;
 $gray-light: #e5e5e5;
 $gray-medium: #555;
@@ -34,8 +23,10 @@ $c-bg-gray: #f6f6f6;
 $c-bg-gray-dark: #d8d8d8;
 
 $c-primary: #00274c;
+$c-primary-pale: #8dbef6;
 $c-primary-light: #0d57aa;
 $c-primary-dark: #002a5b;
+
 $c-secondary: #ffcb05;
 $c-secondary-light: #fff2c0;
 $c-secondary-dark: #f4bb06;
@@ -48,7 +39,6 @@ $text-color: $gray-dark;
 $background-color: $white;
 $link-color: $c-primary-light;
 $link-hover: $c-primary-dark;
-///////////////////////////////////////////////////////////
 
 // Breakpoint Variables
 $bp0: 450px;
@@ -59,6 +49,10 @@ $bp3: 1100px;
 /*
  * Begin search override styles
  */
+
+html {
+  //font-family: $helvetica-neue;
+}
 
 /**
  * Search filters
@@ -277,4 +271,130 @@ aside {
       }
     }
   }
+}
+
+/**
+ DatePicker widget
+ */
+// Override default color values with site colors.
+.PresetDateRangePicker_button {
+  border: 2px solid lighten($c-primary-light, 25%);
+  color: lighten($c-primary-light, 25%);
+}
+.PresetDateRangePicker_button__selected {
+  color: $white;
+  background: lighten($c-primary-light, 25%);
+}
+.DayPickerKeyboardShortcuts_show__bottomRight {
+  border-top: 26px solid transparent;
+  border-right: 33px solid $c-primary-light;
+}
+.DayPickerKeyboardShortcuts_show__bottomRight:hover {
+  border-right: 33px solid darken($c-primary-light, 15%);
+}
+.DayPickerKeyboardShortcuts_show__topRight {
+  border-bottom: 26px solid transparent;
+  border-right: 33px solid $c-primary-light;
+}
+.DayPickerKeyboardShortcuts_show__topRight:hover {
+  border-right: 33px solid darken($c-primary-light, 15%);
+}
+.DayPickerKeyboardShortcuts_show__topLeft {
+  border-bottom: 26px solid transparent;
+  border-left: 33px solid lighten($c-primary-light, 25%);
+}
+.DayPickerKeyboardShortcuts_show__topLeft:hover {
+  border-left: 33px solid $c-primary;
+}
+.CalendarDay__selected_span {
+  background: lighten($c-primary-light, 60%);
+  border: 1px solid lighten($c-primary-light, 35%);
+  color: $c-primary-light;
+}
+.CalendarDay__selected_span:active,
+.CalendarDay__selected_span:hover {
+  background: $c-bg-gray-dark;
+  border: 1px solid $c-border-gray-dark;
+  color: $white;
+}
+.CalendarDay__last_in_range {
+  border-right: lighten($c-primary-light, 25%);
+}
+.CalendarDay__selected,
+.CalendarDay__selected:active,
+.CalendarDay__selected:hover {
+  background: $c-primary-light;
+  border: 1px solid $c-primary-light;
+  color: $white;
+}
+.CalendarDay__hovered_span,
+.CalendarDay__hovered_span:hover {
+  background: lighten($c-primary-light, 60%);
+  border: 1px solid lighten($c-primary-light, 35%);
+  color: $c-primary-light;
+}
+.CalendarDay__hovered_span:active {
+  background: lighten($c-primary-light, 60%);
+  border: 1px solid lighten($c-primary-light, 35%);
+  color: $c-primary-light;
+}
+.DateInput_input__focused {
+  border-bottom: 2px solid $c-primary-light;
+}
+
+.CalendarDay__highlighted_calendar {
+  background: $c-secondary-light;
+  color: $gray-medium;
+}
+.CalendarDay__highlighted_calendar:active,
+.CalendarDay__highlighted_calendar:hover {
+  background: $c-secondary;
+  color: $gray-medium;
+}
+
+.DateInput_input::placeholder {
+  color: $gray-medium;
+}
+
+// Override default layout.
+.DayPicker_weekHeader_li {
+  display: inline-block !important; // To override .search-accordion__group li
+}
+
+.DateRangePickerInput_clearDates_default:focus,
+.DateRangePickerInput_clearDates_default:hover {
+  border-radius: 0;
+}
+
+@media only screen and (max-width: 1350px) and (min-width: 901px)  {
+  .DateInput_input__small {
+    font-size: 12px;
+    line-height: 18px;
+    padding: 8px 4px 6px;
+  }
+
+  .DateInput__small {
+    width: 70px;
+  }
+}
+
+.KeyboardShortcutRow_keyContainer {
+  display: inline-block;
+  white-space: nowrap;
+  text-align: right;
+  margin-right: 6px;
+}
+
+.KeyboardShortcutRow_key {
+  font-family: monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  background: $c-bg-gray;
+  padding: 2px 6px;
+}
+
+.KeyboardShortcutRow_action {
+  display: inline;
+  word-break: break-word;
+  margin-left: 8px;
 }

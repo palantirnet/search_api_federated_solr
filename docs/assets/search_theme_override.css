@@ -1,19 +1,7 @@
 /**
- * search-override.scss
- * Defines search override styles.
- *
- * To use this file:
- * - Declare font, stacks (using the same font families already defined in your theme styles)
- * - Define color palette
- * - Compile into a .css file (we recommend keeping this out of your global styles to avoid potential collisions) saved in your theme style directory.
- * - Define a new library for this stylesheet in your theme.libraries.yml file (see instructions in module readme).
- * - Attach the library to the search results page route (see instructions in module readme).
- *
- * @copyright Copyright (c) 2018 Palantir.net
+ * Custom search override styles.
  */
-/*
- * Begin search override styles
- */
+
 /**
  * Search filters
  */
@@ -160,3 +148,115 @@ aside {
       color: #fff; }
       .search-pager__item.is-active a:hover, .search-pager__item.is-active a:active {
         background-color: #002a5b; } }
+
+/**
+ DatePicker widget
+ */
+.PresetDateRangePicker_button {
+  border: 2px solid #4696f1;
+  color: #4696f1; }
+
+.PresetDateRangePicker_button__selected {
+  color: #fff;
+  background: #4696f1; }
+
+.DayPickerKeyboardShortcuts_show__bottomRight {
+  border-top: 26px solid transparent;
+  border-right: 33px solid #0d57aa; }
+
+.DayPickerKeyboardShortcuts_show__bottomRight:hover {
+  border-right: 33px solid #083363; }
+
+.DayPickerKeyboardShortcuts_show__topRight {
+  border-bottom: 26px solid transparent;
+  border-right: 33px solid #0d57aa; }
+
+.DayPickerKeyboardShortcuts_show__topRight:hover {
+  border-right: 33px solid #083363; }
+
+.DayPickerKeyboardShortcuts_show__topLeft {
+  border-bottom: 26px solid transparent;
+  border-left: 33px solid #4696f1; }
+
+.DayPickerKeyboardShortcuts_show__topLeft:hover {
+  border-left: 33px solid #00274c; }
+
+.CalendarDay__selected_span {
+  background: #ebf4fe;
+  border: 1px solid #75b1f4;
+  color: #0d57aa; }
+
+.CalendarDay__selected_span:active,
+.CalendarDay__selected_span:hover {
+  background: #d8d8d8;
+  border: 1px solid #b5b5b5;
+  color: #fff; }
+
+.CalendarDay__last_in_range {
+  border-right: #4696f1; }
+
+.CalendarDay__selected,
+.CalendarDay__selected:active,
+.CalendarDay__selected:hover {
+  background: #0d57aa;
+  border: 1px solid #0d57aa;
+  color: #fff; }
+
+.CalendarDay__hovered_span,
+.CalendarDay__hovered_span:hover {
+  background: #ebf4fe;
+  border: 1px solid #75b1f4;
+  color: #0d57aa; }
+
+.CalendarDay__hovered_span:active {
+  background: #ebf4fe;
+  border: 1px solid #75b1f4;
+  color: #0d57aa; }
+
+.DateInput_input__focused {
+  border-bottom: 2px solid #0d57aa; }
+
+.CalendarDay__highlighted_calendar {
+  background: #fff2c0;
+  color: #555; }
+
+.CalendarDay__highlighted_calendar:active,
+.CalendarDay__highlighted_calendar:hover {
+  background: #ffcb05;
+  color: #555; }
+
+.DateInput_input::placeholder {
+  color: #555; }
+
+.DayPicker_weekHeader_li {
+  display: inline-block !important; }
+
+.DateRangePickerInput_clearDates_default:focus,
+.DateRangePickerInput_clearDates_default:hover {
+  border-radius: 0; }
+
+@media only screen and (max-width: 1350px) and (min-width: 901px) {
+  .DateInput_input__small {
+    font-size: 12px;
+    line-height: 18px;
+    padding: 8px 4px 6px; }
+  .DateInput__small {
+    width: 70px; } }
+
+.KeyboardShortcutRow_keyContainer {
+  display: inline-block;
+  white-space: nowrap;
+  text-align: right;
+  margin-right: 6px; }
+
+.KeyboardShortcutRow_key {
+  font-family: monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  background: #f6f6f6;
+  padding: 2px 6px; }
+
+.KeyboardShortcutRow_action {
+  display: inline;
+  word-break: break-word;
+  margin-left: 8px; }
