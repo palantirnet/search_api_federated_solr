@@ -2,6 +2,6 @@
 # yarn lockfile v1
 
 
-"@palantirnet/federated-search-react@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@palantirnet/federated-search-react/-/federated-search-react-0.3.0.tgz#00df45b5418a998fd029a3906ca6d19a70741285"
+"@palantirnet/federated-search-react@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@palantirnet/federated-search-react/-/federated-search-react-0.5.0.tgz#8a0b7935fa3ee5bdd95c4ae7fcc26c853144bc38"
