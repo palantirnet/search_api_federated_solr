@@ -19,11 +19,9 @@ There are many ways to create a custom search app theme.  The two that we recomm
     1. You'll likely also need to [define this css file as a theme library and attach it to the search page](#adding-the-styles-to-your-theme)  
 
 ### Adding the styles to your theme
-Once you have defined your theme styles, we recommend creating a theme library with the `CSS` and attaching that file to the search page route.  See examples below.
+Once you have defined your theme styles, we recommend adding the `CSS` to your theme directory and attaching that file to the search page route. 
 
-### Example library attachment
-
-Assuming that your search theme css file exists at <your-theme>/css/search_theme_override.css:
+Assuming that your search theme css file exists at <your-theme>/css/search_theme_override.css, you can update your theme `template.php` with:
 
 ```php
 // <your-theme>/template.php file
