@@ -398,11 +398,14 @@ function search_api_federated_solr_field_widget_form(&$form, &$form_state, $fiel
   return $element;
 }
 
+/**
+ * Declare search app static assets as module library.
+ */
 function search_api_federated_solr_library() {
   // Search app.
   $libraries['search-app'] = array(
-    'title' => 'Search App',
-    'version' => '0.1',
+    'title' => 'Federated Search App',
+    'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
       'js/main.1a8fd778.js' => array(),
     ),
