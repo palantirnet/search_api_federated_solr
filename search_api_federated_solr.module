@@ -404,7 +404,9 @@ function search_api_federated_solr_library() {
     'title' => 'Search App',
     'version' => '0.1',
     'js' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.1a8fd778.js' => array(),
+      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.1a8fd778.js' => array(
+        'scope' => 'footer',
+      ),
     ),
     'css' => array(
       drupal_get_path('module', 'search_api_federated_solr') . '/css/main.3e2bc955.css' => array(),
