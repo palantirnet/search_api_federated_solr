@@ -4,7 +4,7 @@ search:
     theme:
       'css/main.3e2bc955.css': {}
   js:
-    'js/main.1a8fd778.js': {
+    'js/main.8814223d.js': {
       preprocess: false,
       minified: true,
     }
