@@ -4,7 +4,7 @@ search_api_federated_solr.search_app.settings:
     _form: '\Drupal\search_api_federated_solr\Form\SearchApiFederatedSolrSearchAppSettingsForm'
     _title: 'Search API Solr Federated: Search App Settings'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer federated search'
 
 route_callbacks:
   - '\Drupal\search_api_federated_solr\Routing\SearchApiFederatedSolrRoutes::routes'
