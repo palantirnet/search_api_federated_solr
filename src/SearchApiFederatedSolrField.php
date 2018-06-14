@@ -28,7 +28,9 @@ class SearchApiFederatedSolrField extends SearchApiAbstractAlterCallback {
       $bundle = $entity->{$entity_info['entity keys']['bundle']};
       foreach ($this->options['fields'] as $field) {
         if (isset($field['bundle'][$bundle])) {
-          $item->{$field['machine_name']} = token_replace($field['bundle'][$bundle], [$entity_type => $entity]);
+          if($value = token_replace($field['bundle'][$bundle], [$entity_type => $entity], ['clear' => true])) {
+            $item->{$field['machine_name']} = $value;
+          }
         }
       }
     }
