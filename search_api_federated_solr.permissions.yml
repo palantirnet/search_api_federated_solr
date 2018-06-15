@@ -1,0 +1,7 @@
+'use federated search':
+  title: 'Use Federated Search'
+  description: 'Allows users to view and use the Federated Search page.'
+
+'administer federated search':
+  title: 'Administer Federated Search'
+  description: 'Update Federated Search page configuration.'

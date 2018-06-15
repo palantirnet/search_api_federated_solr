@@ -77,7 +77,7 @@ class SearchApiFederatedSolrRoutes implements ContainerInjectionInterface {
       $path,
       $args,
       array(
-        '_permission' => 'search content',
+        '_permission' => 'use federated search',
       )
     );
 
