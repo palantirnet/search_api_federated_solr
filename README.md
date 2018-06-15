@@ -10,7 +10,7 @@ On each site included in the federated search, you will need to:
 
 In order to display results from the Solr index:
 
-1. Configure the application route and settings at `/admin/config/search-api-federated-solr/search-app/settings`
+1. Configure the application route and settings at `/admin/config/search/search_api/search-api-federated-solr/search-app/settings`
 2. Set permissions for `Use Federated Search` and `Administer Federated Search` for the proper roles.
 3. Optional: [Theme the ReactJS search app](docs/theme.md)
 4. Optional: Add the federated search page form block to your site theme
