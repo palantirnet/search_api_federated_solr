@@ -239,6 +239,18 @@ function search_api_federated_solr_admin($form, &$form_state) {
 }
 
 /**
+ * Create search_api_federated_solr_form_alter to validate the search path format.
+ */
+
+function search_api_federated_solr_form_alter(&$form, &$form_state, $form_id) {
+  $form['#validate'][] = 'search_api_federated_solr_path_form_validate';
+}
+
+function search_api_federated_solr_path_form_validate($form, &$form_state) {
+     $form_state['values']['search_api_federated_solr_path'] = trim($form_state['values']['search_api_federated_solr_path'], '/');
+}
+
+/**
  * Ajax callback for search_api_federated_solr_search_index.
  */
 function get_site_name($form, $form_state) {
