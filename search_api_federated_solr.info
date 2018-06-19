@@ -1,6 +1,6 @@
 ; @copyright (c) Copyright 2018 Palantir.net
 
-name = Federated Solr Search API Module
+name = Search API Federated Solr
 description = Allows indexing multiple Drupal sites into a single Solr search index.
 package = Search
 core = 7.x
