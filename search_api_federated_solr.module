@@ -58,14 +58,14 @@ function search_api_federated_solr_menu() {
   $items[$search_path] = array(
     'title' => 'Search',
     'page callback' => 'page_search_api_federated_solr',
-    'access arguments' => array('access content'),
+    'access arguments' => array('use federated search'),
   );
 
   $items['admin/config/search/search_api/search-api-federated-solr/search-app/settings'] = array(
-    'title' => 'Search API Solr Federated: Search App Settings',
+    'title' => 'Search API Federated Solr: Search App Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('search_api_federated_solr_admin'),
-    'access arguments' => array('access administration page'),
+    'access arguments' => array('administer federated search'),
     'type' => MENU_NORMAL_ITEM,
    );
 
@@ -466,4 +466,18 @@ function search_api_federated_solr_search_api_solr_documents_alter(array &$docum
     }
   }
 
+/**
+ * Implements hook_permission().
+ */
+function search_api_federated_solr_permission() {
+  return array(
+    'administer federated search' => array(
+      'title' => t('Administer Federated Search'),
+      'description' => t('Update Federated Search page configuration.'),
+    ),
+    'use federated search' => array(
+      'title' => t('Use Federated Search'),
+      'description' => t('Allows users to view and use the Federated Search page.'),
+    ),
+  );
 }
