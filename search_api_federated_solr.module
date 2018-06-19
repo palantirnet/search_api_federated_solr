@@ -419,6 +419,54 @@ function search_api_federated_solr_library() {
 }
 
 /**
+ * Implements hook_search_api_solr_documents_alter().
+ */
+function search_api_federated_solr_search_api_solr_documents_alter(array &$documents, SearchApiIndex $index, array $items) {
+  // Set content type boosts here. Remember, you'll have to re-index for this change to take effect.
+  // The default boost is 1, so a value between 0 and 1 would down boost the type, >1 will elevate it.
+  $boosts = array(
+    'address' => 1,
+    'cancers_and_treatments' => 1,
+    'medical_service' => 1,
+    'feed' => 1,
+    'feed_item' => 1,
+    'general_content' => 1,
+    'healthwise_item' => 1,
+    'healthwise_list_page' => 1,
+    'home_page' => 1,
+    'living_with_cancer' => 1,
+    'location' => 1,
+    'raw_html' => 1,
+    'marketing_materials' => 1,
+    'media_contact' => 1,
+    'news' => 1,
+    'entry' => 1,
+    'physician_group' => 1,
+    'physician_profile' => 1,
+    'posts' => 1,
+    'promotional_block' => 1,
+    'promotional_page_fullwidth' => 1,
+    'promotional_page_twocolumn' => 1,
+    'promotional_page' => 1,
+    'quality_and_safety' => 1,
+    'rss_news' => 1,
+    'related_link' => 1,
+    'search_quick_link' => 1,
+    'spotlight_common_content' => 1,
+    'victors_care_home_page' => 1,
+  );
+
+  if ($index->getEntityType() == 'node' && $index->machine_name == 'federated_search') {
+    foreach ($documents as $document) {
+      if ($type = node_load($document->item_id)->type) {
+        if (isset($boosts[$type])) {
+          $document->setBoost($boosts[$type]);
+        }
+      }
+    }
+  }
+
+/**
  * Implements hook_permission().
  */
 function search_api_federated_solr_permission() {
