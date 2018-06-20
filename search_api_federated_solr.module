@@ -290,9 +290,6 @@ function search_api_federated_solr_config_json() {
 
   $is_site_name_property = variable_get('search_api_federated_solr_has_site_name_property');
   $set_default_site = variable_get('search_api_federated_solr_set_search_site');
-  if ($is_site_name_property == 'true' && $set_default_site) {
-    $response_data['siteSearch'] = variable_get('site_name');
-  }
   if ($is_site_name_property == 'true' && !$set_default_site) {
     variable_set('search_api_federated_solr_set_search_site', 0);
   }
