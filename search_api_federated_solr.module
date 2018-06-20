@@ -142,9 +142,21 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
  */
 function search_api_federated_solr_search_block_form_submit($form, &$form_state) {
   $search_path = variable_get('search_api_federated_solr_path', 'search-app');
-  drupal_goto($search_path, ['query'=> ['search' => $form_state['values']['q']]]);
-}
+  // Define default search app qs params (i.e. search term).
+  $qs_params = [
+    'search' => $form_state['values']['q'],
+  ];
 
+  // If there is a site name and it should be set by default, add it as qs param.
+  $is_site_name_property = variable_get('search_api_federated_solr_has_site_name_property');
+  $set_default_site = variable_get('search_api_federated_solr_set_search_site');
+  if ($is_site_name_property == 'true' && $set_default_site) {
+    $qs_params['ss_site_name'] = variable_get('site_name');
+  }
+
+  // Redirect to the search app path with necessary qs params.
+  drupal_goto($search_path, ['query'=> $qs_params]);
+}
 
 /**
  * Create search_api_federated_solr config form.
