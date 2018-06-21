@@ -242,11 +242,11 @@ function search_api_federated_solr_admin($form, &$form_state) {
  * Create search_api_federated_solr_form_alter to validate the search path format.
  */
 
-function search_api_federated_solr_form_alter(&$form, &$form_state, $form_id) {
-  $form['#validate'][] = 'search_api_federated_solr_path_form_validate';
+function search_api_federated_solr_form_search_api_federated_solr_admin_alter(&$form, &$form_state, $form_id) {
+  $form['#validate'][] = '_path_form_validate';
 }
 
-function search_api_federated_solr_path_form_validate($form, &$form_state) {
+function _path_form_validate($form, &$form_state) {
      $form_state['values']['search_api_federated_solr_path'] = trim($form_state['values']['search_api_federated_solr_path'], '/');
 }
 
