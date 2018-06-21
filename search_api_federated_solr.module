@@ -294,6 +294,12 @@ function search_api_federated_solr_config_json() {
     $response_data['url'] = $server_url;
   }
 
+  $basic_auth_username = variable_get('search_api_federated_solr_search_index_basic_auth_username');
+  $basic_auth_password = variable_get('search_api_federated_solr_search_index_basic_auth_password');
+  if ($basic_auth_username || $basic_auth_password) {
+    $response_data['userpass'] = base64_encode($basic_auth_username . ':' . $basic_auth_password);
+  }
+
   $is_site_name_property = variable_get('search_api_federated_solr_has_site_name_property');
   $set_default_site = variable_get('search_api_federated_solr_set_search_site');
   if ($is_site_name_property == 'true' && $set_default_site) {
