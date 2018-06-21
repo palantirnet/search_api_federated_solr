@@ -31,7 +31,6 @@ class FederatedSearchPageBlockForm extends FormBase {
     $renderer = \Drupal::service('renderer');
     $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
 
-
     $form['search'] = array(
       '#type' => 'search',
       '#name' => 'search',
@@ -54,7 +53,6 @@ class FederatedSearchPageBlockForm extends FormBase {
       '#suffix' => '</div>',
     );
 
-
     // Send site name as qs param if app is configured to load w/default site.
     if ($app_config->get('facet.site_name.set_default')) {
       $search_index = $app_config->get('index.id');
@@ -70,11 +68,9 @@ class FederatedSearchPageBlockForm extends FormBase {
       // Ensure that this form's render cache is invalidated when search app
       // config is updated.
       $renderer->addCacheableDependency($form, $index_config);
-
     }
 
     $form['#action'] = $this->getUrlGenerator()->generateFromRoute('search_api_federated_solr.search');
-
     $form['#method'] = 'get';
 
     // Ensure that this form's render cache is invalidated when search app
