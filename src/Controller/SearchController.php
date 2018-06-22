@@ -32,20 +32,16 @@ class SearchController extends ControllerBase {
     // Validate that there is still a site name property set for this index.
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
     $config->set('index.has_site_name_property', $site_name_property ? true : false);
+
     // Determine if config option to set default site name is set.
     $set_default_site = $config->get('facet.site_name.set_default');
 
-    // OPTIONAL: The default "Site Name" facet value.
-    // Note: This value must match the "site_name" property for one of your sites.
-    // If default site flag is set and the index has a site property, update response.
-    if ($set_default_site && $site_name_property) {
-      $federated_search_app_config['siteSearch'] = $site_name_property;
-    }
-
+    // If we no longer have a site name property so unset the set default config.
     if ($set_default_site && !$site_name_property) {
-      // We no longer have a site name property so unset the set default config.
       $config->set('facet.site_name.set_default', 0);
     }
+    // See Drupal\search_api_federated_solr\Form\FederatedSearchPageForm class
+    // The default "Site Name" facet value is passed by search form in initial get request.
 
     // OPTIONAL: The text to display when the app loads with no search term.
     if ($search_prompt = $config->get('content.search_prompt')) {
