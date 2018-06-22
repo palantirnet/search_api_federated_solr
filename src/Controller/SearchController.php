@@ -29,6 +29,10 @@ class SearchController extends ControllerBase {
     // REQUIRED: The default solr backend.
     $federated_search_app_config['url'] = $config->get('index.server_url');
 
+    // OPTIONAL: The username and password for Basic Authentication on the server.
+    // The username and password will be combined and base64 encoded as per the application.
+    $federated_search_app_config['userpass'] = base64_encode($config->get('index.username') . ':' . $config->get('index.password'));
+
     // Validate that there is still a site name property set for this index.
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
     $config->set('index.has_site_name_property', $site_name_property ? true : false);

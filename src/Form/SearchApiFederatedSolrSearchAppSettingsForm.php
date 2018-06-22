@@ -77,6 +77,24 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#value' => $config->get('index.has_site_name_property') ? 'true' : '',
     ];
 
+    $form['search_index_basic_auth'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Search Index Basic Authentication'),
+      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.')
+    ];
+
+    $form['search_index_basic_auth']['username'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Username'),
+      '#default_value' => $config->get('index.username'),
+    ];
+
+    $form['search_index_basic_auth']['password'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Password'),
+      '#default_value' => $config->get('index.password'),
+    ];
+    
     $form['set_search_site'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Set the "Site name" facet to this site'),
@@ -176,6 +194,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
     // Set the search app configuration setting for the solr backend url.
     $config->set('index.server_url', $server_url);
+
+    // Set the Basic Auth username and password.
+    $config->set('index.username', $form_state->getValue('username'));
+    $config->set('index.password', $form_state->getValue('password'));
 
     // Set the no results text.
     $config->set('content.no_results', $form_state->getValue('no_results_text'));
