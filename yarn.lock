@@ -2,6 +2,6 @@
 # yarn lockfile v1
 
 
-"@palantirnet/federated-search-react@git+ssh://git@github.com:palantirnet/federated-search-react.git#v0.5.0":
-  version "0.5.0"
-  resolved "git+ssh://git@github.com:palantirnet/federated-search-react.git#71bd64cdb88528404c1eb402d5adcf1e7073219f"
+"@palantirnet/federated-search-react@git+ssh://git@github.com:palantirnet/federated-search-react.git#v1.0.1":
+  version "1.0.1"
+  resolved "git+ssh://git@github.com:palantirnet/federated-search-react.git#1941347fbab818a3558012721c8e861ccf968f04"

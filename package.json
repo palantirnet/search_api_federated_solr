@@ -5,7 +5,7 @@
   "repository": "git@github.com:palantirnet/search_api_federated_solr.git",
   "license": "MIT",
   "dependencies": {
-    "@palantirnet/federated-search-react": "git+ssh://git@github.com:palantirnet/federated-search-react.git#v0.5.0"
+    "@palantirnet/federated-search-react": "git+ssh://git@github.com:palantirnet/federated-search-react.git#v1.0.1"
   },
   "scripts": {
     "copyAssets": "cp -r ./node_modules/@palantirnet/federated-search-react/css ./node_modules/@palantirnet/federated-search-react/js ./node_modules/@palantirnet/federated-search-react/media .",

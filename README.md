@@ -15,6 +15,15 @@ In order to display results from the Solr index:
 3. Optional: [Theme the ReactJS search app](docs/theme.md)
 4. Optional: Add the federated search page form block to your site theme
 
+## Updating the bundled React application
+
+When changes to [federated-search-react](https://github.com/palantirnet/federated-search-react/) are made they'll need to be pulled into this module. To do so:
+
+- Update `package.json` with the new version.
+- Run `yarn install`
+- Delete the old versions of `js/main.*.js (and .map)` and `css/main.*.css (and .map)`
+- Update `search_api_federated_solr.libraries.yml` to reference the new file.
+
 ## More information
 
 * [How to use this module](docs/usage.md)
