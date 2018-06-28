@@ -452,12 +452,12 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.8814223d.js' => array(
+      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.27fb6eef.js' => array(
         'scope' => 'footer',
       ),
     ),
     'css' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/css/main.3e2bc955.css' => array(),
+      drupal_get_path('module', 'search_api_federated_solr') . '/css/main.9c94ca73.css' => array(),
     ),
   );
   return $libraries;
