@@ -67,6 +67,12 @@ class SearchController extends ControllerBase {
       $federated_search_app_config['paginationButtons'] = intval($pagination_buttons);
     }
 
+    // OPTIONAL: The number of page buttons to show for pagination.
+    if ($page_title = $config->get('page_title')) {
+      $federated_search_app_config['pageTitle'] = $page_title;
+    }
+
+
     $element = [
       '#theme' => 'search_app',
       '#federated_search_app_config' => $federated_search_app_config,

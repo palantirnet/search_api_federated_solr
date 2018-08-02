@@ -55,6 +55,14 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The path for the search app (Default: "/search-app").'),
     ];
 
+    $form['page_title'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Search results page title'),
+      '#default_value' => $config->get('page_title'),
+      '#description' => $this
+        ->t('The title that will live in the header tag of the search results page (leave empty to hide completely).'),
+    ];
+
     $form['search_index'] = [
       '#type' => 'select',
       '#title' => $this->t('Search API index'),
@@ -163,6 +171,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $config->set('path', $path);
       $rebuild_routes = TRUE;
     }
+
+    // Set the search results page title.
+    $page_title = $form_state->getValue('page_title');
+    $config->set('page_title', $page_title);
 
     // Set the search app configuration setting for the default search site flag.
     $set_search_site = $form_state->getValue('set_search_site');
