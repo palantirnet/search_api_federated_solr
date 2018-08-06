@@ -4,9 +4,10 @@ This module facilitates indexing data from multiple Drupal sites into a single S
 
 On each site included in the federated search, you will need to:
 
-1. Install this module
-2. Configure a Search API server to connect to the shared Solr index
-3. Configure a Search API index according to the [recommended schema](docs/federated_schema.md)
+1. Install Fields Search API Module
+2. Install this module
+3. Configure a Search API server to connect to the shared Solr index
+4. Configure a Search API index according to the [recommended schema](docs/federated_schema.md)
 
 In order to display results from the Solr index:
 
@@ -26,7 +27,5 @@ When changes to [federated-search-react](https://github.com/palantirnet/federate
 
 ## More information
 
-* [How to use this module](docs/usage.md)
-* [How to configure a Search API Index for federated search](docs/federated_schema.md)
 * [How to theme the ReactJS search app](docs/theme.md)
 * [How to add the search form block](docs/block.md)

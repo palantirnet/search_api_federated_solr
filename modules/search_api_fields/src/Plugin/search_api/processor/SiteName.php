@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\search_api_federated_solr\Plugin\search_api\processor;
+namespace Drupal\search_api_fields\Plugin\search_api\processor;
 
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\Item\ItemInterface;
 use Drupal\search_api\Processor\ProcessorPluginBase;
 use Drupal\search_api\Processor\ProcessorProperty;
-use Drupal\search_api_federated_solr\Plugin\search_api\processor\Property\SiteNameProperty;
+use Drupal\search_api_fields\Plugin\search_api\processor\Property\SiteNameProperty;
 
 
 /**

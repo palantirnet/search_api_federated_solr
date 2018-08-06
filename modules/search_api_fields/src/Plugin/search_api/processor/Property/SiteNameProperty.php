@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\search_api_federated_solr\Plugin\search_api\processor\Property;
+namespace Drupal\search_api_fields\Plugin\search_api\processor\Property;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;

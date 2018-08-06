@@ -1,0 +1,19 @@
+{
+  "name": "palantirnet/search_api_fields",
+  "type": "drupal-module",
+  "description": "Allows indexing multiple Drupal sites into a single Solr search index.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  ],
+  "require": {
+    "drupal/core": "^8.0",
+    "drupal/search_api_solr": "^1.2",
+    "drupal/token": "^1.1"
+  }
+}

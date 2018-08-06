@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\search_api_federated_solr\Plugin\search_api\processor\Property;
+namespace Drupal\search_api_fields\Plugin\search_api\processor\Property;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
@@ -15,11 +15,11 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\ContentEntityBase;
 
 /**
- * Defines an "federated field" property.
+ * Defines an "mapped field" property.
  *
- * @see \Drupal\search_api_federated_solr\Plugin\search_api\processor\FederatedFields
+ * @see \Drupal\search_api_fields\Plugin\search_api\processor\MappedFields
  */
-class FederatedFieldProperty extends ConfigurablePropertyBase {
+class MappedFieldProperty extends ConfigurablePropertyBase {
 
   use StringTranslationTrait;
 
@@ -45,7 +45,7 @@ class FederatedFieldProperty extends ConfigurablePropertyBase {
 
     $form['field_data'] = [
       '#type' => 'item',
-      '#title' => $this->t('Federated data'),
+      '#title' => $this->t('Mapped data'),
       '#description' => $this->t('Set the data to be sent to the index for each bundle in the data sources set in your index configuration. Use static values or choose tokens using the picker below.'),
     ];
 

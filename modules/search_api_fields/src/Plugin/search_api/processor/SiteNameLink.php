@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\search_api_federated_solr\Plugin\search_api\processor;
+namespace Drupal\search_api_fields\Plugin\search_api\processor;
 
 use Drupal\Core\Link;
 use Drupal\Core\Url;
