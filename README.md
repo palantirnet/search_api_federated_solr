@@ -27,5 +27,6 @@ When changes to [federated-search-react](https://github.com/palantirnet/federate
 
 ## More information
 
+* [How to configure a Search API Index for federated search](docs/federated_schema.md)
 * [How to theme the ReactJS search app](docs/theme.md)
 * [How to add the search form block](docs/block.md)
