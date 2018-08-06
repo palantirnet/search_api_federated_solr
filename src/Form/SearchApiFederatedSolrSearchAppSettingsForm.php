@@ -47,6 +47,29 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $index_options[$search_api_index->id()] = $search_api_index->label();
     }
 
+    // Validates whether or not the search app's chosen index has a site_name property
+    // and alters the search app settings form accordingly.
+    if ($search_index_id = $form['search_index']['#default_value']) {
+      $index_config = \Drupal::config('search_api.index.' . $search_index_id);
+      // Determine if the index has a site name property, which could have been
+      // added / removed since last form load.
+      $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
+      $config->set('index.has_site_name_property', $site_name_property ? true : false);
+
+      // If the index does not have a site name property, reset the search app config options.
+      if (!$site_name_property) {
+        $site_name_property_value = '';
+        $site_name_property_default_value = 0;
+        $config->set('facet.site_name.set_default', 0);
+      }
+      else {
+        // If the index does have a site name property, ensure the hidden form field reflects that.
+        $site_name_property_value = 'true';
+      }
+
+      $config->save();
+    }
+
     $form['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Search app path'),
@@ -74,7 +97,8 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#attributes' => [
         'id' => ['site-name-property'],
       ],
-      '#value' => $config->get('index.has_site_name_property') ? 'true' : '',
+      '#value' => $site_name_property_value,
+      '#default_value' => $site_name_property_default_value,
     ];
 
     $form['search_index_basic_auth'] = [
