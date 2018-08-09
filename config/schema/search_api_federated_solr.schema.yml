@@ -1,0 +1,51 @@
+# Schema for configuration files of the Search API Federated Solr module.
+
+search_api_federated_solr.search_app.settings:
+  type: config_object
+  label: 'Search API Federated Solr settings'
+  mapping:
+    path:
+      type: string
+      label: 'The path for the search app.'
+    facet:
+      type: mapping
+      mapping:
+        site_name:
+          type: mapping
+          mapping:
+            set_default:
+              type: boolean
+              label: 'When true, only search results from this site will be shown.'
+    index:
+      type: mapping
+      mapping:
+        id:
+          type: string
+          label: 'Defines which search_api index and server the search app should use.'
+        has_site_name_property:
+          type: boolean
+          label: 'Has site name flag.'
+        server_url:
+          type: string
+          label: 'The server url for the search app.'
+    content:
+      type: mapping
+      mapping:
+        no_results:
+          type: string
+          label: 'This text is shown when a query returns no results.'
+        search_prompt:
+          type: string
+          label: 'This text is shown when no query term has been entered.'
+    results:
+      type: mapping
+      mapping:
+        rows:
+          type: integer
+          label: 'The max number of results to render per search results page.'
+    pagination:
+      type: mapping
+      mapping:
+        buttons:
+          type: integer
+          label: 'The max number of numbered pagination buttons to show at a given time.'

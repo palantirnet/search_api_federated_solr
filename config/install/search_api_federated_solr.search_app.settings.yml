@@ -1,0 +1,15 @@
+facet:
+  site_name:
+    set_default: false
+index:
+  id: ''
+  has_site_name_property: false
+  server_url: ''
+content:
+  no_results: ''
+  search_prompt: ''
+results:
+  rows: null
+pagination:
+  buttons: null
+path: /search-app
