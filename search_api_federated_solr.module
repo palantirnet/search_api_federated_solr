@@ -23,7 +23,7 @@ function search_api_federated_solr_help($route_name, RouteMatchInterface $route_
       $output .= '<ol>';
       $output .= '<li>' . t('Install this module') . '</li>';
       $output .= '<li>' . t('Configure a Search API server to connect to the shared Solr index') . '</li>';
-      $output .= '<li>' . t('Configure a Search API index according to the') . '<a href="https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/federated_schema.md">' . t('recommended schema') . '</a></li>';
+      $output .= '<li>' . t('Configure a Search API index according to the ') . '<a href="https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/federated_schema.md">' . t('recommended schema') . '</a></li>';
       $output .= '</ol>';
       $output .= '<p>' . t('In order to display results from the Solr index') . ':</p>';
       $output .= '<ol>';
