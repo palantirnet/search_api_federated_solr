@@ -45,7 +45,6 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
 
       $urls = domain_get_content_urls($entity);
 
-      ksort($urls);
       $item->search_api_urls = $urls;
     }
 

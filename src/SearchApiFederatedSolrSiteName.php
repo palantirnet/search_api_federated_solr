@@ -57,15 +57,15 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
     // Map the Domain of each node to its configured label.
     foreach ($items as &$item) {
       $nid = entity_id($type, $item);
-      $domains = domain_get_node_domains($nid);
+      $entity = current(entity_load($type, [$nid]));
+      $domains = domain_get_content_urls($entity);
 
       $ds = [];
-      foreach ($domains['domain_id'] as $domain_id) {
+      foreach ($domains as $domain_id => $url ) {
         $domain = domain_lookup($domain_id);
         $ds[] = $domain['sitename'];
       }
       
-      ksort($ds);
       $item->site_name = $ds;
     }
 
