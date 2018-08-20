@@ -26,7 +26,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
       'site_name' => array(
         'label' => t('Site Name'),
         'description' => t('Adds the site name to the indexed data.'),
-        'type' => 'text',
+        'type' => 'list<string>',
       ),
     );
   }
@@ -47,7 +47,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
     $site_name = !empty($this->options['site_name']) ? $this->options['site_name'] : variable_get('site_name');
 
     foreach ($items as &$item) {
-      $item->site_name = $site_name;
+      $item->site_name = [$site_name];
     }
   }
 
@@ -57,10 +57,16 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
     // Map the Domain of each node to its configured label.
     foreach ($items as &$item) {
       $nid = entity_id($type, $item);
-      $domain = domain_get_node_match($nid);
+      $domains = domain_get_node_domains($nid);
 
-      $federated_domain = !empty($this->options['domain'][$domain['machine_name']]) ? $this->options['domain'][$domain['machine_name']] : $domain['sitename'];
-      $item->site_name = $federated_domain;
+      $ds = [];
+      foreach ($domains['domain_id'] as $domain_id) {
+        $domain = domain_lookup($domain_id);
+        $ds[] = $domain['sitename'];
+      }
+      
+      ksort($ds);
+      $item->site_name = $ds;
     }
 
   }

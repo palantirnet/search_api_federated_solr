@@ -13,3 +13,4 @@ files[] = src/SearchApiFederatedSolrField.php
 files[] = src/SearchApiFederatedSolrTerms.php
 files[] = src/SearchApiFederatedSolrRemap.php
 files[] = src/SearchApiFederatedSolrSiteName.php
+files[] = src/SearchApiFederatedSolrUrls.php
