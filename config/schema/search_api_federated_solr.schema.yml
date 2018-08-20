@@ -28,6 +28,12 @@ search_api_federated_solr.search_app.settings:
         server_url:
           type: string
           label: 'The server url for the search app.'
+        username:
+          type: string
+          label: 'Basic Auth username.'
+        password:
+          type: string
+          label: 'Basic Auth password.'
     content:
       type: mapping
       mapping:
