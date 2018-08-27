@@ -12,7 +12,7 @@
     },
     {
       "type": "vcs",
-      "url": "git@github.com:palantirnet/search_api_federated_solr.git"
+      "url": "git@github.com:palantirnet/search_api_field_map.git"
     }
   ],
   "require": {
