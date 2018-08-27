@@ -9,11 +9,16 @@
     {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:palantirnet/search_api_federated_solr.git"
     }
   ],
   "require": {
     "drupal/core": "^8.0",
     "drupal/search_api_solr": "^1.2",
-    "drupal/token": "^1.1"
+    "drupal/token": "^1.1",
+    "palantirnet/search_api_field_map": "dev-master"
   }
 }
