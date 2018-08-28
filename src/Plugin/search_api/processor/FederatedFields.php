@@ -4,13 +4,13 @@ namespace Drupal\search_api_federated_solr\Plugin\search_api\processor;
 
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\Item\ItemInterface;
-use Drupal\search_api_federated_solr\Plugin\search_api\processor\Property\FederatedFieldProperty;
+use Drupal\search_api_field_map\Plugin\search_api\processor\Property\MappedFieldProperty;
 use Drupal\search_api\Processor\ProcessorPluginBase;
 
 /**
  * Normalize multiple content types into a single federated field.
  *
- * @see \Drupal\search_api_federated_solr\Plugin\search_api\processor\Property\FederatedFieldProperty
+ * @see \Drupal\search_api_field_map\Plugin\search_api\processor\Property\MappedFieldProperty;
  *
  * @SearchApiProcessor(
  *   id = "federated_field",
@@ -38,7 +38,7 @@ class FederatedFields extends ProcessorPluginBase {
         'type' => 'string',
         'processor_id' => $this->getPluginId(),
       ];
-      $properties['federated_field'] = new FederatedFieldProperty($definition);
+      $properties['federated_field'] = new MappedFieldProperty($definition);
     }
 
     return $properties;
