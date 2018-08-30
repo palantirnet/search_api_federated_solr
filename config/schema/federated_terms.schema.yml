@@ -1,0 +1,21 @@
+field.storage_settings.federated_terms:
+  type: mapping
+  label: 'Federated Term settings'
+  mapping:
+    max_length:
+      type: integer
+      label: 'Maximum length'
+    is_ascii:
+      type: boolean
+      label: 'Contains US ASCII characters only'
+
+field.widget.settings.federated_terms_textfield:
+  type: mapping
+  label: 'Federated Terms Textfield'
+  mapping:
+    size:
+      type: integer
+      label: 'Size of textfield'
+    placeholder:
+      type: label
+      label: 'Placeholder'
