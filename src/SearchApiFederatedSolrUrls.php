@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Class SearchApiFederatedSolrUrls
+ * Provides a Search API index data alteration that adds the sites that the content is available on to each indexed item.
+ */
 class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
 
   /**
