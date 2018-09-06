@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\search_api_federated_solr\Plugin\search_api\processor;``
+namespace Drupal\search_api_federated_solr\Plugin\search_api\processor;
 
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\Item\ItemInterface;
