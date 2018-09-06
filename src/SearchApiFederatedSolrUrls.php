@@ -21,14 +21,14 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
    * {@inheritdoc}
    */
   public function propertyInfo() {
-    return array(
+    return [
       'search_api_urls' => [
         'label' => t('URLs'),
         'description' => t('URLs pointing to this node on all sites containing'),
         'type' => 'list<uri>',
         'cardinality' => -1,
       ],
-    );
+    ];
   }
 
   /**
