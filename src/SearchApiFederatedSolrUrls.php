@@ -2,7 +2,8 @@
 
 /**
  * Class SearchApiFederatedSolrUrls
- * Provides a Search API index data alteration that adds the sites that the content is available on to each indexed item.
+ * Provides a Search API index data alteration that adds the sites that the
+ * content is available on to each indexed item.
  */
 class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
 
@@ -21,12 +22,12 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
    */
   public function propertyInfo() {
     return array(
-      'search_api_urls' => array(
+      'search_api_urls' => [
         'label' => t('URLs'),
         'description' => t('URLs pointing to this node on all sites containing'),
         'type' => 'list<uri>',
         'cardinality' => -1,
-      ),
+      ],
     );
   }
 
@@ -53,4 +54,5 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
     }
 
   }
+
 }
