@@ -30,6 +30,11 @@ function search_api_federated_solr_search_api_alter_callback_info() {
     'description' => t('The name of the site from which this content originated. This can be useful if indexing multiple sites with a single search index.'),
     'class' => 'SearchApiFederatedSolrSiteName',
   );
+  $callbacks['search_api_urls'] = array(
+    'name' => t('URLs'),
+    'description' => t('The links to the node on all available sites. This can be useful if indexing multiple sites with a single search index.'),
+    'class' => 'SearchApiFederatedSolrUrls',
+  );
   $callbacks['federated_field'] = array(
     'name' => t('Federated Field'),
     'description' => t('A token or free text field that can be customized per-bundle.'),
@@ -452,12 +457,12 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.27fb6eef.js' => array(
+      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.1d29fb1c.js' => array(
         'scope' => 'footer',
       ),
     ),
     'css' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/css/main.9c94ca73.css' => array(),
+      drupal_get_path('module', 'search_api_federated_solr') . '/css/main.0427df2f.css' => array(),
     ),
   );
   return $libraries;
