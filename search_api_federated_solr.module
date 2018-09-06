@@ -26,15 +26,15 @@ function search_api_federated_solr_help($route_name, RouteMatchInterface $route_
       $output .= '<li>' . t('Configure a Search API server to connect to the shared Solr index') . '</li>';
       $output .= '<li>' . t('Configure a Search API index according to the <a href="@recommended_schema">recommended schema</a>', ['@recommended_schema' => 'https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/federated_schema.md']) . '</li>';
       $output .= '</ol>';
-      $output .= '<p>' . t('In order to display results from the Solr index') . ':</p>';
+      $output .= '<p>' . t('In order to display results from the Solr index:') . '</p>';
       $output .= '<ol>';
-      $output .= '<li>' . t('Configure the application route and settings at') . ' <code>/admin/config/search-api-federated-solr/search-app/settings</code></li>';
+      $output .= '<li>' . t('Configure the application route and settings at <code>@settings</code>', ['@settings' => '/admin/config/search-api-federated-solr/search-app/settings']) . '</li>';
       $output .= '<li>' . t('Set permissions for <code>Use Federated Search</code> and <code>Administer Federated Search</code> for the proper roles.') . '</li>';
       $output .= '<li>' . t('Optional: <a href="@theme">Theme the ReactJS search app</a>', ['@theme' => 'https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/theme.md']) . '</li>';
       $output .= '<li>' . t('Optional: Add the federated search page form block to your site theme') . '</li>';
       $output .= '</ol>';
       $output .= '<h3>' . t('Updating the bundled React application') . '</h3>';
-      $output .= '<p>' . t('When changes to <a href="@react">federated-search-react</a> are made they\'ll need to be pulled into this module. To do so', ['@react' => 'https://github.com/palantirnet/federated-search-react/']) . ':</p>';
+      $output .= '<p>' . t('When changes to <a href="@react">federated-search-react</a> are made they\'ll need to be pulled into this module. To do so:', ['@react' => 'https://github.com/palantirnet/federated-search-react/']) . '</p>';
       $output .= '<ul>';
       $output .= '<li>' . t('Update <code>package.json</code> with the new version.') . '</li>';
       $output .= '<li>' . t('Run <code>yarn install</code>') . '</li>';
