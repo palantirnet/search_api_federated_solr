@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\search_api_federated_solr\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
@@ -25,4 +26,5 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
 
     return $build;
   }
+
 }

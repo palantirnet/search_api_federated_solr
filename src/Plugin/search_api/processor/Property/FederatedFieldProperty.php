@@ -2,17 +2,10 @@
 
 namespace Drupal\search_api_federated_solr\Plugin\search_api\processor\Property;
 
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\FieldInterface;
 use Drupal\search_api\Processor\ConfigurablePropertyBase;
-use Drupal\search_api\Processor\ConfigurablePropertyInterface;
-use Drupal\search_api\Utility\Utility;
-use Drupal\Core\Field\FieldItemBase;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\Entity\ContentEntityBase;
 
 /**
  * Defines an "federated field" property.
@@ -53,7 +46,7 @@ class FederatedFieldProperty extends ConfigurablePropertyBase {
       $bundles = $datasource->getBundles();
       $entity_type = $datasource->getEntityTypeId();
 
-      // Make an array of all the entity types we're working with to pass to token_help.
+      // Make an array of entity types we're working with to pass to token_help.
       $entity_types[] = $entity_type;
 
       foreach ($bundles as $bundle_id => $bundle_label) {
@@ -62,8 +55,8 @@ class FederatedFieldProperty extends ConfigurablePropertyBase {
         $form['field_data'][$entity_type][$bundle_id] = [
           '#type' => 'textfield',
           '#title' => $this->t('Field data for %datasource » %bundle', ['%datasource' => $datasource->label(), '%bundle' => $bundle_label]),
-          '#element_validate' => array('token_element_validate'),
-          '#token_types' => array($entity_type),
+          '#element_validate' => ['token_element_validate'],
+          '#token_types' => [$entity_type],
         ];
 
         // Set the default value if something already exists in our config.
@@ -92,7 +85,5 @@ class FederatedFieldProperty extends ConfigurablePropertyBase {
 
     $field->setConfiguration($values);
   }
-
-
 
 }

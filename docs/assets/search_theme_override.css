@@ -11,10 +11,8 @@ aside {
 }
 
 /* Search filters */
-.search-filters {
 /* Mobile search button / Desktop sidebar title */
 /* Search filters clear button */
-}
 .search-filters__trigger,
 .search-filters__title {
   color: #333;
@@ -112,12 +110,10 @@ aside {
 /**
  * Search results list
  */
-.search-results {
-  /* Search results eyebrow (i.e. the content type). */
-  /* Search results metadata (i.e. the site + date) */
-  /* Search result snippet text */
-  /* highlighted text in snippet */
-}
+/* Search results eyebrow (i.e. the content type). */
+/* Search results metadata (i.e. the site + date) */
+/* Search result snippet text */
+/* highlighted text in snippet */
 .search-results__heading a {
   background-color: transparent;
   color: #0d57aa;
@@ -310,7 +306,8 @@ aside {
   .DateInput_input__small {
     font-size: 12px;
     line-height: 18px;
-    padding: 8px 4px 6px; }
+    padding: 8px 4px 6px;
+  }
   .DateInput__small {
     width: 70px;
   }

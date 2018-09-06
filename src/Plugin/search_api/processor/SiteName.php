@@ -5,9 +5,7 @@ namespace Drupal\search_api_federated_solr\Plugin\search_api\processor;
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\Item\ItemInterface;
 use Drupal\search_api\Processor\ProcessorPluginBase;
-use Drupal\search_api\Processor\ProcessorProperty;
 use Drupal\search_api_federated_solr\Plugin\search_api\processor\Property\SiteNameProperty;
-
 
 /**
  * Adds the site name to the indexed data.

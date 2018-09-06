@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\search_api_federated_solr\Plugin\search_api\processor;
+namespace Drupal\search_api_federated_solr\Plugin\search_api\processor;``
 
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\Item\ItemInterface;
@@ -69,16 +69,20 @@ class FederatedFields extends ProcessorPluginBase {
       // Get configuration for the field.
       $configuration = $federated_field->getConfiguration();
 
-      // If there's a config item for the entity and bundle type we're in, set the value for the field.
-      if(!empty($configuration['field_data'][$entity_type][$bundle_type])) {
+      // If there's a config item for the entity and bundle type we're in.
+      if (!empty($configuration['field_data'][$entity_type][$bundle_type])) {
+        // Set the value for the field.
         $token = \Drupal::token();
         // If the token replacement produces a value, add to this item.
-        if ($value = $token->replace($configuration['field_data'][$entity_type][$bundle_type], [$entity_type => $entity], ['clear' => true])) {
-          // Do not use setValues(), since that doesn't preprocess the values according to their data type.
+        if ($value = $token->replace($configuration['field_data'][$entity_type][$bundle_type], [$entity_type => $entity], ['clear' => TRUE])) {
+          /* Do not use setValues(),
+           * it doesn't preprocess the values according to their data type.
+           */
           $federated_field->addValue($value);
         }
 
       }
     }
   }
+
 }
