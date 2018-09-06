@@ -53,7 +53,7 @@ class SiteNameLink extends ProcessorPluginBase implements PluginFormInterface {
       $site = $item->getExtraData('search_api_solr_document')['site'];
       $url = Url::fromUri($site);
       $name = $item->getField('site_name')->getValues()[0];
-      $link = Link::fromTextAndUrl(t($name), $url)->toString();
+      $link = Link::fromTextAndUrl(t("@name", ['@name' => $name]), $url)->toString();
       $item->getField('site_name')->setValues([$link]);
     }
   }

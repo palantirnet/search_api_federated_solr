@@ -1,11 +1,11 @@
 <?php
 
+namespace Drupal\search_api_federated_solr\Form;
+
 /**
  * @file
  * Contains \Drupal\search_api_solr_federated\Form\FederatedSearchPageBlockForm.
  */
-
-namespace Drupal\search_api_federated_solr\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -31,27 +31,27 @@ class FederatedSearchPageBlockForm extends FormBase {
     $renderer = \Drupal::service('renderer');
     $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
 
-    $form['search'] = array(
+    $form['search'] = [
       '#type' => 'search',
       '#name' => 'search',
       '#title' => $this->t('Search'),
       '#title_display' => 'invisible',
       '#size' => 15,
       '#default_value' => '',
-      '#attributes' => array(
+      '#attributes' => [
         'title' => $this->t('Enter the terms you wish to search for.'),
         'placeholder' => 'Search',
-      ),
+      ],
       '#prefix' => '<div class="container-inline">',
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Search'),
       '#name' => '',
       '#suffix' => '</div>',
-    );
+    ];
 
     // Send site name as qs param if app is configured to load w/default site.
     if ($app_config->get('facet.site_name.set_default')) {
@@ -62,7 +62,7 @@ class FederatedSearchPageBlockForm extends FormBase {
       $form['ss_site_name'] = [
         '#type' => 'hidden',
         '#name' => 'ss_site_name',
-        '#default_value' => $site_name
+        '#default_value' => $site_name,
       ];
 
       // Ensure that this form's render cache is invalidated when search app

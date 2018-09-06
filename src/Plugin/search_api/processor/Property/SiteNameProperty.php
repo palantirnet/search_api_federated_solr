@@ -21,7 +21,7 @@ class SiteNameProperty extends ConfigurablePropertyBase {
    */
   public function defaultConfiguration() {
     return [
-      'site_name' =>  \Drupal::config('system.site')->get('name'),
+      'site_name' => \Drupal::config('system.site')->get('name'),
     ];
   }
 
