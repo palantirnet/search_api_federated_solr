@@ -52,3 +52,7 @@ function <your-theme>_page_attachments_alter(array &$page) {
   }
 }
 ```
+
+### Notes
+
+The Sass/CSS assets that are included in docs/assets are examples only. They will not be regularly maintained or updated.
