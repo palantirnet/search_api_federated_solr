@@ -28,7 +28,7 @@ Because our data is served by an external application, all sites will need to co
   * Use the `rendered_item` field provided by Search API (found in the index configuration under _Add fields > General > Rendered HTML output_), then select a view mode for each indexed entity type. Often the "Default" view mode will work; otherwise, you may need to create a custom "Search Index" view mode and configure the fields for each indexed entity type and bundle.
     * Make sure that the **Rendered HTML output** includes the title/label for the entity, if the title should be available for full-text search and should impact the relevance of results.
   * Strip HTML from this data by enabling the **HTML filter** in the "Processors" tab of your index configuration.
-* **URI:** Use the `search_api_url` field provided by Search API in the index configuration under _Add fields > General > URI_.
+* **URI:** Use the `search_api_url` field provided by Search API in the index configuration under _Add fields > General > URI_. **_Note:_** Without applying [a patch](https://www.drupal.org/project/search_api/issues/2936043), this field provides a relative URL instead of the required absolute URL.
 * **Site Name:** Use the `site_name` field provided by this module (Search API Federated Solr), found in the index configuration under _Add fields > General > Site Name_.
 * **Site:** This will be sent automatically; you do not need to configure a `site` field for your Search API index.
 
