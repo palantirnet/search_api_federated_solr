@@ -13,7 +13,7 @@ Because our data is served by an external application, all sites will need to co
 | Federated Date | federated_date | date | No | single | `[node:created:custom:Y-m-d\TH:i:s\Z]` | Usually the date the content was created.  Used to provide date-based filtering. |
 | Federated Type | federated_type | string | Yes | single | | The shared type label for faceting. Also used to label each result. |
 | Federated Terms | federated_terms | string | No | multi | | Terms for additional, topic-based facets, mapped to shared topic terms if necessary. |
-| Federated Image | federated_image | string | No | single | | An absolute url to an image which, if it exists, will be displayed with the text. Recommended image size: ___ x ___  |
+| Federated Image | federated_image | string | No | single | `[node:field_image:search_api_federated_solr_image:url]` | An absolute url to an image which, if it exists, will be displayed with the text. Recommended image size: ___ x ___  |
 | Rendered HTML output | rendered_item | fulltext | Yes | multi | | The full text of the item, with HTML stripped. |
 | URI | url | string | Yes | single | | The absolute path to the item, used to provide a link to each result. |
 | Site Name | site_name | string | Yes | single | | The descriptive name of the source site. Used to provide site-based filtering. |
