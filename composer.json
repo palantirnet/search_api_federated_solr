@@ -12,7 +12,7 @@
     }
   ],
   "require": {
-    "drupal/core": "^7.0",
+    "drupal/drupal": "^7.0",
     "drupal/search_api_solr": "^1.2",
     "drupal/token": "^1.1"
   }
