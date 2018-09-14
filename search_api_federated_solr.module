@@ -77,7 +77,6 @@ function search_api_federated_solr_search_api_solr_field_mapping_alter(\Drupal\s
 
   $singleFieldsMap = [
     // Field name => new single value for solr.
-    "site_name" => "ss_site_name",
     "url" => "ss_url",
   ];
 
