@@ -22,7 +22,7 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
    */
   public function propertyInfo() {
     return [
-      'search_api_urls' => [
+      'urls' => [
         'label' => t('URLs'),
         'description' => t('URLs pointing to this node on all sites containing'),
         'type' => 'list<uri>',
@@ -50,7 +50,7 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
 
       $urls = domain_get_content_urls($entity);
 
-      $item->search_api_urls = $urls;
+      $item->urls = $urls;
     }
 
   }
