@@ -457,7 +457,7 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.1d29fb1c.js' => array(
+      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.4bd23ad2.js' => array(
         'scope' => 'footer',
       ),
     ),
