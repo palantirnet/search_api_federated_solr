@@ -32,10 +32,12 @@ Because our data is served by an external application, all sites will need to co
 
 On each site included in the federated search, you will need to:
 
-1. Install this module and its dependencies
-2. Configure a Search API server to connect to the shared Solr index
-3. Configure a Search API index according to the [required schema documentation](docs/federated_schema.md)
-4. Index the content for the site using SearchAPI
+<<<<<<< HEAD
+1. Instal the Fields Search API module
+2. Install this module and its dependencies
+3. Configure a Search API server to connect to the shared Solr index
+4. Configure a Search API index according to the [required schema documentation](docs/federated_schema.md)
+5. Index the content for the site using SearchAPI
 
 Once each site is configured, you may begin to index content.
 
@@ -71,7 +73,6 @@ When changes to [federated-search-react](https://github.com/palantirnet/federate
 
 ## More information
 
-* [How to use this module](docs/usage.md)
 * [How to configure a Search API Index for federated search](docs/federated_schema.md)
 * [How to theme the ReactJS search app](docs/theme.md)
 * [How to add the search form block](docs/block.md)
