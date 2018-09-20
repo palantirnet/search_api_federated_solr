@@ -1,6 +1,6 @@
-search_api.property_configuration.federated_field:
+search_api.property_configuration.mapped_field:
   type: mapping
-  label: 'Federated fields configuration'
+  label: 'Mapped fields configuration'
   mapping:
     field_data:
       type: sequence
