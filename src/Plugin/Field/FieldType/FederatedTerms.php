@@ -104,6 +104,6 @@ class FederatedTerms extends FieldItemBase {
    */
   public function isEmpty() {
     $value = $this->get('value')->getValue();
-    return $value === NULL || $value === '';
+    return empty($value);
   }
 }

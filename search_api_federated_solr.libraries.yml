@@ -2,9 +2,9 @@ search:
   version: 1.x
   css:
     theme:
-      'css/main.9c94ca73.css': {}
+      'css/main.0427df2f.css': {}
   js:
-    'js/main.27fb6eef.js': {
+    'js/main.52d30344.js': {
       preprocess: false,
       minified: true,
     }
