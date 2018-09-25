@@ -36,6 +36,27 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
    */
   public function alterItems(array &$items) {
 
+    if ($this->useDomainAccess()) {
+      $this->addDomainUrls($items);
+    }
+    else {
+      $this->addUrl($items);
+    }
+
+  }
+
+  protected function addUrl(array &$items) {
+    foreach ($items as &$item) {
+      $url = $this->index->datasource()->getItemUrl($item);
+      if (!$url) {
+        $item->search_api_urls = NULL;
+        continue;
+      }
+      $item->search_api_urls = [url($url['path'], array('absolute' => TRUE) + $url['options'])];
+    }
+  }
+
+  protected function addDomainUrls(array &$items) {
     $entity_type = $this->index->getEntityType();
     $entity_info = entity_get_info($entity_type);
 
@@ -53,6 +74,15 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
       $item->urls = $urls;
     }
 
+  }
+
+  /**
+   * Whether to use the site name from Domain Access.
+   *
+   * @return bool
+   */
+  protected function useDomainAccess() {
+    return function_exists('domain_get_content_urls');
   }
 
 }
