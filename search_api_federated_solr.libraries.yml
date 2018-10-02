@@ -2,9 +2,9 @@ search:
   version: 1.x
   css:
     theme:
-      https://rawgit.com/palantirnet/federated-search-react/v1.0.1/css/main.9c94ca73.css: { type: external, minified: true }
+      https://rawgit.com/palantirnet/federated-search-react/v1.0.6/css/main.cf6a58ce.css: { type: external, minified: true }
   js:
-    https://rawgit.com/palantirnet/federated-search-react/v1.0.1/js/main.27fb6eef.js: {
+    https://rawgit.com/palantirnet/federated-search-react/v1.0.6/js/main.89ede16f.js: {
       preprocess: false,
       minified: true,
     }
