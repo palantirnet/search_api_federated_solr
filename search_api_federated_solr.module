@@ -462,7 +462,7 @@ function search_api_federated_solr_library() {
       ),
     ),
     'css' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/css/main.0427df2f.css' => array(),
+      drupal_add_css('https://rawgit.com/palantirnet/federated-search-react/v1.0.6/css/main.cf6a58ce.css', array('type' => 'external')),
     ),
   );
   return $libraries;
