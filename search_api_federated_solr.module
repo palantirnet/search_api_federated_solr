@@ -458,10 +458,8 @@ function search_api_federated_solr_library() {
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
       'https://rawgit.com/palantirnet/federated-search-react/v1.0.6/js/main.89ede16f.js' => array(
-        array(
-          'type' => 'external',
-          'scope' => 'footer',
-        )
+        'type' => 'external',
+        'scope' => 'footer',
       ),
     ),
     'css' => array(
