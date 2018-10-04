@@ -457,12 +457,15 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.4bd23ad2.js' => array(
+      'https://rawgit.com/palantirnet/federated-search-react/v1.0.6/js/main.89ede16f.js' => array(
+        'type' => 'external',
         'scope' => 'footer',
       ),
     ),
     'css' => array(
-      drupal_get_path('module', 'search_api_federated_solr') . '/css/main.0427df2f.css' => array(),
+      'https://rawgit.com/palantirnet/federated-search-react/v1.0.6/css/main.cf6a58ce.css' => array(
+        'type' => 'external',
+      ),
     ),
   );
   return $libraries;
