@@ -59,9 +59,9 @@ class FederatedSearchPageBlockForm extends FormBase {
       $index_config = \Drupal::config('search_api.index.' . $search_index);
       $site_name = $index_config->get('field_settings.site_name.configuration.site_name');
 
-      $form['ss_site_name'] = [
+      $form['sm_site_name'] = [
         '#type' => 'hidden',
-        '#name' => 'ss_site_name',
+        '#name' => 'sm_site_name',
         '#default_value' => $site_name
       ];
 
