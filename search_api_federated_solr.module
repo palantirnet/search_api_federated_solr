@@ -156,7 +156,7 @@ function search_api_federated_solr_search_block_form_submit($form, &$form_state)
   $is_site_name_property = variable_get('search_api_federated_solr_has_site_name_property');
   $set_default_site = variable_get('search_api_federated_solr_set_search_site');
   if ($is_site_name_property == 'true' && $set_default_site) {
-    $qs_params['ss_site_name'] = variable_get('site_name');
+    $qs_params['sm_site_name'] = variable_get('site_name');
   }
 
   // Redirect to the search app path with necessary qs params.
