@@ -315,7 +315,6 @@ function search_api_federated_solr_config_json() {
   $server_url = $server->options['scheme'] . '://' . $server->options['host'] . ':' . $server->options['port'];
   // Check for the non-required server config field data before appending.
   $server_url .= $server->options['path'] ?: '';
-  $server_url .= $server->options['core'] ? '/' . $server->options['core'] : '';
   // Append the request handler.
   $server_url .= '/select';
 
