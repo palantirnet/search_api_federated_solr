@@ -156,7 +156,30 @@ function search_api_federated_solr_search_block_form_submit($form, &$form_state)
   $is_site_name_property = variable_get('search_api_federated_solr_has_site_name_property');
   $set_default_site = variable_get('search_api_federated_solr_set_search_site');
   if ($is_site_name_property == 'true' && $set_default_site) {
-    $qs_params['sm_site_name'] = variable_get('site_name');
+
+    $search_index = variable_get('search_api_federated_solr_search_index');
+    // Get the index configuration object.
+    $index = search_api_index_load($search_index);
+    // Get the domain machine name from Domain Access.
+    if (function_exists('domain_get_domain')) {
+      $domain = domain_get_domain()['machine_name'];
+    }
+
+    // If the site is using Domain Access and there's an altered site name.
+    if (isset($domain) && !empty($index->options['data_alter_callbacks']['site_name']['settings']['domain'][$domain])) {
+      // Lookup the altered site name matching the domain and set it.
+      $domain_site_name = $index->options['data_alter_callbacks']['site_name']['settings']['domain'][$domain];
+      $qs_params['sm_site_name'] = $domain_site_name;
+    }
+    // If no Domain Access, again, check for an altered Site Name.
+    elseif (!empty($index->options['data_alter_callbacks']['site_name']['settings']['site_name'])) {
+      $site_name = $index->options['data_alter_callbacks']['site_name']['settings']['site_name'];
+      $qs_params['sm_site_name'] = $site_name;
+    }
+    // If all else fails, use the site default.
+    else {
+      $qs_params['sm_site_name'] = variable_get('site_name');
+    }
   }
 
   // Redirect to the search app path with necessary qs params.
