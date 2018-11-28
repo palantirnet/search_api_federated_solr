@@ -36,7 +36,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['#validate'][] = [$this, '_form_validation_path_validate'];
+    $form['#validate'][] = [$this, 'form_validation_path_validate'];
 
     $config = $this->config('search_api_federated_solr.search_app.settings');
 
@@ -76,6 +76,14 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('path'),
       '#description' => $this
         ->t('The path for the search app (Default: "/search-app").'),
+    ];
+
+    $form['page_title'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Search results page title'),
+      '#default_value' => $config->get('page_title'),
+      '#description' => $this
+        ->t('The title that will live in the header tag of the search results page (leave empty to hide completely).'),
     ];
 
     $form['search_index'] = [
@@ -188,6 +196,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $rebuild_routes = TRUE;
     }
 
+    // Set the search results page title.
+    $page_title = $form_state->getValue('page_title');
+    $config->set('page_title', $page_title);
+
     // Set the search app configuration setting for the default search site flag.
     $set_search_site = $form_state->getValue('set_search_site');
     $config->set('facet.site_name.set_default', $set_search_site);
@@ -271,7 +283,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
    * @param $form
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
-  public function _form_validation_path_validate(&$form, FormStateInterface $form_state) {
+  public function form_validation_path_validate(&$form, FormStateInterface $form_state) {
     $path = $form_state->getValue('path');
     if ($path) {
       // Check if a route with the config path value already exists.
