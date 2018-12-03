@@ -42,4 +42,5 @@ class FederatedTermsProperty extends ConfigurablePropertyBase {
 
     return $form;
   }
+
 }
