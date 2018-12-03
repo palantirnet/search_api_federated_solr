@@ -93,8 +93,8 @@ function search_api_federated_solr_search_api_solr_field_mapping_alter(IndexInte
 
     // Map all "mapped_field" property fields to their single value in solr.
     $field = $index->getField($key);
-    if (method_exists($field,'getPropertyPath') && 'mapped_field' == $field->getPropertyPath()) {
-      $fields[$key] = preg_replace("/^(\w)m_/","$1s_", $fields[$key], 1);
+    if (method_exists($field, 'getPropertyPath') && 'mapped_field' == $field->getPropertyPath()) {
+      $fields[$key] = preg_replace("/^(\w)m_/", "$1s_", $fields[$key], 1);
     }
   };
 }
