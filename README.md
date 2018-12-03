@@ -7,7 +7,7 @@ The module facilitates indexing data from multiple Drupal 7 and 8 sites into a s
 Primary features of the module include:
 
 - Indexing of multiple, independent Drupal sites into a single index
-Optional filtering of search results by site
+- Optional filtering of search results by site
 - Standard presentation of search results on all sites
 - A standard search block for use on all sites
 - Customizable presentation using a single CSS file
@@ -17,7 +17,7 @@ Optional filtering of search results by site
 Searching across multiple sites requires a common set of data. By design, SearchAPI Federated Solr indexes the following information for each item in the search index:
 
 - Title
-- Content Creation Date
+- Date (content creation or any other date field on the content)
 - Content Type
 - Content Tags (all taxonomy terms)
 - Preview Image, if available
@@ -32,7 +32,6 @@ Because our data is served by an external application, all sites will need to co
 
 On each site included in the federated search, you will need to:
 
-<<<<<<< HEAD
 1. Instal the Fields Search API module
 2. Install this module and its dependencies
 3. Configure a Search API server to connect to the shared Solr index
