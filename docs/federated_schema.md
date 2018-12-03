@@ -7,7 +7,7 @@ Because our data is served by an external application, all sites will need to co
 * Values in the **Label** column values aren't sent to the index, but are recommended for consistency
 * The **Machine Name** and **Type** column values are sent to the index, and must match the table in order for a site's content to be included correctly in results
 
-| Label | Machine Name | Type | Required? | Single/ Multi-value | Token | Description |
+| Label | Machine Name | Type | Required? | Single/ Multi-value | Token (example) | Description |
 | ----- | ------------ | ---- | --------- | -------------------- | ----- | ----------- |
 | Federated Title | federated_title | string | Yes | single | | The title of the item. Displayed as the title of each search result. |
 | Federated Date | federated_date | date | No | single | `[node:created:custom:Y-m-d\TH:i:s\Z]` | Usually the date the content was created.  Used to provide date-based filtering. |
