@@ -1,6 +1,6 @@
 # Federated Solr Search API Module
 
-SearchAPI Federated Solr is an open source alternative to the Google Search Appliance and other technologies that index and search across multiple web sites.
+Search API Federated Solr is an open source alternative to the Google Search Appliance and other technologies that index and search across multiple web sites.
 
 The module facilitates indexing data from multiple Drupal 7 and 8 sites into a single Solr search index.  The module provides a ReactJS front end that presents uniform search results across the different sites.
 
@@ -14,7 +14,7 @@ Primary features of the module include:
 
 ## How does it work?
 
-Searching across multiple sites requires a common set of data. By design, SearchAPI Federated Solr indexes the following information for each item in the search index:
+Searching across multiple sites requires a common set of data. By design, Search API Federated Solr indexes the following information for each item in the search index:
 
 - Title
 - Date (content creation or any other date field on the content)
@@ -32,11 +32,10 @@ Because our data is served by an external application, all sites will need to co
 
 On each site included in the federated search, you will need to:
 
-1. Instal the Fields Search API module
-2. Install this module and its dependencies
-3. Configure a Search API server to connect to the shared Solr index
-4. Configure a Search API index according to the [required schema documentation](docs/federated_schema.md)
-5. Index the content for the site using SearchAPI
+1. Install this module and its dependencies
+2. Configure a Search API server to connect to the shared Solr index
+3. Configure a Search API index according to the [required schema documentation](docs/federated_schema.md)
+4. Index the content for the site using Search API
 
 Once each site is configured, you may begin to index content.
 
@@ -49,14 +48,14 @@ In order to display results from the Solr index:
 
 ## Module Dependencies
 
-SearchAPI Federated Solr requires the following standard modules:
+Search API Federated Solr requires the following standard modules:
 
-- SearchAPI
-- SearchAPI Field Map
+- Search API
+- Search API Field Map
 - SeachAPI Solr
 - Token
 
-The SearchAPI Field Map module is used to provide common indexing across each site. See that module’s documentation for additional information.
+The Search API Field Map module is used to provide common indexing across each site. See that module’s documentation for additional information.
 
 The module also relies on the Federated Search React application, which can be included as a Drupal library.
 
