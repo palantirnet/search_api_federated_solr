@@ -7,17 +7,17 @@ Because our data is served by an external application, all sites will need to co
 * Values in the **Label** column values aren't sent to the index, but are recommended for consistency
 * The **Machine Name** and **Type** column values are sent to the index, and must match the table in order for a site's content to be included correctly in results
 
-| Label | Machine Name | Type | Required? | Single/ Multi-value | Description |
-| ----- | ------------ | ---- | --------- | -------------------- | ----------- |
-| Federated Title | federated_title | string | Yes | single | The title of the item. Displayed as the title of each search result. |
-| Federated Date | federated_date | date | No | single | Usually the date the content was created.  Used to provide date-based filtering. |
-| Federated Type | federated_type | string | Yes | single | The shared type label for faceting. Also used to label each result. |
-| Federated Terms | federated_terms | string | No | multi | Terms for additional, topic-based facets, mapped to shared topic terms if necessary. |
-| Federated Image | federated_image | string | No | single | An absolute url to an image which, if it exists, will be displayed with the text. Recommended image size: ___ x ___  |
-| Rendered HTML output | rendered_item | fulltext | Yes | multi | The full text of the item, with HTML stripped. |
-| URI | url | string | Yes | single | The absolute path to the item, used to provide a link to each result. |
-| Site Name | site_name | string | Yes | single | The descriptive name of the source site. Used to provide site-based filtering. |
-| Site | site | string | Automatic | single | The base url of the source site, like `https://labblog.uofmhealth.edu`. This will be sent automatically by Drupal, and is required for external content sources. |
+| Label | Machine Name | Type | Required? | Single/ Multi-value | Token (example) | Description |
+| ----- | ------------ | ---- | --------- | -------------------- | ----- | ----------- |
+| Federated Title | federated_title | string | Yes | single | | The title of the item. Displayed as the title of each search result. |
+| Federated Date | federated_date | date | No | single | `[node:created:custom:Y-m-d\TH:i:s\Z]` | Usually the date the content was created.  Used to provide date-based filtering. |
+| Federated Type | federated_type | string | Yes | single | | The shared type label for faceting. Also used to label each result. |
+| Federated Terms | federated_terms | string | No | multi | | Terms for additional, topic-based facets, mapped to shared topic terms if necessary. |
+| Federated Image | federated_image | string | No | single | `[node:field_image:search_api_federated_solr_image:url]` | An absolute url to an image which, if it exists, will be displayed with the text. Recommended image size: ___ x ___  |
+| Rendered HTML output | rendered_item | fulltext | Yes | multi | | The full text of the item, with HTML stripped. |
+| URI | url | string | Yes | single | | The absolute path to the item, used to provide a link to each result. |
+| Site Name | site_name | string | Yes | single | | The descriptive name of the source site. Used to provide site-based filtering. |
+| Site | site | string | Automatic | single | | The base url of the source site, like `https://labblog.uofmhealth.edu`. This will be sent automatically by Drupal, and is required for external content sources. |
 
 ### Configuration details
 
@@ -28,7 +28,7 @@ Because our data is served by an external application, all sites will need to co
   * Use the `rendered_item` field provided by Search API (found in the index configuration under _Add fields > General > Rendered HTML output_), then select a view mode for each indexed entity type. Often the "Default" view mode will work; otherwise, you may need to create a custom "Search Index" view mode and configure the fields for each indexed entity type and bundle.
     * Make sure that the **Rendered HTML output** includes the title/label for the entity, if the title should be available for full-text search and should impact the relevance of results.
   * Strip HTML from this data by enabling the **HTML filter** in the "Processors" tab of your index configuration.
-* **URI:** Use the `search_api_url` field provided by Search API in the index configuration under _Add fields > General > URI_.
+* **URI:** Use the `search_api_url` field provided by Search API in the index configuration under _Add fields > General > URI_. **_Note:_** Without applying [a patch](https://www.drupal.org/project/search_api/issues/2936043), this field provides a relative URL instead of the required absolute URL.
 * **Site Name:** Use the `site_name` field provided by this module (Search API Federated Solr), found in the index configuration under _Add fields > General > Site Name_.
 * **Site:** This will be sent automatically; you do not need to configure a `site` field for your Search API index.
 

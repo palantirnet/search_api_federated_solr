@@ -2,9 +2,9 @@ search:
   version: 1.x
   css:
     theme:
-      'css/main.0427df2f.css': {}
+      https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.9/css/main.cf6a58ce.css: { type: external, minified: true }
   js:
-    'js/main.52d30344.js': {
+    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.9/js/main.b294abb7.js: {
       preprocess: false,
       minified: true,
     }

@@ -81,7 +81,6 @@ function search_api_federated_solr_search_api_solr_field_mapping_alter(IndexInte
 
   $singleFieldsMap = [
     // Field name => new single value for solr.
-    "site_name" => "ss_site_name",
     "url" => "ss_url",
   ];
 
@@ -92,10 +91,10 @@ function search_api_federated_solr_search_api_solr_field_mapping_alter(IndexInte
       $fields[$key] = $singleFieldsMap[$key];
     }
 
-    // Map all "federated_field" property fields to their single value in solr.
+    // Map all "mapped_field" property fields to their single value in solr.
     $field = $index->getField($key);
-    if (method_exists($field, 'getPropertyPath') && 'federated_field' == $field->getPropertyPath()) {
-      $fields[$key] = str_replace("m_federated_", "s_federated_", $fields[$key]);
+    if (method_exists($field,'getPropertyPath') && 'mapped_field' == $field->getPropertyPath()) {
+      $fields[$key] = preg_replace("/^(\w)m_/","$1s_", $fields[$key], 1);
     }
   };
 }
