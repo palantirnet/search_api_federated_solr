@@ -64,10 +64,8 @@ The module also relies on the Federated Search React application, which can be i
 
 When changes to [federated-search-react](https://github.com/palantirnet/federated-search-react/) are made they'll need to be pulled into this module. To do so:
 
-- Update `package.json` with the new version.
-- Run `yarn install`
-- Delete the old versions of `js/main.*.js (and .map)` and `css/main.*.css (and .map)`
-- Update `search_api_federated_solr.libraries.yml` to reference the new file.
+- [Publish a release](https://github.com/palantirnet/federated-search-react#publishing-releases) of Federated Search React.
+- Update `search_api_federated_solr.libraries.yml` to reference the new release. Note: You'll need to edit the version number and the hash of both the CSS and JS files.
 
 ## More information
 
