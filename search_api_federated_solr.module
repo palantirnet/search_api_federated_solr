@@ -257,6 +257,13 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_password'),
   ];
 
+  $form['search_api_federated_solr_show_empty_search_results'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Show results for empty search'),
+    '#default_value' => variable_get('search_api_federated_solr_show_empty_search_results'),
+    '#description' => t('When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
+  ];
+
   $form['search_api_federated_solr_no_results_text'] = [
     '#type' => 'textfield',
     '#title' => t('No results text'),
