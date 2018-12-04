@@ -62,6 +62,11 @@ class SearchController extends ControllerBase {
       $federated_search_app_config['noResults'] = $no_results;
     }
 
+    // OPTIONAL: The text to display when a search returns no results.
+    if ($show_empty_search_results = $config->get('content.show_empty_search_results')) {
+      $federated_search_app_config['showEmptySearchResults'] = $show_empty_search_results;
+    }
+
     // OPTIONAL: The number of search results to show per page.
     if ($rows = $config->get('results.rows')) {
       $federated_search_app_config['rows'] = intval($rows);
