@@ -119,6 +119,14 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
+    $form['show_empty_search_results'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show results for empty search'),
+      '#default_value' => $config->get('content.show_empty_search_results'),
+      '#description' => $this
+        ->t(' When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
+    ];
+
     $form['no_results_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('No results text'),
@@ -179,6 +187,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Set the search app config setting for the default search site flag.
     $set_search_site = $form_state->getValue('set_search_site');
     $config->set('facet.site_name.set_default', $set_search_site);
+
+    // Set the search app configuration setting for the default search site flag.
+    $show_empty_search_results = $form_state->getValue('show_empty_search_results');
+    $config->set('content.show_empty_search_results', $show_empty_search_results);
 
     // Get the id of the chosen index.
     $search_index = $form_state->getValue('search_index');
