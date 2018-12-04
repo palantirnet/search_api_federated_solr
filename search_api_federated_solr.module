@@ -369,6 +369,11 @@ function search_api_federated_solr_config_json() {
     $response_data['noResults'] = $no_response;
   }
 
+  $show_empty_search_results = variable_get('search_api_federated_solr_show_empty_search_results');
+  if ($show_empty_search_results) {
+    $response_data['showEmptySearchResults'] = $show_empty_search_results;
+  }
+
   $search_prompt = variable_get('search_api_federated_solr_search_prompt_text');
   if ($search_prompt) {
     $response_data['searchPrompt'] = $search_prompt;
