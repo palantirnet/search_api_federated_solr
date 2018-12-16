@@ -498,13 +498,13 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.9/js/main.b294abb7.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/js/main.d41fc3fe.js' => array(
         'type' => 'external',
         'scope' => 'footer',
       ),
     ),
     'css' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.9/css/main.cf6a58ce.css' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/css/main.cf6a58ce.css' => array(
         'type' => 'external',
       ),
     ),
