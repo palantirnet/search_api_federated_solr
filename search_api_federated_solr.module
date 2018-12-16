@@ -257,6 +257,13 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_password'),
   ];
 
+  $form['search_api_federated_solr_show_empty_search_results'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Show results for empty search'),
+    '#default_value' => variable_get('search_api_federated_solr_show_empty_search_results'),
+    '#description' => t('When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
+  ];
+
   $form['search_api_federated_solr_no_results_text'] = [
     '#type' => 'textfield',
     '#title' => t('No results text'),
@@ -360,6 +367,11 @@ function search_api_federated_solr_config_json() {
   $no_response = variable_get('search_api_federated_solr_no_results_text');
   if ($no_response) {
     $response_data['noResults'] = $no_response;
+  }
+
+  $show_empty_search_results = variable_get('search_api_federated_solr_show_empty_search_results');
+  if ($show_empty_search_results) {
+    $response_data['showEmptySearchResults'] = $show_empty_search_results;
   }
 
   $search_prompt = variable_get('search_api_federated_solr_search_prompt_text');
@@ -486,13 +498,13 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.9/js/main.b294abb7.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/js/main.d41fc3fe.js' => array(
         'type' => 'external',
         'scope' => 'footer',
       ),
     ),
     'css' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.9/css/main.cf6a58ce.css' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/css/main.cf6a58ce.css' => array(
         'type' => 'external',
       ),
     ),
