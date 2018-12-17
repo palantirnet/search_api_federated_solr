@@ -49,10 +49,10 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
     foreach ($items as &$item) {
       $url = $this->index->datasource()->getItemUrl($item);
       if (!$url) {
-        $item->search_api_urls = NULL;
+        $item->urls = NULL;
         continue;
       }
-      $item->search_api_urls = [url($url['path'], array('absolute' => TRUE) + $url['options'])];
+      $item->urls = [url($url['path'], array('absolute' => TRUE) + $url['options'])];
     }
   }
 
