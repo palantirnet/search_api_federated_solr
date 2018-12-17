@@ -527,3 +527,25 @@ function search_api_federated_solr_permission() {
     ),
   );
 }
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function search_api_federated_solr_image_default_styles() {
+  $styles = array();
+  $styles['search_api_federated_solr_image'] = array(
+    'label' => 'Federated Image',
+    'effects' => array(
+      array(
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => 425,
+          'height' => 239,
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+
+  return $styles;
+}
