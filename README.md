@@ -95,6 +95,7 @@ MAINTAINERS
 Current maintainers:
  * Avi Schwab (froboy) - https://www.drupal.org/u/froboy
  * Ken Rickard (agentrickard) - https://www.drupal.org/u/agentrickard
+ * Malak Desai (MalakDesai) - https://www.drupal.org/u/malakdesai
 
 This project has been sponsored by:
  * Palantir.net - https://palantir.net
