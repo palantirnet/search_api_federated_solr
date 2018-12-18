@@ -96,6 +96,7 @@ Current maintainers:
  * Avi Schwab (froboy) - https://www.drupal.org/u/froboy
  * Ken Rickard (agentrickard) - https://www.drupal.org/u/agentrickard
  * Malak Desai (MalakDesai) - https://www.drupal.org/u/malakdesai
+ * Matthew Carmichael (mcarmichael21) - https://www.drupal.org/u/mcarmichael21
 
 This project has been sponsored by:
  * Palantir.net - https://palantir.net
