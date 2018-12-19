@@ -84,9 +84,11 @@ When changes to [federated-search-react](https://github.com/palantirnet/federate
 
 ### More information
 
- * [How to configure a Search API Index for federated search](docs/federated_schema.md)
- * [How to theme the ReactJS search app](docs/theme.md)
- * [How to add the search form block](docs/block.md)
+Full documentation for this module is in the [handbook on Drupal.org](https://www.drupal.org/docs/8/modules/search-api-federated-solr/search-api-federated-solr-module)
+
+ * [How to configure a Search API Index for federated search](https://www.drupal.org/docs/8/modules/search-api-federated-solr/federated-search-schema)
+ * [How to theme the ReactJS search app](https://www.drupal.org/docs/8/modules/search-api-federated-solr/search-api-federated-solr-8x/theming-the-reactjs-search-app)
+ * [Setting up the search page and block](https://www.drupal.org/docs/8/modules/search-api-federated-solr/search-api-federated-solr-module/setting-up-the-search-page)
 
 
 MAINTAINERS
