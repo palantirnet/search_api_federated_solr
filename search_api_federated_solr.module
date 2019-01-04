@@ -339,60 +339,63 @@ function search_api_federated_solr_config_json() {
   $response_data = [];
 
   $search_index = variable_get('search_api_federated_solr_search_index');
-  // Get the index configuration object.
-  $index = search_api_index_load($search_index);
-  $server = search_api_server_load($index->server);
-  $server_url = $server->options['scheme'] . '://' . $server->options['host'] . ':' . $server->options['port'];
-  // Check for the non-required server config field data before appending.
-  $server_url .= $server->options['path'] ?: '';
-  // Append the request handler.
-  $server_url .= '/select';
 
-  if ($server_url) {
-    $response_data['url'] = $server_url;
-  }
+  if (!empty($search_index)) {
+    // Get the index configuration object.
+    $index = search_api_index_load($search_index);
+    $server = search_api_server_load($index->server);
+    $server_url = $server->options['scheme'] . '://' . $server->options['host'] . ':' . $server->options['port'];
+    // Check for the non-required server config field data before appending.
+    $server_url .= $server->options['path'] ?: '';
+    // Append the request handler.
+    $server_url .= '/select';
 
-  $basic_auth_username = variable_get('search_api_federated_solr_search_index_basic_auth_username');
-  $basic_auth_password = variable_get('search_api_federated_solr_search_index_basic_auth_password');
-  if ($basic_auth_username || $basic_auth_password) {
-    $response_data['userpass'] = base64_encode($basic_auth_username . ':' . $basic_auth_password);
-  }
+    if ($server_url) {
+      $response_data['url'] = $server_url;
+    }
 
-  $is_site_name_property = variable_get('search_api_federated_solr_has_site_name_property');
-  $set_default_site = variable_get('search_api_federated_solr_set_search_site');
-  if ($is_site_name_property == 'true' && !$set_default_site) {
-    variable_set('search_api_federated_solr_set_search_site', 0);
-  }
+    $basic_auth_username = variable_get('search_api_federated_solr_search_index_basic_auth_username');
+    $basic_auth_password = variable_get('search_api_federated_solr_search_index_basic_auth_password');
+    if ($basic_auth_username || $basic_auth_password) {
+      $response_data['userpass'] = base64_encode($basic_auth_username . ':' . $basic_auth_password);
+    }
 
-  $no_response = variable_get('search_api_federated_solr_no_results_text');
-  if ($no_response) {
-    $response_data['noResults'] = $no_response;
-  }
+    $is_site_name_property = variable_get('search_api_federated_solr_has_site_name_property');
+    $set_default_site = variable_get('search_api_federated_solr_set_search_site');
+    if ($is_site_name_property == 'true' && !$set_default_site) {
+      variable_set('search_api_federated_solr_set_search_site', 0);
+    }
 
-  $show_empty_search_results = variable_get('search_api_federated_solr_show_empty_search_results');
-  if ($show_empty_search_results) {
-    $response_data['showEmptySearchResults'] = $show_empty_search_results;
-  }
+    $no_response = variable_get('search_api_federated_solr_no_results_text');
+    if ($no_response) {
+      $response_data['noResults'] = $no_response;
+    }
 
-  $search_prompt = variable_get('search_api_federated_solr_search_prompt_text');
-  if ($search_prompt) {
-    $response_data['searchPrompt'] = $search_prompt;
-  }
+    $show_empty_search_results = variable_get('search_api_federated_solr_show_empty_search_results');
+    if ($show_empty_search_results) {
+      $response_data['showEmptySearchResults'] = $show_empty_search_results;
+    }
 
-  $rows = variable_get('search_api_federated_solr_rows');
-  if ($rows) {
-    $response_data['rows'] = $rows;
-  }
+    $search_prompt = variable_get('search_api_federated_solr_search_prompt_text');
+    if ($search_prompt) {
+      $response_data['searchPrompt'] = $search_prompt;
+    }
 
-  $pagination_buttons = variable_get('search_api_federated_solr_page_buttons');
-  if ($pagination_buttons) {
-    $response_data['paginationButtons'] = $pagination_buttons;
-  }
+    $rows = variable_get('search_api_federated_solr_rows');
+    if ($rows) {
+      $response_data['rows'] = $rows;
+    }
 
-  if (function_exists('domain_get_domain')) {
-    $domain = domain_get_domain();
-    if (isset($domain['path'])) {
-      $response_data['hostname'] =  parse_url($domain['path'], PHP_URL_HOST) ;
+    $pagination_buttons = variable_get('search_api_federated_solr_page_buttons');
+    if ($pagination_buttons) {
+      $response_data['paginationButtons'] = $pagination_buttons;
+    }
+
+    if (function_exists('domain_get_domain')) {
+      $domain = domain_get_domain();
+      if (isset($domain['path'])) {
+        $response_data['hostname'] =  parse_url($domain['path'], PHP_URL_HOST) ;
+      }
     }
   }
 
