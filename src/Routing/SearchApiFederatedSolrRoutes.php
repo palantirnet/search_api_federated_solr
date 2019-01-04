@@ -1,11 +1,11 @@
 <?php
 
+namespace Drupal\search_api_federated_solr\Routing;
+
 /**
  * @file
  * Contains Drupal\search_api_federated_solr\Routing\SearchApiFederatedSolrRoutes.
  */
-
-namespace Drupal\search_api_federated_solr\Routing;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -62,7 +62,7 @@ class SearchApiFederatedSolrRoutes implements ContainerInjectionInterface {
    *   An array of route objects.
    */
   public function routes() {
-    $routes = array();
+    $routes = [];
 
     $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
 
@@ -76,9 +76,9 @@ class SearchApiFederatedSolrRoutes implements ContainerInjectionInterface {
     $routes['search_api_federated_solr.search'] = new Route(
       $path,
       $args,
-      array(
+      [
         '_permission' => 'use federated search',
-      )
+      ]
     );
 
     return $routes;

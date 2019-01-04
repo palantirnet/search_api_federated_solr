@@ -1,11 +1,11 @@
 <?php
 
+namespace Drupal\search_api_federated_solr\Form;
+
 /**
  * @file
  * Contains \Drupal\search_api_solr_federated\Form\SearchApiFederatedSolrSearchAppSettingsForm.
  */
-
-namespace Drupal\search_api_federated_solr\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -16,6 +16,7 @@ use Drupal\Core\Form\FormStateInterface;
  * @package Drupal\search_api_federated_solr\Form
  */
 class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
+
   /**
    * {@inheritdoc}
    */
@@ -36,7 +37,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['#validate'][] = [$this, 'form_validation_path_validate'];
+    $form['#validate'][] = [$this, 'formValidationPathValidate'];
 
     $config = $this->config('search_api_federated_solr.search_app.settings');
 
@@ -112,7 +113,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_index_basic_auth'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Search Index Basic Authentication'),
-      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.')
+      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
     ];
 
     $form['search_index_basic_auth']['username'] = [
@@ -126,7 +127,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Password'),
       '#default_value' => $config->get('index.password'),
     ];
-    
+
     $form['set_search_site'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Set the "Site name" facet to this site'),
@@ -136,10 +137,18 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#states' => [
         'visible' => [
           ':input[name="site_name_property"]' => [
-            'value' => "true"
+            'value' => "true",
           ],
         ],
       ],
+    ];
+
+    $form['show_empty_search_results'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show results for empty search'),
+      '#default_value' => $config->get('content.show_empty_search_results'),
+      '#description' => $this
+        ->t(' When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
     ];
 
     $form['no_results_text'] = [
@@ -149,7 +158,6 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#description' => $this
         ->t('This text is shown when a query returns no results. (Default: "Your search yielded no results.")'),
     ];
-
 
     $form['search_prompt_text'] = [
       '#type' => 'textfield',
@@ -184,7 +192,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Retrieve the search app configuration
+    // Retrieve the search app configuration.
     $config = $this->configFactory->getEditable('search_api_federated_solr.search_app.settings');
 
     // Set the search app path.
@@ -200,9 +208,13 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $page_title = $form_state->getValue('page_title');
     $config->set('page_title', $page_title);
 
-    // Set the search app configuration setting for the default search site flag.
+    // Set the search app config setting for the default search site flag.
     $set_search_site = $form_state->getValue('set_search_site');
     $config->set('facet.site_name.set_default', $set_search_site);
+
+    // Set the search app configuration setting for the default search site flag.
+    $show_empty_search_results = $form_state->getValue('show_empty_search_results');
+    $config->set('content.show_empty_search_results', $show_empty_search_results);
 
     // Get the id of the chosen index.
     $search_index = $form_state->getValue('search_index');
@@ -247,7 +259,6 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Set the number of pagination buttons.
     $config->set('pagination.buttons', $form_state->getValue('page_buttons'));
 
-
     $config->save();
 
     if ($rebuild_routes) {
@@ -258,6 +269,14 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
   }
 
+  /**
+   * Get the name of the site.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
   public function getSiteName(array &$form, FormStateInterface $form_state) {
     // Get the id of the chosen index.
     $search_index = $form_state->getValue('search_index');
@@ -280,10 +299,12 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
   /**
    * Validates that the provided search path is not in use by an existing route.
    *
-   * @param $form
+   * @param array $form
+   *   An associative array containing the structure of the form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
    */
-  public function form_validation_path_validate(&$form, FormStateInterface $form_state) {
+  public function formValidationPathValidate(array &$form, FormStateInterface $form_state) {
     $path = $form_state->getValue('path');
     if ($path) {
       // Check if a route with the config path value already exists.
@@ -293,7 +314,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         $result = $router->match($path);
       }
       catch (\Exception $e) {
-        // This is actually what we want, indicates the route path does not exist.
+        // This is what we want, indicates the route path doesn't exist.
       }
       // If the route path exists for something other than the search route,
       // set an error on the form.
@@ -302,4 +323,5 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       }
     }
   }
+
 }

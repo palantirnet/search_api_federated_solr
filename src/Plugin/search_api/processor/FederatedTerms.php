@@ -49,11 +49,14 @@ class FederatedTerms extends ProcessorPluginBase {
    * {@inheritdoc}
    */
   public function addFieldValues(ItemInterface $item) {
-    // Get all of the federated terms fields on our index (there should only be one).
+    /* Get all of the federated terms fields on our index
+     * (there should only be one).
+     */
     $federated_terms = $this->getFieldsHelper()->filterForPropertyPath($item->getFields(), NULL, 'federated_terms');
 
-    // Get the entity object for the item being indexed, exit if there's somehow not one.
+    // Get the entity object for the item being indexed.
     $entity = $item->getOriginalObject()->getValue();
+    // Exit if there's somehow not one.
     if (!$entity) {
       return;
     }
@@ -96,7 +99,7 @@ class FederatedTerms extends ProcessorPluginBase {
           return;
         }
 
-        // Iterate through this item's taxonomy terms to find federated_terms values.
+        // Iterate through this item's terms to find federated_terms values.
         foreach ($entity_terms as $term) {
           // Load the taxonomy term entity.
           $term_entity = Term::load($term['target_id']);
@@ -106,7 +109,9 @@ class FederatedTerms extends ProcessorPluginBase {
             return $field_definition->getType() === "federated_terms";
           });
 
-          // Since we don't know the field name which was added, we need to identify it by the field type.
+          /* Since we don't know the field name which was added,
+           * we need to identify it by the field type.
+           */
           $federated_term_field_names = array_map(function ($federated_term_definition) {
             return $federated_term_definition->getName();
           }, $federated_term_definitions);
@@ -115,9 +120,10 @@ class FederatedTerms extends ProcessorPluginBase {
           foreach ($federated_term_field_names as $field_name) {
             $federated_term_values = $term_entity->$field_name->getValue();
 
-            // If the federated_terms field is populated, add its values to the destination_terms array.
+            // If the federated_terms field is populated.
             if (!empty($federated_term_values)) {
               foreach ($federated_term_values as $federated_term_value) {
+                // Add its values to the destination_terms array.
                 $federated_terms_destination_values[] = $federated_term_value['value'];
               };
             }
@@ -137,4 +143,5 @@ class FederatedTerms extends ProcessorPluginBase {
       }
     }
   }
+
 }

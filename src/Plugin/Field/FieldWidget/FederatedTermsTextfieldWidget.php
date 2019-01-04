@@ -80,4 +80,5 @@ class FederatedTermsTextfieldWidget extends WidgetBase {
 
     return $element;
   }
+
 }

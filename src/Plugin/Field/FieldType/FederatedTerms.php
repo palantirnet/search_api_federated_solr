@@ -1,10 +1,11 @@
 <?php
+
+namespace Drupal\search_api_federated_solr\Plugin\Field\FieldType;
+
 /**
  * @file
  * Contains \Drupal\search_api_federated_solr\Plugin\field\field_type\FederatedTerms.
  */
-
-namespace Drupal\search_api_federated_solr\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\TypedData\DataDefinition;
@@ -25,7 +26,6 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class FederatedTerms extends FieldItemBase {
   const FEDERATED_TERMS_MAXLENGTH = 255;
-
 
   /**
    * {@inheritdoc}
@@ -106,4 +106,5 @@ class FederatedTerms extends FieldItemBase {
     $value = $this->get('value')->getValue();
     return empty($value);
   }
+
 }

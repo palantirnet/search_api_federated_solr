@@ -1,12 +1,13 @@
 <?php
 
 /**
- * @file search_api_federated_solr.module
+ * @file
  * Contains hook implementations for the Federated Solr Search API Module.
  */
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\search_api\IndexInterface;
 
 /**
  * Implements hook_help().
@@ -19,33 +20,33 @@ function search_api_federated_solr_help($route_name, RouteMatchInterface $route_
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('This module facilitates indexing data from multiple Drupal sites into a single Solr search index. It also provides a ReactJS front end to render search results from that Solr search index.') . '</p>';
       $output .= '<h3>' . t('Usage') . '</h3>';
-      $output .= '<p>' . t('On each site included in the federated search, you will need to') . ':</p>';
+      $output .= '<p>' . t('On each site included in the federated search, you will need to:') . '</p>';
       $output .= '<ol>';
       $output .= '<li>' . t('Install this module') . '</li>';
       $output .= '<li>' . t('Configure a Search API server to connect to the shared Solr index') . '</li>';
-      $output .= '<li>' . t('Configure a Search API index according to the ') . '<a href="https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/federated_schema.md">' . t('recommended schema') . '</a></li>';
+      $output .= '<li>' . t('Configure a Search API index according to the <a href="@recommended_schema">recommended schema</a>', ['@recommended_schema' => 'https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/federated_schema.md']) . '</li>';
       $output .= '</ol>';
-      $output .= '<p>' . t('In order to display results from the Solr index') . ':</p>';
+      $output .= '<p>' . t('In order to display results from the Solr index:') . '</p>';
       $output .= '<ol>';
-      $output .= '<li>' . t('Configure the application route and settings at') . ' <code>/admin/config/search-api-federated-solr/search-app/settings</code></li>';
-      $output .= '<li>' . t('Set permissions for') . ' <code>' . t('Use Federated Search') . '</code> ' . t('and') . ' <code>' . t('Administer Federated Search') . '</code> ' . t('for the proper roles.') . '</li>';
-      $output .= '<li>' . t('Optional') . ': <a href="https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/theme.md">' . t('Theme the ReactJS search app') . '</a></li>';
+      $output .= '<li>' . t('Configure the application route and settings at <code>@settings</code>', ['@settings' => '/admin/config/search-api-federated-solr/search-app/settings']) . '</li>';
+      $output .= '<li>' . t('Set permissions for <code>Use Federated Search</code> and <code>Administer Federated Search</code> for the proper roles.') . '</li>';
+      $output .= '<li>' . t('Optional: <a href="@theme">Theme the ReactJS search app</a>', ['@theme' => 'https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/theme.md']) . '</li>';
       $output .= '<li>' . t('Optional: Add the federated search page form block to your site theme') . '</li>';
       $output .= '</ol>';
       $output .= '<h3>' . t('Updating the bundled React application') . '</h3>';
-      $output .= '<p>' . t('When changes to') . ' <a href="https://github.com/palantirnet/federated-search-react/">' . t('federated-search-react') . '</a> ' . t('are made they\'ll need to be pulled into this module. To do so') . ':</p>';
+      $output .= '<p>' . t('When changes to <a href="@react">federated-search-react</a> are made they\'ll need to be pulled into this module. To do so:', ['@react' => 'https://github.com/palantirnet/federated-search-react/']) . '</p>';
       $output .= '<ul>';
-      $output .= '<li>' . t('Update') . ' <code>package.json</code> ' . t('with the new version.') . '</li>';
-      $output .= '<li>' . t('Run') . ' <code>yarn install</code></li>';
-      $output .= '<li>' . t('Delete the old versions of') . ' <code>js/main.*.js (' . t('and') . ' .map)</code> ' . t('and') . ' <code>css/main.*.css (' . t('and') . ' .map)</code></li>';
-      $output .= '<li>' . t('Update') . ' <code>search_api_federated_solr.libraries.yml</code> ' . t('to reference the new file.') . '</li>';
+      $output .= '<li>' . t('Update <code>package.json</code> with the new version.') . '</li>';
+      $output .= '<li>' . t('Run <code>yarn install</code>') . '</li>';
+      $output .= '<li>' . t('Delete the old versions of <code>js/main.*.js (and .map)</code> and <code>css/main.*.css (and .map)</code>') . '</li>';
+      $output .= '<li>' . t('Update <code>search_api_federated_solr.libraries.yml</code> to reference the new file.') . '</li>';
       $output .= '</ul>';
       $output .= '<h3>' . t('More information') . '</h3>';
       $output .= '<ul>';
-      $output .= '<li><a href="https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/usage.md">' . t('How to use this module') . '</a></li>';
-      $output .= '<li><a href="https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/federated_schema.md">' . t('How to configure a Search API Index for federated search') . '</a></li>';
-      $output .= '<li><a href="https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/theme.md">' . t('How to theme the ReactJS search app') . '</a></li>';
-      $output .= '<li><a href="https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/block.md">' . t('How to add the search form block') . '</a></li>';
+      $output .= '<li>' . t('<a href="@usage">How to use this module</a>', ['@usage' => 'https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/usage.md']) . '</li>';
+      $output .= '<li>' . t('<a href="@federated_schema">How to configure a Search API Index for federated search</a>', ['@federated_schema' => 'https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/federated_schema.md']) . '</li>';
+      $output .= '<li>' . t('<a href="@theme">How to theme the ReactJS search app</a>', ['@theme' => 'https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/theme.md']) . '</li>';
+      $output .= '<li>' . t('<a href="@block">How to add the search form block</a>', ['@block' => 'https://github.com/palantirnet/search_api_federated_solr/blob/master/docs/block.md']) . '</li>';
       $output .= '</ul>';
       return $output;
 
@@ -53,11 +54,14 @@ function search_api_federated_solr_help($route_name, RouteMatchInterface $route_
   }
 }
 
+/**
+ * Implements hook_theme().
+ */
 function search_api_federated_solr_theme($existing, $type, $theme, $path) {
   return [
     'search_app' => [
       'variables' => [
-        'federated_search_app_config' => null,
+        'federated_search_app_config' => NULL,
       ],
     ],
   ];
@@ -73,7 +77,7 @@ function search_api_federated_solr_theme($existing, $type, $theme, $path) {
  *   counterparts. The special fields 'search_api_id' and 'search_api_relevance'
  *   are also included.
  */
-function search_api_federated_solr_search_api_solr_field_mapping_alter(\Drupal\search_api\IndexInterface $index, array &$fields) {
+function search_api_federated_solr_search_api_solr_field_mapping_alter(IndexInterface $index, array &$fields) {
 
   $singleFieldsMap = [
     // Field name => new single value for solr.
@@ -81,16 +85,16 @@ function search_api_federated_solr_search_api_solr_field_mapping_alter(\Drupal\s
   ];
 
   // Iterate through the index fields and remap solr values where necessary.
-  foreach(array_keys($fields) as $key){
+  foreach (array_keys($fields) as $key) {
     // If this field is in our singleFieldsMap, remap it to its single value.
-    if (array_key_exists($key,$singleFieldsMap)) {
+    if (array_key_exists($key, $singleFieldsMap)) {
       $fields[$key] = $singleFieldsMap[$key];
     }
 
     // Map all "mapped_field" property fields to their single value in solr.
     $field = $index->getField($key);
-    if (method_exists($field,'getPropertyPath') && 'mapped_field' == $field->getPropertyPath()) {
-      $fields[$key] = preg_replace("/^(\w)m_/","$1s_", $fields[$key], 1);
+    if (method_exists($field, 'getPropertyPath') && 'mapped_field' == $field->getPropertyPath()) {
+      $fields[$key] = preg_replace("/^(\w)m_/", "$1s_", $fields[$key], 1);
     }
   };
 }

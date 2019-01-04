@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\search_api_federated_solr\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -23,29 +24,33 @@ class SearchController extends ControllerBase {
     // Define the federated search app configuration array.
     // The twig template will json_encode this array into the object expected by
     // the search app: https://github.com/palantirnet/federated-search-react/blob/master/src/.env.local.js.example
-
     $federated_search_app_config = [];
 
     // REQUIRED: The default solr backend.
     $federated_search_app_config['url'] = $config->get('index.server_url');
 
-    // OPTIONAL: The username and password for Basic Authentication on the server.
-    // The username and password will be combined and base64 encoded as per the application.
+    /* OPTIONAL:
+     * The username and password for Basic Authentication on the server.
+     * The username and password will be
+     * combined and base64 encoded as per the application.
+     */
     $federated_search_app_config['userpass'] = base64_encode($config->get('index.username') . ':' . $config->get('index.password'));
 
     // Validate that there is still a site name property set for this index.
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
-    $config->set('index.has_site_name_property', $site_name_property ? true : false);
+    $config->set('index.has_site_name_property', $site_name_property ? TRUE : FALSE);
 
     // Determine if config option to set default site name is set.
     $set_default_site = $config->get('facet.site_name.set_default');
 
-    // If we no longer have a site name property so unset the set default config.
+    /* We no longer have a site name property so unset the set default config.
+     * See Drupal\search_api_federated_solr\Form\FederatedSearchPageForm class
+     * The default "Site Name" facet value is passed by search form
+     * in initial get request.
+     */
     if ($set_default_site && !$site_name_property) {
       $config->set('facet.site_name.set_default', 0);
     }
-    // See Drupal\search_api_federated_solr\Form\FederatedSearchPageForm class
-    // The default "Site Name" facet value is passed by search form in initial get request.
 
     // OPTIONAL: The text to display when the app loads with no search term.
     if ($search_prompt = $config->get('content.search_prompt')) {
@@ -55,6 +60,11 @@ class SearchController extends ControllerBase {
     // OPTIONAL: The text to display when a search returns no results.
     if ($no_results = $config->get('content.no_results')) {
       $federated_search_app_config['noResults'] = $no_results;
+    }
+
+    // OPTIONAL: The text to display when a search returns no results.
+    if ($show_empty_search_results = $config->get('content.show_empty_search_results')) {
+      $federated_search_app_config['showEmptySearchResults'] = $show_empty_search_results;
     }
 
     // OPTIONAL: The number of search results to show per page.
