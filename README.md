@@ -28,6 +28,17 @@ Then user your browsers developer tools to inspect  network traffic.  When your 
 
 *Note: we recommend leaving this set to `FALSE` for production environments, as it could have an impact on performance.*
 
+## Requirements
+
+Search API Federated Solr requires the following modules:
+
+ * Search API (https://www.drupal.org/project/search_api) version 7.x-1.x
+ * SeachAPI Solr (https://www.drupal.org/project/search_api_solr) version 7.x-1.x
+
+The module also relies on the [Federated Search React](https://github.com/palantirnet/federated-search-react) application, which is referenced as an external Drupal library.
+
+Apache Solr versions `4.5.1` and `5.x` have been used with this module and it is likely that newer versions will also work.
+
 ## Updating the bundled React application
 
 When changes to [federated-search-react](https://github.com/palantirnet/federated-search-react/) are made they'll need to be pulled into this module. To do so:
