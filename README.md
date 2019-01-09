@@ -46,6 +46,7 @@ The Search API Field Map module is used to provide common indexing across each s
 
 The module also relies on the [Federated Search React](https://github.com/palantirnet/federated-search-react) application, which is referenced as an external Drupal library.
 
+Apache Solr versions `4.5.1` and `5.x` have been used with this module and it is likely that newer versions will also work.
 
 INSTALLATION
 ------------
