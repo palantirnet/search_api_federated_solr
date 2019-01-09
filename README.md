@@ -39,7 +39,7 @@ Search API Federated Solr requires the following modules:
 
  * Search API (https://www.drupal.org/project/search_api)
  * Search API Field Map (https://github.com/palantirnet/search_api_field_map)
- * SeachAPI Solr (https://www.drupal.org/project/search_api_solr)
+ * SeachAPI Solr (https://www.drupal.org/project/search_api_solr) version 8.x-1.x, versions 8.x-2.x and newer not tested
  * Token (https://www.drupal.org/project/token)
 
 The Search API Field Map module is used to provide common indexing across each site. See that module’s documentation for additional information.
