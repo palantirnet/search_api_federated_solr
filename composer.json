@@ -19,6 +19,6 @@
     "drupal/core": "^8.0",
     "drupal/search_api_solr": "^1.2",
     "drupal/token": "^1.1",
-    "palantirnet/search_api_field_map": "dev-master"
+    "drupal/search_api_field_map": "^1.0"
   }
 }
