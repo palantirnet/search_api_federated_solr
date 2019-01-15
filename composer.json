@@ -1,5 +1,5 @@
 {
-  "name": "palantirnet/search_api_federated_solr",
+  "name": "drupal/search_api_federated_solr",
   "type": "drupal-module",
   "description": "Allows indexing multiple Drupal sites into a single Solr search index.",
   "keywords": ["Drupal"],
@@ -9,10 +9,6 @@
     {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/palantirnet/search_api_field_map.git"
     }
   ],
   "require": {
