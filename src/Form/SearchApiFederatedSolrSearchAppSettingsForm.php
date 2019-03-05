@@ -48,6 +48,15 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $index_options[$search_api_index->id()] = $search_api_index->label();
     }
 
+    /**
+     * Basic set up:
+     *   - search results page path
+     *   - search results page title
+     *   - autocomplete enable triggers display of autocopmlete config fieldset
+     *   - serach index to use as datasource,
+     *   - basic auth credentials for index
+     */
+
     $form['setup'] = [
       '#type' => 'details',
       '#title' => 'Search Results Page > Set Up',
@@ -84,7 +93,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['setup']['search_index'] = [
       '#type' => 'select',
       '#title' => $this->t('Search API index'),
-      '#description' => $this->t('Defines <a href="/admin/config/search/search-api">which search_api index and server</a> the search app should use.'),
+      '#description' => $this->t('Defines <a href="/admin/config/search/search-api">which search_api index and server</a> the search app should use as a datasource.'),
       '#options' => $index_options,
       '#default_value' => $config->get('index.id'),
       '#required' => TRUE,
@@ -112,6 +121,16 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Password'),
       '#default_value' => $config->get('index.password'),
     ];
+
+    /**
+     * Search results page options:
+     *   - show empty search results (i.e. filterable listing page),
+     *   - customize "no results" text
+     *   - custom search prompt
+     *     - renders in result area when show empty results no enabled and no query value
+     *   - max number of search results per page
+     *   - max number of "numbered" pagination buttons to show
+     */
 
     $form['search_page_options'] = [
       '#type' => 'details',
@@ -159,6 +178,11 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The max number of numbered pagination buttons to show at a given time. (Default: 5)'),
     ];
 
+    /**
+     * Settings and values for search facets and filters:
+     *   - set the site name facet to the current site name property
+     */
+
     $form['search_form_values'] = [
       '#type' => 'details',
       '#title' => 'Search Results Page > Facets & Filters',
@@ -188,23 +212,15 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
-    /*
-     * // OPTIONAL: defaults to false
-     * autocomplete.isEnabled
-     * // REQUIRED
-     * autocomplete.url
-     * // OPTIONAL: defaults to false, whether or not to append wildcard to query term
-     * autocomplete.appendWildcard
-     * // OPTIONAL: defaults to 5, max number of results which should be returned
-     * autocomplete.suggestionRows
-     * // OPTIONAL: defaults to 2, number of characters *after* which autocomplete results should appear
-     * autocomplete.numChars
-     * // REQUIRED: show search-as-you-type results ('result', default) or search term ('term') suggestions
-     * autocomplete.mode
-     *  // OPTIONAL: default set
-     * autocomplete.[mode].titleText
-     * // OPTIONAL: defaults to false
-     * autocomplete.[mode].showDirectionsText
+    /**
+     * Autocomplete settings:
+     *   - endpoint URL
+     *   - use wildcard to support partial terms
+     *   - customize number of autocomplete results
+     *   - number of characters after which autocomplete query should be executed
+     *   - autocomplete results mode (search results, terms)
+     *   - title for autocomplete results
+     *   - show/hide autocomplete keyboard directions
      */
 
     $form['autocomplete'] = [
