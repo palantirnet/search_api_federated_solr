@@ -48,15 +48,21 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $index_options[$search_api_index->id()] = $search_api_index->label();
     }
 
-    $form['path'] = [
+    $form['setup'] = [
+      '#type' => 'details',
+      '#title' => 'Search Results Page > Set Up',
+      '#open' => TRUE,
+    ];
+
+    $form['setup']['path'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Search app path'),
+      '#title' => $this->t('Search results page path'),
       '#default_value' => $config->get('path'),
       '#description' => $this
         ->t('The path for the search app (Default: "/search-app").'),
     ];
 
-    $form['page_title'] = [
+    $form['setup']['page_title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Search results page title'),
       '#default_value' => $config->get('page_title'),
@@ -64,7 +70,15 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The title that will live in the header tag of the search results page (leave empty to hide completely).'),
     ];
 
-    $form['search_index'] = [
+    $form['setup']['autocomplete_is_enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Enable autocomplete for the search results page search form') . '</b>',
+      '#default_value' => $config->get('autocomplete.isEnabled'),
+      '#description' => $this
+        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page.'),
+    ];
+
+    $form['setup']['search_index'] = [
       '#type' => 'select',
       '#title' => $this->t('Search API index'),
       '#description' => $this->t('Defines <a href="/admin/config/search/search-api">which search_api index and server</a> the search app should use.'),
@@ -78,7 +92,77 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
-    $form['site_name_property'] = [
+    $form['setup']['search_index_basic_auth'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Search Index Basic Authentication'),
+      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+    ];
+
+    $form['setup']['search_index_basic_auth']['username'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Username'),
+      '#default_value' => $config->get('index.username'),
+    ];
+
+    $form['setup']['search_index_basic_auth']['password'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Password'),
+      '#default_value' => $config->get('index.password'),
+    ];
+
+    $form['search_page_options'] = [
+      '#type' => 'details',
+      '#title' => 'Search Results Page > Options',
+      '#open' => FALSE,
+    ];
+
+    $form['search_page_options']['show_empty_search_results'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Show results for empty search') . '</b>',
+      '#default_value' => $config->get('content.show_empty_search_results'),
+      '#description' => $this
+        ->t(' When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
+    ];
+
+    $form['search_page_options']['no_results_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('No results text'),
+      '#default_value' => $config->get('content.no_results'),
+      '#description' => $this
+        ->t('This text is shown when a query returns no results. (Default: "Your search yielded no results.")'),
+    ];
+
+    $form['search_page_options']['search_prompt_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Search prompt text'),
+      '#default_value' => $config->get('content.search_prompt'),
+      '#description' => $this
+        ->t('This text is shown when no query term has been entered. (Default: "Please enter a search term.")'),
+    ];
+
+    $form['search_page_options']['rows'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Number of search results per page'),
+      '#default_value' => $config->get('results.rows'),
+      '#description' => $this
+        ->t('The max number of results to render per search results page. (Default: 20)'),
+    ];
+
+    $form['search_page_options']['page_buttons'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Number of pagination buttons'),
+      '#default_value' => $config->get('pagination.buttons'),
+      '#description' => $this
+        ->t('The max number of numbered pagination buttons to show at a given time. (Default: 5)'),
+    ];
+
+    $form['search_form_values'] = [
+      '#type' => 'details',
+      '#title' => 'Search Results Page > Facets & Filters',
+      '#open' => FALSE,
+    ];
+
+    $form['search_form_values']['site_name_property'] = [
       '#type' => 'hidden',
       '#attributes' => [
         'id' => ['site-name-property'],
@@ -86,25 +170,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#value' => $config->get('index.has_site_name_property') ? 'true' : '',
     ];
 
-    $form['search_index_basic_auth'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Search Index Basic Authentication'),
-      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
-    ];
-
-    $form['search_index_basic_auth']['username'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Username'),
-      '#default_value' => $config->get('index.username'),
-    ];
-
-    $form['search_index_basic_auth']['password'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Password'),
-      '#default_value' => $config->get('index.password'),
-    ];
-
-    $form['set_search_site'] = [
+    $form['search_form_values']['set_search_site'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Set the "Site name" facet to this site'),
       '#default_value' => $config->get('facet.site_name.set_default'),
@@ -117,46 +183,6 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
           ],
         ],
       ],
-    ];
-
-    $form['show_empty_search_results'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Show results for empty search'),
-      '#default_value' => $config->get('content.show_empty_search_results'),
-      '#description' => $this
-        ->t(' When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
-    ];
-
-    $form['no_results_text'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('No results text'),
-      '#default_value' => $config->get('content.no_results'),
-      '#description' => $this
-        ->t('This text is shown when a query returns no results. (Default: "Your search yielded no results.")'),
-    ];
-
-    $form['search_prompt_text'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Search prompt text'),
-      '#default_value' => $config->get('content.search_prompt'),
-      '#description' => $this
-        ->t('This text is shown when no query term has been entered. (Default: "Please enter a search term.")'),
-    ];
-
-    $form['rows'] = [
-      '#type' => 'number',
-      '#title' => $this->t('Number of search results per page'),
-      '#default_value' => $config->get('results.rows'),
-      '#description' => $this
-        ->t('The max number of results to render per search results page. (Default: 20)'),
-    ];
-
-    $form['page_buttons'] = [
-      '#type' => 'number',
-      '#title' => $this->t('Number of pagination buttons'),
-      '#default_value' => $config->get('pagination.buttons'),
-      '#description' => $this
-        ->t('The max number of numbered pagination buttons to show at a given time. (Default: 5)'),
     ];
 
     /*
@@ -178,18 +204,11 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
      * autocomplete.[mode].showDirectionsText
      */
 
-    $form['autocomplete_is_enabled'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Enable autocomplete for the search results page search form'),
-      '#default_value' => $config->get('autocomplete.isEnabled'),
-      '#description' => $this
-        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page.'),
-    ];
-
     $form['autocomplete'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Search results page > search form: autocompletion'),
-      '#description' => $this->t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.')
+      '#type' => 'details',
+      '#title' => $this->t('Search Results Page > Search Form > Autocomplete'),
+      '#description' => $this->t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.'),
+      '#open' => FALSE,
     ];
 
     $form['autocomplete']['url'] = [
