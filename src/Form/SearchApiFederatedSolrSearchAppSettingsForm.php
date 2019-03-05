@@ -294,12 +294,12 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode and "What would you like to search for?" for Search Term mode.)'),
     ];
 
-    $form['autocomplete']['mode_show_directions'] = [
+    $form['autocomplete']['autocomplete_mode_hide_directions'] = [
       '#type' => 'checkbox',
-      '#title' => '<b>' . $this->t('Make keyboard directions visible') . '</b>',
-      '#default_value' => $config->get('autocomplete.isAppendWildcard'),
+      '#title' => '<b>' . $this->t('Hide keyboard directions') . '</b>',
+      '#default_value' => $config->get('autocomplete.hideDirectionsText'),
       '#description' => $this
-        ->t('Check this box to make the autocomplete keyboard usage directions visible in the results dropdown. This option is recommended for sites that want to maximize their accessibility UX for sighted keyboard users. (Default: false)'),
+        ->t('Check this box to make hide the autocomplete keyboard usage directions in the results dropdown. For sites that want to maximize their accessibility UX for sighted keyboard users, we recommend leaving this unchecked. (Default: directions are visible)'),
     ];
 
 
