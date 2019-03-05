@@ -75,7 +75,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => '<b>' . $this->t('Enable autocomplete for the search results page search form') . '</b>',
       '#default_value' => $config->get('autocomplete.isEnabled'),
       '#description' => $this
-        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page.'),
+        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
+      '#attributes' => [
+        'id' => ['autocomplete-is-enabled'],
+      ],
     ];
 
     $form['setup']['search_index'] = [
@@ -209,6 +212,13 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Search Results Page > Search Form > Autocomplete'),
       '#description' => $this->t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.'),
       '#open' => FALSE,
+      '#states' => [
+        'visible' => [
+          ':input[name="autocomplete_is_enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['autocomplete']['url'] = [
