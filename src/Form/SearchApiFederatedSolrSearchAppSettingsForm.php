@@ -237,7 +237,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
-    $form['autocomplete']['url'] = [
+    $form['autocomplete']['autocomplete_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Endpoint URL'),
       '#default_value' => $config->get('autocomplete.url'),
@@ -247,7 +247,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The URL where requests for autocomplete queries should be made. Defaults to the url of the  <code>select</code> Request Handler on the server of the selected Search API index.<br />Supports absolute url pattern to any endpoint which returns the expected autocomplete result structure.'),
     ];
 
-    $form['autocomplete']['is_append_wildcard'] = [
+    $form['autocomplete']['autocomplete_is_append_wildcard'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Append a wildcard \'*\' to support partial text search') . '</b>',
       '#default_value' => $config->get('autocomplete.isAppendWildcard'),
@@ -255,7 +255,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
     ];
 
-    $form['autocomplete']['suggestion_rows'] = [
+    $form['autocomplete']['autocomplete_suggestion_rows'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of results'),
       '#default_value' => $config->get('autocomplete.suggestionRows'),
@@ -263,7 +263,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
     ];
 
-    $form['autocomplete']['num_chars'] = [
+    $form['autocomplete']['autocomplete_num_chars'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of characters after which autocomplete query should execute'),
       '#default_value' => $config->get('autocomplete.numChars'),
@@ -273,7 +273,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
     $autocomplete_mode = $config->get('autocomplete.mode') || false;
 
-    $form['autocomplete']['mode'] = [
+    $form['autocomplete']['autocomplete_mode'] = [
       '#type' => 'select',
       '#title' => $this->t('Result mode'),
       '#description' => $this->t('Type of results the autocomplete response returns: search results (default) or search terms.'),
@@ -285,7 +285,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#default_value' => $autocomplete_mode || 'result',
     ];
 
-    $form['autocomplete']['mode_title_text'] = [
+    $form['autocomplete']['autocomplete_mode_title_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Results title text'),
       '#size' => 50,
