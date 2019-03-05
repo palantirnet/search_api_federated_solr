@@ -159,6 +159,105 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The max number of numbered pagination buttons to show at a given time. (Default: 5)'),
     ];
 
+    /*
+     * // OPTIONAL: defaults to false
+     * autocomplete.isEnabled
+     * // REQUIRED
+     * autocomplete.url
+     * // OPTIONAL: defaults to false, whether or not to append wildcard to query term
+     * autocomplete.appendWildcard
+     * // OPTIONAL: defaults to 5, max number of results which should be returned
+     * autocomplete.suggestionRows
+     * // OPTIONAL: defaults to 2, number of characters *after* which autocomplete results should appear
+     * autocomplete.numChars
+     * // REQUIRED: show search-as-you-type results ('result', default) or search term ('term') suggestions
+     * autocomplete.mode
+     *  // OPTIONAL: default set
+     * autocomplete.[mode].titleText
+     * // OPTIONAL: defaults to false
+     * autocomplete.[mode].showDirectionsText
+     */
+
+    $form['autocomplete_is_enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable autocomplete for the search results page search form'),
+      '#default_value' => $config->get('autocomplete.isEnabled'),
+      '#description' => $this
+        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page.'),
+    ];
+
+    $form['autocomplete'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Search results page > search form: autocompletion'),
+      '#description' => $this->t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.')
+    ];
+
+    $form['autocomplete']['url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Endpoint URL'),
+      '#default_value' => $config->get('autocomplete.url'),
+      '#maxlength' => 2048,
+      '#size' => 50,
+      '#description' => $this
+        ->t('The URL where requests for autocomplete queries should be made. Defaults to the url of the  <code>select</code> Request Handler on the server of the selected Search API index.<br />Supports absolute url pattern to any endpoint which returns the expected autocomplete result structure.'),
+    ];
+
+    $form['autocomplete']['is_append_wildcard'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Append a wildcard \'*\' to support partial text search') . '</b>',
+      '#default_value' => $config->get('autocomplete.isAppendWildcard'),
+      '#description' => $this
+        ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
+    ];
+
+    $form['autocomplete']['suggestion_rows'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Number of results'),
+      '#default_value' => $config->get('autocomplete.suggestionRows'),
+      '#description' => $this
+        ->t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
+    ];
+
+    $form['autocomplete']['num_chars'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Number of characters after which autocomplete query should execute'),
+      '#default_value' => $config->get('autocomplete.numChars'),
+      '#description' => $this
+        ->t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
+    ];
+
+    $autocomplete_mode = $config->get('autocomplete.mode') || false;
+
+    $form['autocomplete']['mode'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Result mode'),
+      '#description' => $this->t('Type of results the autocomplete response returns: search results (default) or search terms.'),
+      '#options' => [
+        'result' => $this
+          ->t('Search results (i.e. search as you type functionality)'),
+        'Search terms (coming soon)' => [],
+      ],
+      '#default_value' => $autocomplete_mode || 'result',
+    ];
+
+    $form['autocomplete']['mode_title_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Results title text'),
+      '#size' => 50,
+      '#default_value' => $autocomplete_mode ? $config->get('autocomplete.' . $autocomplete_mode . '.titleText') : '',
+      '#description' => $this
+        ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode and "What would you like to search for?" for Search Term mode.)'),
+    ];
+
+    $form['autocomplete']['mode_show_directions'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Make keyboard directions visible') . '</b>',
+      '#default_value' => $config->get('autocomplete.isAppendWildcard'),
+      '#description' => $this
+        ->t('Check this box to make the autocomplete keyboard usage directions visible in the results dropdown. This option is recommended for sites that want to maximize their accessibility UX for sighted keyboard users. (Default: false)'),
+    ];
+
+
     $form['#cache'] = ['max-age' => 0];
 
     return parent::buildForm($form, $form_state);
