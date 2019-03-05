@@ -34,7 +34,9 @@ class SearchController extends ControllerBase {
      * The username and password will be
      * combined and base64 encoded as per the application.
      */
-    $federated_search_app_config['userpass'] = base64_encode($config->get('index.username') . ':' . $config->get('index.password'));
+    $username = $config->get('index.username');
+    $pass = $config->get('index.password');
+    $federated_search_app_config['userpass'] = $username && $pass ? base64_encode($config->get('index.username') . ':' . $config->get('index.password')) : '';
 
     // Validate that there is still a site name property set for this index.
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
