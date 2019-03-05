@@ -379,6 +379,30 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Set the number of pagination buttons.
     $config->set('pagination.buttons', $form_state->getValue('page_buttons'));
 
+    // Set autocomplete options.
+    $autocomplete_is_enabled = $form_state->getValue('autocomplete_is_enabled');
+    $config->set('autocomplete.isEnabled', $form_state->getValue('autocomplete_is_enabled'));
+
+    // If enabled, set the autocomplete options.
+    if ($autocomplete_is_enabled) {
+      // Cache form values that we'll use more than once.
+      $autocomplete_url_value = $form_state->getValue('autocomplete_url');
+      $autocomplete_mode = $form_state->getValue('autocomplete_mode');
+
+      // Set the default autocomplete endpoint url to the default search url if none was passed in.
+      $autocomplete_url = $autocomplete_url_value ? $autocomplete_url_value : $server_url;
+
+      // Set the actual autocomplete config options.
+      $config->set('autocomplete.url', $autocomplete_url);
+      $config->set('autocomplete.appendWildcard', $form_state->getValue('autocomplete_append_wildcard'));
+      $config->set('autocomplete.suggestionRows', $form_state->getValue('autocomplete_suggestion_rows'));
+      $config->set('autocomplete.numChars', $form_state->getValue('autocomplete_num_chars'));
+      if ($autocomplete_mode) {
+        $config->set('autocomplete.mode', $autocomplete_mode);
+        $config->set('autocomplete.' . $autocomplete_mode . '.titleText', $form_state->getvalue('autocomplete_mode_title_text'));
+        $config->set('autocomplete.' . $autocomplete_mode . '.hideDirectionsText', $form_state->getValue('autocomplete_mode_hide_directions'));
+      }
+    }
     $config->save();
 
     if ($rebuild_routes) {
