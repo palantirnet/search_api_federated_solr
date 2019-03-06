@@ -49,6 +49,47 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     }
 
     /**
+     * Set index config values to indicate which properties
+     */
+    $site_name_property_value = '';
+    $site_name_property_default_value = '';
+    // Validates whether or not the search app's chosen index has a site_name,
+    // federated_date, federated_type, and federated_terms properties
+    // and alters the search app settings form accordingly.
+    if ($search_index_id = $config->get('index.id')) {
+      $index_config = \Drupal::config('search_api.index.' . $search_index_id);
+      // Determine if the index has a site name property, which could have been
+      // added / removed since last form load.
+      $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
+      $config->set('index.has_site_name_property', $site_name_property ? TRUE : FALSE);
+
+      // If the index does have a site name property, ensure the hidden form field reflects that.
+      if ($site_name_property) {
+        $site_name_property_value = 'true';
+        $site_name_property_default_value = 'true';
+      }
+      else {
+        // Assume properties are not present, set defaults.
+        $site_name_property_value = '';
+        $site_name_property_default_value = 0;
+        $config->set('facet.site_name.set_default', 0);
+      }
+
+      // Save config indicating which index field properties that
+      // correspond to facets and filters are present on the index.
+      $type_property = $index_config->get('field_settings.federated_type');
+      $config->set('index.has_federated_type_property', $type_property ? 1 : 0);
+
+      $date_property = $index_config->get('field_settings.federated_date');
+      $config->set('index.has_federated_date_property', $date_property ? 1 : 0);
+
+      $terms_property = $index_config->get('field_settings.federated_terms');
+      $config->set('index.has_federated_terms_property', $terms_property ? 1 : 0);
+
+      $config->save();
+    }
+
+    /**
      * Basic set up:
      *   - search results page path
      *   - search results page title
@@ -189,15 +230,56 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#open' => FALSE,
     ];
 
+    /**
+     * Set hidden form element value based on presence of field properties on
+     *   the selected index.  This value will determine which inputs are
+     *   visible for setting default facet/filter values and hiding in the UI.
+     */
+
     $form['search_form_values']['site_name_property'] = [
       '#type' => 'hidden',
       '#attributes' => [
         'id' => ['site-name-property'],
       ],
-      '#value' => $config->get('index.has_site_name_property') ? 'true' : '',
+      '#value' => $site_name_property_value,
+      '#default_value' => $site_name_property_default_value,
     ];
 
-    $form['search_form_values']['set_search_site'] = [
+    $form['search_form_values']['date_property'] = [
+      '#type' => 'hidden',
+      '#attributes' => [
+        'id' => ['date-property'],
+      ],
+      '#value' => $config->get('index.has_date_property') ? 'true' : '',
+    ];
+
+    $form['search_form_values']['type_property'] = [
+      '#type' => 'hidden',
+      '#attributes' => [
+        'id' => ['type-property'],
+      ],
+      '#value' => $config->get('index.has_type_property') ? 'true' : '',
+    ];
+
+    $form['search_form_values']['terms_property'] = [
+      '#type' => 'hidden',
+      '#attributes' => [
+        'id' => ['terms-property'],
+      ],
+      '#value' => $config->get('index.has_terms_property') ? 'true' : '',
+    ];
+
+    /**
+     * Enable setting of default values for available facets / filter.
+     * As of now, this includes Site Name only.
+     */
+
+    $form['search_form_values']['defaults'] = [
+      '#type' => 'fieldset',
+      '#title' => 'Set facet / filter default values'
+    ];
+
+    $form['search_form_values']['defaults']['set_search_site'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Set the "Site name" facet to this site'),
       '#default_value' => $config->get('facet.site_name.set_default'),
@@ -206,6 +288,77 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#states' => [
         'visible' => [
           ':input[name="site_name_property"]' => [
+            'value' => "true",
+          ],
+        ],
+      ],
+    ];
+
+    /**
+     * Enable hiding available facets / filters.
+     * These form elements will only be visible if their corresopnding
+     *   property exists on the index.
+     */
+    $form['search_form_values']['hidden'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Hide facets / filters from sidebar'),
+      '#description' => $this->t('The checked facets / filters will be hidden from the search app.'),
+    ];
+
+    $form['search_form_values']['hidden']['hide_site_name'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Site name facet'),
+      '#default_value' => $config->get('facet.site_name.is_hidden'),
+      '#description' => $this
+        ->t('When checked, the ability to which sites should be included in the results will be hidden.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="site_name_property"]' => [
+            'value' => "true",
+          ],
+        ],
+      ],
+    ];
+
+    $form['search_form_values']['hidden']['hide_type'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Type facet'),
+      '#default_value' => $config->get('facet.federated_type.is_hidden'),
+      '#description' => $this
+        ->t('When checked, the ability to select those types (i.e. bundles) which should have results returned will be hidden.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="type_property"]' => [
+            'value' => "true",
+          ],
+        ],
+      ],
+    ];
+
+    $form['search_form_values']['hidden']['hide_date'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Date filter'),
+      '#default_value' => $config->get('filter.federated_date.is_hidden'),
+      '#description' => $this
+        ->t('When checked, the ability to filter results by date will be hidden.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="date_property"]' => [
+            'value' => "true",
+          ],
+        ],
+      ],
+    ];
+
+    $form['search_form_values']['hidden']['hide_terms'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Terms facet'),
+      '#default_value' => $config->get('facet.federated_terms.is_hidden'),
+      '#description' => $this
+        ->t('When checked, the ability to select those terms which should have results returned will be hidden.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="terms_property"]' => [
             'value' => "true",
           ],
         ],
@@ -332,6 +485,19 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $set_search_site = $form_state->getValue('set_search_site');
     $config->set('facet.site_name.set_default', $set_search_site);
 
+    // Set the search app config settings for hidden filter/facets.
+    $hide_search_site = $form_state->getValue('hide_site_name');
+    $config->set('facet.site_name.is_hidden', $hide_search_site);
+
+    $hide_type = $form_state->getValue('hide_type');
+    $config->set('facet.federated_type.is_hidden', $hide_type);
+
+    $hide_terms = $form_state->getValue('hide_terms');
+    $config->set('facet.federated_terms.is_hidden', $hide_terms);
+
+    $hide_date = $form_state->getValue('hide_date');
+    $config->set('filter.federated_date.is_hidden', $hide_date);
+
     // Set the search app configuration setting for the default search site flag.
     $show_empty_search_results = $form_state->getValue('show_empty_search_results');
     $config->set('content.show_empty_search_results', $show_empty_search_results);
@@ -341,12 +507,8 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Save the selected index option in search app config (for form state).
     $config->set('index.id', $search_index);
 
-    // Get the index configuration object.
-    $index_config = \Drupal::config('search_api.index.' . $search_index);
-    $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
-    $config->set('index.has_site_name_property', $site_name_property ? TRUE : FALSE);
-
     // Get the id of the chosen index's server.
+    $index_config = \Drupal::config('search_api.index.' . $search_index);
     $index_server = $index_config->get('server');
 
     // Get the server url.

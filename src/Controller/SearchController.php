@@ -54,6 +54,36 @@ class SearchController extends ControllerBase {
       $config->set('facet.site_name.set_default', 0);
     }
 
+    // Create an index property field map array to determine which fields
+    // exist on the index and should be hidden in the app UI.
+    $search_fields = [
+      "sm_site_name" => [
+        "property" => $site_name_property,
+        "is_hidden" => $config->get('facet.site_name.is_hidden'),
+      ],
+      "ss_federated_type" => [
+        "property" =>  $config->get('index.has_federated_type_property'),
+        "is_hidden" => $config->get('facet.federated_type.is_hidden'),
+      ],
+      "ds_federated_date" => [
+        "property" => $config->get('index.has_federated_date_property'),
+        "is_hidden" => $config->get('filter.federated_date.is_hidden'),
+      ],
+      "sm_federated_terms" => [
+        "property" => $config->get('index.has_federated_terms_property'),
+        "is_hidden" => $config->get('facet.federated_terms.is_hidden'),
+      ],
+    ];
+
+    // Set hiddenSearchFields to an array of keys of those $search_fields items
+    // which both exist as an index property and are set to be hidden.
+
+    // OPTIONAL: Machine name of those search fields whose facets/filter and
+    // current values should be hidden in UI.
+    $federated_search_app_config['hiddenSearchFields'] = array_keys(array_filter($search_fields, function  ($value) {
+      return $value['property'] && $value['is_hidden'];
+    }));
+
     // OPTIONAL: The text to display when the app loads with no search term.
     if ($search_prompt = $config->get('content.search_prompt')) {
       $federated_search_app_config['searchPrompt'] = $search_prompt;
