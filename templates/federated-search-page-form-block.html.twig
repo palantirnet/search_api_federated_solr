@@ -15,21 +15,4 @@
  * @ingroup themeable
  */
 #}
-{%
-  set classes = [
-    'block',
-    'block-search',
-    'container-inline',
-  ]
-%}
-<div{{ attributes.addClass(classes) }}>
-  {{ title_prefix }}
-  Hey there {{ dump() }}
-  {% if label %}
-    <h2{{ title_attributes }}>{{ label }}</h2>
-  {% endif %}
-  {{ title_suffix }}
-  {% block content %}
-    {{ content }}
-  {% endblock %}
-</div>
+{{ search_form  }}
