@@ -120,17 +120,6 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The title that will live in the header tag of the search results page (leave empty to hide completely).'),
     ];
 
-    $form['setup']['autocomplete_is_enabled'] = [
-      '#type' => 'checkbox',
-      '#title' => '<b>' . $this->t('Enable autocomplete for the search results page search form') . '</b>',
-      '#default_value' => $config->get('autocomplete.isEnabled'),
-      '#description' => $this
-        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
-      '#attributes' => [
-        'id' => ['autocomplete-is-enabled'],
-      ],
-    ];
-
     $form['setup']['search_index'] = [
       '#type' => 'select',
       '#title' => $this->t('Search API index'),
@@ -161,6 +150,17 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Password'),
       '#default_value' => $config->get('index.password'),
+    ];
+
+    $form['setup']['autocomplete_is_enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Enable autocomplete for the search results page search form') . '</b>',
+      '#default_value' => $config->get('autocomplete.isEnabled'),
+      '#description' => $this
+        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
+      '#attributes' => [
+        'id' => ['autocomplete-is-enabled'],
+      ],
     ];
 
     /**
