@@ -71,20 +71,20 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       else {
         // Assume properties are not present, set defaults.
         $site_name_property_value = '';
-        $site_name_property_default_value = 0;
-        $config->set('facet.site_name.set_default', 0);
+        $site_name_property_default_value = FALSE;
+        $config->set('facet.site_name.set_default', FALSE);
       }
 
       // Save config indicating which index field properties that
       // correspond to facets and filters are present on the index.
       $type_property = $index_config->get('field_settings.federated_type');
-      $config->set('index.has_federated_type_property', $type_property ? 1 : 0);
+      $config->set('index.has_federated_type_property', $type_property ? TRUE : FALSE);
 
       $date_property = $index_config->get('field_settings.federated_date');
-      $config->set('index.has_federated_date_property', $date_property ? 1 : 0);
+      $config->set('index.has_federated_date_property', $date_property ? TRUE : FALSE);
 
       $terms_property = $index_config->get('field_settings.federated_terms');
-      $config->set('index.has_federated_terms_property', $terms_property ? 1 : 0);
+      $config->set('index.has_federated_terms_property', $terms_property ? TRUE : FALSE);
 
       $config->save();
     }
