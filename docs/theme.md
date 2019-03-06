@@ -3,7 +3,7 @@
 1. Theming the search app in the context of your Drupal site:
     1. For themes with SASS: Copy `./docs/assets/search_theme_override.scss` from this module and add it to your theme sass files and start making changes.
     1. For themes with CSS only: Copy `./docs/assets/search_theme_override.css` from this module and add it to your theme css files and start making changes.
-    1. You'll likely also need to [define this css file as a theme library and attach it to the search page](#adding-the-styles-to-your-theme)  
+    1. You'll likely also need to [define this css file as a theme library and attach it to the search page](#adding-the-styles-to-your-theme)
 
 ### Adding the styles to your theme
 Once you have defined your theme styles, we recommend creating a theme library with the `CSS` and attaching that file to the search page route.  See examples below.
@@ -42,3 +42,23 @@ function <your-theme>_page_attachments_alter(array &$page) {
 
 ### Notes
 The Sass/CSS assets that are included in docs/assets are examples only. They will not be regularly maintained or updated.
+
+## Theming the Drupal elements
+
+While the React application is separate from Drupal, the provided search block `Federated Search Page Form block` is themable. There are three theme files.
+
+### search-app.html.twig
+
+This template instantiates the application itself. It is designed to use the full width of the page. If you override this template in your theme, you must retain the root div element:
+
+`<div id="root" data-federated-search-app-config="{{ app_config }}">`
+
+Without this element, the application will not function.
+
+### search-api-federated-solr-block.html.twig
+
+This template displays the search block, with no block title, as a suitable replacement for the core search block.
+
+### search-api-federated-solr-block-form.html.twig
+
+This template generates the search form that appears in the block. You may override it's elements by printing them individually. When doing so, be sure to render the hidden form elements.
