@@ -424,7 +424,9 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
     ];
 
-    $autocomplete_mode = $config->get('autocomplete.mode') || false;
+    $autocomplete_mode = $config->get('autocomplete.mode');
+    $title_text_config_key = 'autocomplete.' . $autocomplete_mode . '.titleText';
+    $hide_directions_text_config_key = 'autocomplete.' . $autocomplete_mode . '.hideDirectionsText';
 
     $form['autocomplete']['autocomplete_mode'] = [
       '#type' => 'select',
@@ -442,7 +444,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Results title text'),
       '#size' => 50,
-      '#default_value' => $autocomplete_mode ? $config->get('autocomplete.' . $autocomplete_mode . '.titleText') : '',
+      '#default_value' => $autocomplete_mode ? $config->get($title_text_config_key) : '',
       '#description' => $this
         ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode and "What would you like to search for?" for Search Term mode.)'),
     ];
@@ -450,11 +452,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['autocomplete_mode_hide_directions'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Hide keyboard directions') . '</b>',
-      '#default_value' => $config->get('autocomplete.hideDirectionsText'),
+      '#default_value' => $autocomplete_mode ? $config->get($hide_directions_text_config_key) : 0,
       '#description' => $this
         ->t('Check this box to make hide the autocomplete keyboard usage directions in the results dropdown. For sites that want to maximize their accessibility UX for sighted keyboard users, we recommend leaving this unchecked. (Default: directions are visible)'),
     ];
-
 
     $form['#cache'] = ['max-age' => 0];
 
@@ -561,8 +562,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $config->set('autocomplete.numChars', $form_state->getValue('autocomplete_num_chars'));
       if ($autocomplete_mode) {
         $config->set('autocomplete.mode', $autocomplete_mode);
-        $config->set('autocomplete.' . $autocomplete_mode . '.titleText', $form_state->getvalue('autocomplete_mode_title_text'));
-        $config->set('autocomplete.' . $autocomplete_mode . '.hideDirectionsText', $form_state->getValue('autocomplete_mode_hide_directions'));
+        $title_text_config_key = 'autocomplete.' . $autocomplete_mode . '.titleText';
+        $config->set($title_text_config_key, $form_state->getvalue('autocomplete_mode_title_text'));
+        $hide_directions_config_key = 'autocomplete.' . $autocomplete_mode . '.hideDirectionsText';
+        $config->set($hide_directions_config_key, $form_state->getValue('autocomplete_mode_hide_directions'));
       }
     }
     $config->save();
