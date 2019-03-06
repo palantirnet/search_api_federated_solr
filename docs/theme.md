@@ -45,7 +45,7 @@ The Sass/CSS assets that are included in docs/assets are examples only. They wil
 
 ## Theming the Drupal elements
 
-While the React application is separate from Drupal, the provided search block `Federated Search Page Form block` is themable. There are three theme files.
+While the React application is separate from Drupal, the provided search block `Federated Search Page Form block` is themable, as is the wrapper around the search results page. There are three theme files.
 
 ### search-app.html.twig
 
