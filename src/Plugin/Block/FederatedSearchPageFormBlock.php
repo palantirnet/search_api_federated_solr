@@ -20,7 +20,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
    * {@inheritdoc}
    */
   public function build() {
-    $build = [];
+    $build = ['#theme' => 'federated_search_page_form_block'];
 
     $build['container']['form'] = \Drupal::formBuilder()->getForm('Drupal\search_api_federated_solr\Form\FederatedSearchPageBlockForm');
 

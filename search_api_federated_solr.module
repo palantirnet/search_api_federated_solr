@@ -64,6 +64,11 @@ function search_api_federated_solr_theme($existing, $type, $theme, $path) {
         'federated_search_app_config' => NULL,
       ],
     ],
+    'federated_search_page_form_block' => [
+      'variables' => [
+        'render element' => 'form',
+      ],
+    ],
   ];
 }
 
