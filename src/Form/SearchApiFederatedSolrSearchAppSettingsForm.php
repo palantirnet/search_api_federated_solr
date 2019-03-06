@@ -250,7 +250,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#attributes' => [
         'id' => ['date-property'],
       ],
-      '#value' => $config->get('index.has_date_property') ? 'true' : '',
+      '#value' => $config->get('index.has_federated_date_property') ? 'true' : '',
     ];
 
     $form['search_form_values']['type_property'] = [
@@ -258,7 +258,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#attributes' => [
         'id' => ['type-property'],
       ],
-      '#value' => $config->get('index.has_type_property') ? 'true' : '',
+      '#value' => $config->get('index.has_federated_type_property') ? 'true' : '',
     ];
 
     $form['search_form_values']['terms_property'] = [
@@ -266,7 +266,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#attributes' => [
         'id' => ['terms-property'],
       ],
-      '#value' => $config->get('index.has_terms_property') ? 'true' : '',
+      '#value' => $config->get('index.has_federated_terms_property') ? 'true' : '',
     ];
 
     /**
