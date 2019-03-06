@@ -61,4 +61,4 @@ This template displays the search block, with no block title, as a suitable repl
 
 ### search-api-federated-solr-block-form.html.twig
 
-This template generates the search form that appears in the block. You may override it's elements by printing them individually. When doing so, be sure to render the hidden form elements.
+This template generates the search form that appears in the block. You may override its elements by printing them individually. When doing so, be sure to render the hidden form elements.
