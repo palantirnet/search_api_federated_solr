@@ -403,7 +403,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['autocomplete_is_append_wildcard'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Append a wildcard \'*\' to support partial text search') . '</b>',
-      '#default_value' => $config->get('autocomplete.isAppendWildcard'),
+      '#default_value' => $config->get('autocomplete.appendWildcard'),
       '#description' => $this
         ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
     ];
@@ -556,7 +556,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
       // Set the actual autocomplete config options.
       $config->set('autocomplete.url', $autocomplete_url);
-      $config->set('autocomplete.appendWildcard', $form_state->getValue('autocomplete_append_wildcard'));
+      $config->set('autocomplete.appendWildcard', $form_state->getValue('autocomplete_is_append_wildcard'));
       $config->set('autocomplete.suggestionRows', $form_state->getValue('autocomplete_suggestion_rows'));
       $config->set('autocomplete.numChars', $form_state->getValue('autocomplete_num_chars'));
       if ($autocomplete_mode) {
