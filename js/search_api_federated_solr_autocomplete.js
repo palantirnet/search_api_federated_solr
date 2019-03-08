@@ -72,37 +72,50 @@
                     $('.autocomplete-suggestion').remove();
                     $autocompleteContainer.removeClass('visually-hidden');
                     $("#search-autocomplete").append('');
-                    $input.attr("aria-expanded","true");
+                    $input.attr("aria-expanded", "true");
                     counter = 1;
-                  }
 
-                  // Bind click event for close button
-                  $closeButton.on("click", function(event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    $input.removeAttr("aria-activedescendant");
-                    // Remove all suggestions
+                    // Bind click event for close button
+                    $closeButton.on("click", function (event) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      $input.removeAttr("aria-activedescendant");
+                      // Remove all suggestions
+                      $('.autocomplete-suggestion').remove();
+                      $autocompleteContainer.addClass('visually-hidden');
+                      $input.attr("aria-expanded", "false");
+                      $input.focus();
+                    });
+
+                    // Get first [resultsLimit] results
+                    var limitedResults = results.slice(0, resultsLimit);
+                    limitedResults.forEach(function(item) {
+                        // Highlight query chars in returned title
+                        var pattern = new RegExp(query, "gi");
+                        var highlighted = item.title.replace(pattern, function(string) {
+                          return "<strong>" + string + "</strong>"
+                        });
+
+                        //Add results to the list
+                        $results.append("<div role='option' tabindex='-1' class='autocomplete-suggestion' id='suggestion-" + counter + "'><a class='autocomplete-suggestion__link' href='" + item.url + "'>" + highlighted + "</a><span class='visually-hidden'>(" + counter + " of " + limitedResults.length + ")</span></div>");
+                        counter = counter + 1;
+                    });
+
+                    // Announce the number of suggestions.
+                    var number = $results.children('[role="option"]').length;
+                    if (number >= 1) {
+                      Drupal.announce(Drupal.t(number + " suggestions displayed. To navigate use up and down arrow keys."));
+                    }
+                  } else {
+                    // No results, remove suggestions and hide container
                     $('.autocomplete-suggestion').remove();
                     $autocompleteContainer.addClass('visually-hidden');
                     $input.attr("aria-expanded","false");
-                    $input.focus();
-                  });
-
-                  //Add results to the list
-                  for (var term in results) {
-                    if (counter <= resultsLimit) {
-                      $results.append("<div role='option' tabindex='-1' class='autocomplete-suggestion' id='suggestion-" + counter + "'><a class='autocomplete-suggestion__link' href='" + results[term].value + "'>" + results[term].label.replace(/(<([^>]+)>)/ig,"").trim() + "</a></div>");
-                      counter = counter + 1;
-                    }
-                  }
-                  var number = $results.children('[role="option"]').length;
-                  if (number >= 1) {
-                    Drupal.announce(Drupal.t(number + " suggestions displayed. To navigate use up and down arrow keys."));
                   }
                 });
             }
             else {
-              // Remove all suggestions
+              // Remove suggestions and hide container
               $('.autocomplete-suggestion').remove();
               $autocompleteContainer.addClass('visually-hidden');
               $input.attr("aria-expanded","false");
