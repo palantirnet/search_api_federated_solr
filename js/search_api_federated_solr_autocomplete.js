@@ -64,7 +64,9 @@
 
               $.ajax({
                 // @todo: get this from config
-                url: "/search_api_autocomplete/quick_search?display=page_1&filter=full_text_title&q=" + query
+                // url: "/search_api_autocomplete/quick_search?display=page_1&filter=full_text_title&q=" + query
+                url: "/search-api-federated-solr-block-form-autocomplete-rest?_format=json&term=" + query,
+                dataType: 'json'
               })
                 .done(function( results ) {
                   if (results.length >= 1) {
