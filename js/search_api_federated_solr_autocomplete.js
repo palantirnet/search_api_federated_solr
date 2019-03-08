@@ -24,21 +24,54 @@
         .find('#edit-search[data-search-api-autocomplete-search]')
         .once('search-api-federated-solr-autocomplete-search')
         .each(function () {
+          // Halt execution if we don't have the required config.
+          if (!Object.hasOwnProperty.call(drupalSettings, 'federatedSearchPageFormBlock')
+              || !Object.hasOwnProperty.call(drupalSettings.federatedSearchPageFormBlock, 'autocomplete')
+              || !Object.hasOwnProperty.call(drupalSettings.federatedSearchPageFormBlock.autocomplete, 'url')) {
+            return;
+          }
+
+          // Set default settings.
+          var defaultSettings = {
+            isEnabled: false,
+            appendWildcard: false,
+            numChars: 2,
+            suggestionRows: 5,
+            mode: 'result',
+            result: {
+              titleText: "What are you looking for?",
+              hideDirectionsText: 0
+            }
+          };
+          // Get passed in config from block config.
+          var config = drupalSettings.federatedSearchPageFormBlock.autocomplete;
+          // Merge defaults with passed in config.
+          var options = Object.assign({}, defaultSettings, config);
+
+          // Set scaffolding markup for suggestions container
+          var suggestionsContainerScaffoldingMarkup = '<div class="search-autocomplete-container visually-hidden"><div class="search-autocomplete-container__title">' + options[options.mode].titleText  + '<button class="search-autocomplete-container__close-button">x</button></div><div id="search-autocomplete"><div id="res" role="listbox" tabindex="-1"></div></div>';
+
+          if (!options[options.mode].hideDirectionsText) {
+            suggestionsContainerScaffoldingMarkup += '<div class="search-autocomplete-container__directions"><span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span><span class="search-autocomplete-container__directions-item">Press ↑ and ↓ to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span></div>';
+          }
+
+          suggestionsContainerScaffoldingMarkup +=  '</div>';
+
+          // Cache selectors.
           var $input = $(this);
           var $form = $('#federated-search-page-block-form');
-
+          // Set up input with attributes, suggestions scaffolding.
           $input.attr("role","combobox")
               .attr("aria-owns","res")
               .attr("aria-autocomplete","list")
               .attr("aria-expanded","false");
-
-          $('<div class="search-autocomplete-container visually-hidden"><div class="search-autocomplete-container__title">What are you looking for?<button class="search-autocomplete-container__close-button">x</button></div><div id="search-autocomplete"><div id="res" role="listbox" tabindex="-1"></div></div><div class="search-autocomplete-container__directions"><span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span><span class="search-autocomplete-container__directions-item">Press ↑ and ↓ to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span></div></div>').insertAfter($(this));
-
+          $(suggestionsContainerScaffoldingMarkup).insertAfter($input);
+          // Cache inserted selectors.
           var $results = $('#res');
           var $autocompleteContainer = $('.search-autocomplete-container');
           var $closeButton = $('.search-autocomplete-container__close-button');
 
-          var resultsLimit = 5;
+          // Initiate helper vars.
           var current;
           var counter = 1;
           var keys = {
@@ -49,15 +82,17 @@
             DOWN: 40
           };
 
-          $(this).on("input", function(event) {
-            doSearch(resultsLimit);
+          // Bind events to input.
+          $input.on("input", function(event) {
+            doSearch(options.suggestionRows);
           });
 
-          $(this).on("keydown", function(event) {
+          $input.on("keydown", function(event) {
             doKeypress(keys, event);
           });
 
-          function doSearch(resultsLimit) {
+          // Define event handlers.
+          function doSearch(suggestionRows) {
             $input.removeAttr("aria-activedescendant");
             var query = $input.val();
             if (query.length >= 2) {
@@ -89,8 +124,8 @@
                       $input.focus();
                     });
 
-                    // Get first [resultsLimit] results
-                    var limitedResults = results.slice(0, resultsLimit);
+                    // Get first [suggestionRows] results
+                    var limitedResults = results.slice(0, suggestionRows);
                     limitedResults.forEach(function(item) {
                         // Highlight query chars in returned title
                         var pattern = new RegExp(query, "gi");
