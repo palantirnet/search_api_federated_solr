@@ -8,3 +8,16 @@ search:
       preprocess: false,
       minified: true,
     }
+
+search_form_autocomplete:
+  css:
+    theme:
+      css/search_api_federated_solr_autocomplete.css: {}
+  js:
+    js/search_api_federated_solr_autocomplete.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/drupal.ajax
+    - core/drupal.announce

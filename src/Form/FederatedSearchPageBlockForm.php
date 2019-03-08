@@ -41,6 +41,7 @@ class FederatedSearchPageBlockForm extends FormBase {
       '#attributes' => [
         'title' => $this->t('Enter the terms you wish to search for.'),
         'placeholder' => 'Search',
+        'autocomplete' => "off",
       ],
       '#prefix' => '<div class="container-inline">',
     ];
@@ -69,6 +70,8 @@ class FederatedSearchPageBlockForm extends FormBase {
       // config is updated.
       $renderer->addCacheableDependency($form, $index_config);
     }
+
+    $form['#attached']['library'][] = 'search_api_federated_solr/search_form_autocomplete';
 
     $form['#action'] = $this->getUrlGenerator()->generateFromRoute('search_api_federated_solr.search');
     $form['#method'] = 'get';
