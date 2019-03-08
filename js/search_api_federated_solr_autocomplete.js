@@ -94,12 +94,12 @@
                     limitedResults.forEach(function(item) {
                         // Highlight query chars in returned title
                         var pattern = new RegExp(query, "gi");
-                        var highlighted = item.title.replace(pattern, function(string) {
+                        var highlighted = item.ss_federated_title.replace(pattern, function(string) {
                           return "<strong>" + string + "</strong>"
                         });
 
                         //Add results to the list
-                        $results.append("<div role='option' tabindex='-1' class='autocomplete-suggestion' id='suggestion-" + counter + "'><a class='autocomplete-suggestion__link' href='" + item.url + "'>" + highlighted + "</a><span class='visually-hidden'>(" + counter + " of " + limitedResults.length + ")</span></div>");
+                        $results.append("<div role='option' tabindex='-1' class='autocomplete-suggestion' id='suggestion-" + counter + "'><a class='autocomplete-suggestion__link' href='" + item.ss_url + "'>" + highlighted + "</a><span class='visually-hidden'>(" + counter + " of " + limitedResults.length + ")</span></div>");
                         counter = counter + 1;
                     });
 
