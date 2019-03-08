@@ -8,3 +8,4 @@ dependencies:
   - search_api_solr
   - token
   - field
+  - rest
