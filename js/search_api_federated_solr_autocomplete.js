@@ -103,8 +103,22 @@
                 url: "/search-api-federated-solr-block-form-autocomplete-rest?_format=json&term=" + query,
                 dataType: 'json'
               })
+                  // Currently we only support the response structure from Solr:
+                  // {
+                  //    response: {
+                  //      docs: [
+                  //        {
+                  //        ss_federated_title: <result title as link text>,
+                  //        ss_url: <result url as link href>,
+                  //        }
+                  //      ]
+                  //    }
+                  // }
+
+                  // @todo provide hook for transform function to be passed in
+                  //   via Drupal.settings then all it here.
                 .done(function( results ) {
-                  if (results.length >= 1) {
+                  if (results.response.docs.length >= 1) {
                     // Remove all suggestions
                     $('.autocomplete-suggestion').remove();
                     $autocompleteContainer.removeClass('visually-hidden');
@@ -125,7 +139,7 @@
                     });
 
                     // Get first [suggestionRows] results
-                    var limitedResults = results.slice(0, suggestionRows);
+                    var limitedResults = results.response.docs.slice(0, suggestionRows);
                     limitedResults.forEach(function(item) {
                         // Highlight query chars in returned title
                         var pattern = new RegExp(query, "gi");
