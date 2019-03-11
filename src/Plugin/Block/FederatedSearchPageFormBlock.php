@@ -178,8 +178,8 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       // Check for the non-required server config field data before appending.
       $server_url .= $server['path'] ?: '';
       $server_url .= $server['core'] ? '/' . $server['core'] : '';
-      // Append the request handler.
-      $server_url .= '/select';
+      // Append the request handler, main query and format params.
+      $server_url .= '/select?q=[val]&wt=json';
       $autocomplete_url = $autocomplete_url_value ? $autocomplete_url_value : $server_url;
 
       // Set the actual autocomplete config options.
