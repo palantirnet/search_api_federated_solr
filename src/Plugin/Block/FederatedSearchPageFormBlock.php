@@ -293,20 +293,37 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       }
 
       // Set the actual autocomplete config options.
-      $this->configuration['autocomplete']['url'] = $autocomplete_url;
-      $this->configuration['autocomplete']['use_search_app_creds'] = $use_search_app_creds;
-      $this->configuration['autocomplete']['username'] = $username;
-      $this->configuration['autocomplete']['password'] = $password;
-      $this->configuration['autocomplete']['userpass'] = $username && $password ? base64_encode($username . ':' . $password) : '';
-      $this->configuration['autocomplete']['appendWildcard'] = $values['autocomplete']['autocomplete_is_append_wildcard'];
-      $this->configuration['autocomplete']['suggestionRows'] = $values['autocomplete']['autocomplete_suggestion_rows'];
-      $this->configuration['autocomplete']['numChars'] = $values['autocomplete']['autocomplete_num_chars'];
-      if ($autocomplete_mode) {
-        $this->configuration['autocomplete']['mode'] = $autocomplete_mode;
-        $this->configuration['autocomplete'][$autocomplete_mode]['titleText'] = $values['autocomplete']['autocomplete_mode_title_text'];
-        $this->configuration['autocomplete'][$autocomplete_mode]['hideDirectionsText'] = $values['autocomplete']['autocomplete_mode_hide_directions'];
+      $autocomplete['url'] = $autocomplete_url;
+      $autocomplete['use_search_app_creds'] = $use_search_app_creds;
+      if ($username) {
+        $autocomplete['username'] = $username;
       }
+      if ($password) {
+        $autocomplete['password'] = $password;
+      }
+      if ($username && $password) {
+        $autocomplete['userpass'] = base64_encode($username . ':' . $password);
+      }
+      if ($values['autocomplete']['autocomplete_is_append_wildcard']) {
+        $autocomplete['appendWildcard'] = $values['autocomplete']['autocomplete_is_append_wildcard'];
+      }
+      if ($values['autocomplete']['autocomplete_suggestion_rows']) {
+        $autocomplete['suggestionRows'] = $values['autocomplete']['autocomplete_suggestion_rows'];
+      }
+      if ($values['autocomplete']['autocomplete_num_chars']) {
+        $autocomplete['numChars'] = $values['autocomplete']['autocomplete_num_chars'];
+      }
+      if ($autocomplete_mode) {
+        $autocomplete['mode'] = $autocomplete_mode;
+        if ($values['autocomplete']['autocomplete_mode_title_text']) {
+          $autocomplete[$autocomplete_mode]['titleText'] = $values['autocomplete']['autocomplete_mode_title_text'];
+        }
+        if ($values['autocomplete']['autocomplete_mode_hide_directions']) {
+          $autocomplete[$autocomplete_mode]['hideDirectionsText'] = $values['autocomplete']['autocomplete_mode_hide_directions'];
+        }
+      }
+
+      $this->configuration['autocomplete'] = $autocomplete;
     }
   }
-
 }
