@@ -255,7 +255,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     $values = $form_state->getValues();
     // Set autocomplete options.
     $autocomplete_is_enabled = $values['autocomplete']['autocomplete_is_enabled'];
-    $this->configuration['autocomplete']['isEnabled'] = $autocomplete_is_enabled;
+    $autocomplete['isEnabled'] = $autocomplete_is_enabled;
 
     // If enabled, set the autocomplete options.
     if ($autocomplete_is_enabled) {
