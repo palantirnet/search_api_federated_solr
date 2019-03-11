@@ -72,8 +72,6 @@ class FederatedSearchPageBlockForm extends FormBase {
       $renderer->addCacheableDependency($form, $index_config);
     }
 
-    $form['#attached']['library'][] = 'search_api_federated_solr/search_form_autocomplete';
-
     $form['#action'] = $this->getUrlGenerator()->generateFromRoute('search_api_federated_solr.search');
     $form['#method'] = 'get';
 

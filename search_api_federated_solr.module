@@ -148,12 +148,3 @@ function search_api_federated_solr_form_search_api_federated_solr_search_app_set
   }
 
 }
-
-/**
- * implements hook_preprocess_block_BASE_BLOCK_ID
- */
-function search_api_federated_solr_preprocess_block__federated_search_page_form_block(&$variables) {
-  $variables['#attached']['drupalSettings']['federatedSearchPageFormBlock'] = [
-    'autocomplete' => $variables['elements']['#configuration']['autocomplete'],
-  ];
-}

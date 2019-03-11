@@ -21,9 +21,21 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
    * {@inheritdoc}
    */
   public function build() {
+    $config = $this->getConfiguration();
+
     $build = [];
 
     $build['container']['form'] = \Drupal::formBuilder()->getForm('Drupal\search_api_federated_solr\Form\FederatedSearchPageBlockForm');
+
+    // If autocomplete is enabled for this block, attach the js library.
+    if (array_key_exists('autocomplete',$config)
+        && array_key_exists('isEnabled', $config['autocomplete'])
+        && $config['autocomplete']['isEnabled'] === 1) {
+      $build['#attached']['library'][] = 'search_api_federated_solr/search_form_autocomplete';
+      $build['#attached']['drupalSettings']['federatedSearchPageFormBlock'] = [
+        'autocomplete' => $config['autocomplete'],
+      ];
+    }
 
     return $build;
   }
