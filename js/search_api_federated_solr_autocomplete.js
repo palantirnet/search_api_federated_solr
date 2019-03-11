@@ -25,9 +25,10 @@
         .once('search-api-federated-solr-autocomplete-search')
         .each(function () {
           // Halt execution if we don't have the required config.
-          if (!Object.hasOwnProperty.call(drupalSettings, 'federatedSearchPageFormBlock')
-              || !Object.hasOwnProperty.call(drupalSettings.federatedSearchPageFormBlock, 'autocomplete')
-              || !Object.hasOwnProperty.call(drupalSettings.federatedSearchPageFormBlock.autocomplete, 'url')) {
+          if (!Object.hasOwnProperty.call(drupalSettings, 'searchApiFederatedSolr')
+              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr, 'block')
+              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block, 'autocomplete')
+              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block.autocomplete, 'url')) {
             return;
           }
 
@@ -45,7 +46,7 @@
             }
           };
           // Get passed in config from block config.
-          var config = drupalSettings.federatedSearchPageFormBlock.autocomplete;
+          var config = drupalSettings.searchApiFederatedSolr.block.autocomplete;
           // Merge defaults with passed in config.
           var options = Object.assign({}, defaultSettings, config);
 

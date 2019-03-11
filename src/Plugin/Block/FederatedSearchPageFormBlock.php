@@ -32,8 +32,10 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
         && array_key_exists('isEnabled', $config['autocomplete'])
         && $config['autocomplete']['isEnabled'] === 1) {
       $build['#attached']['library'][] = 'search_api_federated_solr/search_form_autocomplete';
-      $build['#attached']['drupalSettings']['federatedSearchPageFormBlock'] = [
-        'autocomplete' => $config['autocomplete'],
+      $build['#attached']['drupalSettings']['searchApiFederatedSolr'] = [
+        'block' => [
+          'autocomplete' => $config['autocomplete'],
+        ],
       ];
     }
 
