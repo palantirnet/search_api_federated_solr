@@ -35,6 +35,7 @@
           var defaultSettings = {
             isEnabled: false,
             appendWildcard: false,
+            userpass: '',
             numChars: 2,
             suggestionRows: 5,
             mode: 'result',
@@ -130,10 +131,24 @@
               // Replace the placeholder with the query value.
               var url = urlWithDefaultParams.replace('[val]', query);
 
+              // Set up basic auth if we need  it.
+              var xhrFields = {};
+              var headers = {};
+              if (options.userpass) {
+                xhrFields = {
+                  withCredentials: true
+                };
+                headers = {
+                  'Authorization': 'Basic ' + options.userpass
+                };
+              }
+
               // Make the ajax request
               $.ajax({
+                xhrFields: xhrFields,
+                headers: headers,
                 url: url,
-                dataType: 'json'
+                dataType: 'json',
               })
                   // Currently we only support the response structure from Solr:
                   // {

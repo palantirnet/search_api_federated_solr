@@ -114,6 +114,54 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       ],
     ];
 
+    $form['autocomplete']['basic_auth'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Basic Authentication'),
+      '#description' => $this->t('If your endpoint is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-is-enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['basic_auth']['use_search_app_creds'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use credentials provided to search app'),
+      '#default_value' => $config['autocomplete']['use_search_app_creds'],
+      '#attributes' => [
+        'id' => ['autocomplete-use-search-app-creds'],
+      ],
+    ];
+
+    $form['autocomplete']['basic_auth']['username'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Username'),
+      '#default_value' => $config['autocomplete']['username'],
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-use-search-app-creds"]' => [
+            'checked' => FALSE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['basic_auth']['password'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Password'),
+      '#default_value' => $config['autocomplete']['password'],
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-use-search-app-creds"]' => [
+            'checked' => FALSE,
+          ],
+        ],
+      ],
+    ];
+
     $form['autocomplete']['autocomplete_suggestion_rows'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of results'),
@@ -234,8 +282,22 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       $server_url .= '/select?q=[val]&wt=json';
       $autocomplete_url = $autocomplete_url_value ? $autocomplete_url_value : $server_url;
 
+      // Default to the form values
+      $username = $values['autocomplete']['basic_auth']['username'];
+      $password = $values['autocomplete']['basic_auth']['password'];
+      $use_search_app_creds = $values['autocomplete']['basic_auth']['use_search_app_creds'];
+      // Add basic auth credentials
+      if ($use_search_app_creds) {
+        $username = $app_config->get('index.username');
+        $password = $app_config->get('index.password');
+      }
+
       // Set the actual autocomplete config options.
       $this->configuration['autocomplete']['url'] = $autocomplete_url;
+      $this->configuration['autocomplete']['use_search_app_creds'] = $use_search_app_creds;
+      $this->configuration['autocomplete']['username'] = $username;
+      $this->configuration['autocomplete']['password'] = $password;
+      $this->configuration['autocomplete']['userpass'] = $username && $password ? base64_encode($username . ':' . $password) : '';
       $this->configuration['autocomplete']['appendWildcard'] = $values['autocomplete']['autocomplete_is_append_wildcard'];
       $this->configuration['autocomplete']['suggestionRows'] = $values['autocomplete']['autocomplete_suggestion_rows'];
       $this->configuration['autocomplete']['numChars'] = $values['autocomplete']['autocomplete_num_chars'];
