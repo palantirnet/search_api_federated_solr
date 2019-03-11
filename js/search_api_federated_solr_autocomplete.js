@@ -82,6 +82,14 @@
             DOWN: 40
           };
 
+          // Determine param values for any set default filters/facets.
+          var defaultParams = '';
+          $('input[type="hidden"]', $form).each(function(index, input) {
+            defaultParams += '&' + $(input).attr('name') + '=' + encodeURI($(input).val());
+          });
+          var urlWithDefaultParams = options.url + defaultParams;
+
+
           // Bind events to input.
           $input.on("input", function(event) {
             doSearch(options.suggestionRows);
@@ -94,13 +102,37 @@
           // Define event handlers.
           function doSearch(suggestionRows) {
             $input.removeAttr("aria-activedescendant");
-            var query = $input.val();
-            if (query.length >= 2) {
+            var value = $input.val();
+            // Remove spaces on either end of the value.
+            var trimmed = value.trim();
+            // Default to the trimmed value.
+            var query = trimmed;
+            // If the current value has more than the configured number of characters.
+            if (query.length > options.numChars) {
+              // Append wildcard to the query if configured to do so.
+              if (options.appendWildcard) {
+                // One method of supporting search-as-you-type is to append a wildcard '*'
+                //   to match zero or more additional characters at the end of the users search term.
+                // @see: https://lucene.apache.org/solr/guide/6_6/the-standard-query-parser.html#TheStandardQueryParser-WildcardSearches
+                // @see: https://opensourceconnections.com/blog/2013/06/07/search-as-you-type-with-solr/
+                // Split into word chunks.
+                const words = trimmed.split(" ");
+                // If there are multiple chunks, join them with "+", repeat the last word + append "*".
+                if (words.length > 1) {
+                  query = words.join("+") + words.pop() + '*';
+                }
+                else {
+                  // If there is only 1 word, repeat it an append "*".
+                  query = words + '+' + words + '*';
+                }
+              }
 
+              // Replace the placeholder with the query value.
+              var url = urlWithDefaultParams.replace('[val]', query);
+
+              // Make the ajax request
               $.ajax({
-                // @todo: get this from config
-                // url: "/search_api_autocomplete/quick_search?display=page_1&filter=full_text_title&q=" + query
-                url: "/search-api-federated-solr-block-form-autocomplete-rest?_format=json&term=" + query,
+                url: url,
                 dataType: 'json'
               })
                   // Currently we only support the response structure from Solr:
@@ -142,7 +174,7 @@
                     var limitedResults = results.response.docs.slice(0, suggestionRows);
                     limitedResults.forEach(function(item) {
                         // Highlight query chars in returned title
-                        var pattern = new RegExp(query, "gi");
+                        var pattern = new RegExp(trimmed, "gi");
                         var highlighted = item.ss_federated_title.replace(pattern, function(string) {
                           return "<strong>" + string + "</strong>"
                         });
