@@ -67,6 +67,9 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#default_value' => $config['autocomplete']['isEnabled'],
       '#description' => $this
         ->t('Check this box to enable autocomplete for the text input on the search form rendered in this block.'),
+      '#attributes' => [
+        'id' => ['autocomplete-is-enabled'],
+      ],
     ];
 
     $form['autocomplete']['autocomplete_is_append_wildcard'] = [
@@ -75,6 +78,13 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#default_value' => $config['autocomplete']['appendWildcard'],
       '#description' => $this
         ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-is-enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['autocomplete']['autocomplete_url'] = [
@@ -95,6 +105,13 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
    ]
   }
 }</code></pre></li><li>Include <code>[val]</code> in the URL to indicate where you would like the form value to be inserted: <code>http://d8.fs-demo.local/search-api-federated-solr-block-form-autocomplete/search-view?title=[val]&_format=json</code></li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>Include any other necessary url params (like <code>&_format=json</code> if you are using a Views Rest Export or <code>&wt=json</code> if you are using a different Request Handler on your Solr index.</li>'),
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-is-enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['autocomplete']['autocomplete_suggestion_rows'] = [
@@ -103,6 +120,13 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#default_value' => $config['autocomplete']['suggestionRows'],
       '#description' => $this
         ->t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-is-enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['autocomplete']['autocomplete_num_chars'] = [
@@ -111,6 +135,13 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#default_value' => $config['autocomplete']['numChars'],
       '#description' => $this
         ->t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-is-enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $autocomplete_mode = $config['autocomplete']['mode'];
@@ -125,6 +156,13 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
         'Search terms (coming soon)' => [],
       ],
       '#default_value' => $config['autocomplete']['mode'] || 'result',
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-is-enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['autocomplete']['autocomplete_mode_title_text'] = [
@@ -134,6 +172,13 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#default_value' => $autocomplete_mode ? $config['autocomplete'][$autocomplete_mode]['titleText'] : '',
       '#description' => $this
         ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode and "What would you like to search for?" for Search Term mode.)'),
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-is-enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['autocomplete']['autocomplete_mode_hide_directions'] = [
@@ -142,6 +187,13 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#default_value' => $autocomplete_mode ? $config['autocomplete'][$autocomplete_mode]['hideDirectionsText'] : 0,
       '#description' => $this
         ->t('Check this box to make hide the autocomplete keyboard usage directions in the results dropdown. For sites that want to maximize their accessibility UX for sighted keyboard users, we recommend leaving this unchecked. (Default: directions are visible)'),
+      '#states' => [
+        'visible' => [
+          ':input[id="autocomplete-is-enabled"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     return $form;
