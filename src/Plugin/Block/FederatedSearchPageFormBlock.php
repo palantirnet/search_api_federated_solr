@@ -64,33 +64,43 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     $form['autocomplete']['autocomplete_is_enabled'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Enable autocomplete for the search results page search form') . '</b>',
-      '#default_value' => $config['autocomplete.isEnabled'],
+      '#default_value' => $config['autocomplete']['isEnabled'],
       '#description' => $this
-        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
-    ];
-
-    $form['autocomplete']['autocomplete_url'] = [
-      '#type' => 'url',
-      '#title' => $this->t('Endpoint URL'),
-      '#default_value' => $config['autocomplete.url'],
-      '#maxlength' => 2048,
-      '#size' => 50,
-      '#description' => $this
-        ->t('The URL where requests for autocomplete queries should be made. Defaults to the url of the  <code>select</code> Request Handler on the server of the selected Search API index.<br />Supports absolute url pattern to any endpoint which returns the expected autocomplete result structure.'),
+        ->t('Check this box to enable autocomplete for the text input on the search form rendered in this block.'),
     ];
 
     $form['autocomplete']['autocomplete_is_append_wildcard'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Append a wildcard \'*\' to support partial text search') . '</b>',
-      '#default_value' => $config['autocomplete.appendWildcard'],
+      '#default_value' => $config['autocomplete']['appendWildcard'],
       '#description' => $this
         ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
+    ];
+
+    $form['autocomplete']['autocomplete_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Endpoint URL'),
+      '#default_value' => $config['autocomplete']['url'],
+      '#maxlength' => 2048,
+      '#size' => 50,
+      '#description' => $this
+        ->t('The URL where requests for autocomplete queries should be made. (Default: the url of the  <code>select</code> Request Handler on the server of the selected Search API index.)<ul><li>Supports absolute url pattern to any endpoint which returns the expected response structure:
+<pre><code>{
+  response: {
+   docs: [
+     {
+       ss_federated_title: [result title to be used as link text],
+       ss_url: [result url to be used as link href],
+     }
+   ]
+  }
+}</code></pre></li><li>Include <code>[val]</code> in the URL to indicate where you would like the form value to be inserted: <code>http://d8.fs-demo.local/search-api-federated-solr-block-form-autocomplete/search-view?title=[val]&_format=json</code></li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>Include any other necessary url params (like <code>&_format=json</code> if you are using a Views Rest Export or <code>&wt=json</code> if you are using a different Request Handler on your Solr index.</li>'),
     ];
 
     $form['autocomplete']['autocomplete_suggestion_rows'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of results'),
-      '#default_value' => $config['autocomplete.suggestionRows'],
+      '#default_value' => $config['autocomplete']['suggestionRows'],
       '#description' => $this
         ->t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
     ];
@@ -98,14 +108,12 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     $form['autocomplete']['autocomplete_num_chars'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of characters after which autocomplete query should execute'),
-      '#default_value' => $config['autocomplete.numChars'],
+      '#default_value' => $config['autocomplete']['numChars'],
       '#description' => $this
         ->t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
     ];
 
-    $autocomplete_mode = $config['autocomplete.mode'];
-    $title_text_config_key = 'autocomplete.' . $autocomplete_mode . '.titleText';
-    $hide_directions_text_config_key = 'autocomplete.' . $autocomplete_mode . '.hideDirectionsText';
+    $autocomplete_mode = $config['autocomplete']['mode'];
 
     $form['autocomplete']['autocomplete_mode'] = [
       '#type' => 'select',
@@ -116,14 +124,14 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
           ->t('Search results (i.e. search as you type functionality)'),
         'Search terms (coming soon)' => [],
       ],
-      '#default_value' => $autocomplete_mode || 'result',
+      '#default_value' => $config['autocomplete']['mode'] || 'result',
     ];
 
     $form['autocomplete']['autocomplete_mode_title_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Results title text'),
       '#size' => 50,
-      '#default_value' => $autocomplete_mode ? $config[$title_text_config_key] : '',
+      '#default_value' => $autocomplete_mode ? $config['autocomplete'][$autocomplete_mode]['titleText'] : '',
       '#description' => $this
         ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode and "What would you like to search for?" for Search Term mode.)'),
     ];
@@ -131,7 +139,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     $form['autocomplete']['autocomplete_mode_hide_directions'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Hide keyboard directions') . '</b>',
-      '#default_value' => $autocomplete_mode ? $config->get($hide_directions_text_config_key) : 0,
+      '#default_value' => $autocomplete_mode ? $config['autocomplete'][$autocomplete_mode]['hideDirectionsText'] : 0,
       '#description' => $this
         ->t('Check this box to make hide the autocomplete keyboard usage directions in the results dropdown. For sites that want to maximize their accessibility UX for sighted keyboard users, we recommend leaving this unchecked. (Default: directions are visible)'),
     ];
