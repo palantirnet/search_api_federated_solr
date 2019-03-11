@@ -322,8 +322,8 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
           $autocomplete[$autocomplete_mode]['hideDirectionsText'] = $values['autocomplete']['autocomplete_mode_hide_directions'];
         }
       }
-
-      $this->configuration['autocomplete'] = $autocomplete;
     }
+
+    $this->configuration['autocomplete'] = $autocomplete;
   }
 }
