@@ -129,7 +129,8 @@
               }
 
               // Replace the placeholder with the query value.
-              var url = urlWithDefaultParams.replace('[val]', query);
+              var pattern = new RegExp(/(\[val\])/, "gi");
+              var url = urlWithDefaultParams.replace(pattern, query);
 
               // Set up basic auth if we need  it.
               var xhrFields = {};
