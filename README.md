@@ -62,7 +62,7 @@ On each site included in the federated search, you will need to:
 
 1. Install this module and its dependencies
 1. Configure a Search API server to connect to the shared Solr index
-1. Configure a Search API index according to the [required schema documentation](docs/federated_schema.md)
+1. Configure a Search API index according to the [required schema documentation](https://www.drupal.org/docs/8/modules/search-api-federated-solr/federated-search-schema)
 1. Index the content for the site using Search API
 
 Once each site is configured, you may begin to index content.
