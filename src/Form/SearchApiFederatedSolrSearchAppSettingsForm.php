@@ -379,7 +379,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#description' => $this
         ->t('Check this box to enable autocomplete on the search results page search form and to expose more configuration options below.'),
       '#attributes' => [
-        'name' => ['autocomplete_is_enabled'],
+        'data-autocomplete-enabler' => TRUE,
       ],
     ];
 
@@ -391,7 +391,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
       '#states' => [
         'visible' => [
-          ':input[name="autocomplete_is_enabled"]' => [
+          ':input[data-autocomplete-enabler]' => [
             'checked' => TRUE,
           ],
         ],
@@ -408,7 +408,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The URL where requests for autocomplete queries should be made. (Default: the url of the  <code>select</code> <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> on the server of the selected Search API index.)<ul><li>Supports an absolute url pattern to any other Request Handler for an index on your solr server</li><li>The value of the main search field will be appended to the url as the main query param (i.e. <code>?q=[value of the search field, wildcard appended if enabled]</code>)</li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>The format param <code>&wt=json</code> will automatically be appended</li><li>Include any other necessary url params corresponding to <a href="https://lucene.apache.org/solr/guide/6_6/common-query-parameters.html" target="_blank">query parameters</a>.</li>'),
       '#states' => [
         'visible' => [
-          ':input[name="autocomplete_is_enabled"]' => [
+          ':input[data-autocomplete-enabler]' => [
             'checked' => TRUE,
           ],
         ],
@@ -423,7 +423,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
       '#states' => [
         'visible' => [
-          ':input[name="autocomplete_is_enabled"]' => [
+          ':input[data-autocomplete-enabler]' => [
             'checked' => TRUE,
           ],
         ],
@@ -438,7 +438,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
       '#states' => [
         'visible' => [
-          ':input[name="autocomplete_is_enabled"]' => [
+          ':input[data-autocomplete-enabler]' => [
             'checked' => TRUE,
           ],
         ],
@@ -461,7 +461,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#default_value' => $autocomplete_mode || 'result',
       '#states' => [
         'visible' => [
-          ':input[name="autocomplete_is_enabled"]' => [
+          ':input[data-autocomplete-enabler]' => [
             'checked' => TRUE,
           ],
         ],
@@ -477,7 +477,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode and "What would you like to search for?" for Search Term mode.)'),
       '#states' => [
         'visible' => [
-          ':input[name="autocomplete_is_enabled"]' => [
+          ':input[data-autocomplete-enabler]' => [
             'checked' => TRUE,
           ],
         ],
@@ -492,7 +492,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ->t('Check this box to make hide the autocomplete keyboard usage directions in the results dropdown. For sites that want to maximize their accessibility UX for sighted keyboard users, we recommend leaving this unchecked. (Default: directions are visible)'),
       '#states' => [
         'visible' => [
-          ':input[name="autocomplete_is_enabled"]' => [
+          ':input[data-autocomplete-enabler]' => [
             'checked' => TRUE,
           ],
         ],
