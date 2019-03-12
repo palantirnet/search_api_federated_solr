@@ -62,6 +62,7 @@ On each site included in the federated search, you will need to:
 
 1. Install this module and its dependencies
 1. Configure a Search API server to connect to the shared Solr index
+1. Configure that Search API server to set default query fields for your default [Request Handler](https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-SearchHandlers). (See [example](https://github.com/palantirnet/federated-search-demo/blob/root-198-search-terms-field/conf/solr/drupal8/custom/solr-conf/4.x/solrconfig.xml#L868) in federated-search-demo site Solr config) 
 1. Configure a Search API index according to the [required schema documentation](https://www.drupal.org/docs/8/modules/search-api-federated-solr/federated-search-schema)
 1. Index the content for the site using Search API
 
@@ -72,7 +73,7 @@ In order to display results from the Solr index:
 1. Configure the application route and settings at `/admin/config/search-api-federated-solr/search-app/settings`
 1. Set permissions for `Use Federated Search` and `Administer Federated Search` for the proper roles.
 1. Optional: [Theme the ReactJS search app](docs/theme.md)
-1. Optional: Add the federated search page form block to your site theme
+1. Optional: Add the federated search page form block to your site theme + configure the block settings
 
 
 ### Updating the bundled React application
