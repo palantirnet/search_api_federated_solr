@@ -317,6 +317,13 @@
 
           function selectOption(highlighted, href) {
             if (highlighted && href) { // @todo add logic for non-link suggestions
+              // Emit an event whose data can be used to write to analytics, etc.
+              $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection", [{
+                referrer: $(location).attr('href'),
+                target: href,
+                term: $input.val()
+              }]);
+              // Redirect to the selected link.
               $(location).attr("href", href);
             }
             else {
