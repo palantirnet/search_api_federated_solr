@@ -10,7 +10,7 @@ Primary features of the module include:
  * Indexing of multiple, independent Drupal sites into a single index
  * Optional filtering of search results by site
  * Standard presentation of search results on all sites
- * A standard search block for use on all sites
+ * A standard search block for use on all sites with optional configurable type-ahead search results
  * Customizable presentation using a single CSS file
 
 ### How does it work?
@@ -60,27 +60,27 @@ CONFIGURATION
 
 On each site included in the federated search, you will need to:
 
-    1. Install this module and its dependencies
-    2. Configure a Search API server to connect to the shared Solr index
-    3. Configure a Search API index according to the [required schema documentation](docs/federated_schema.md)
-    4. Index the content for the site using Search API
+1. Install this module and its dependencies
+1. Configure a Search API server to connect to the shared Solr index
+1. Configure a Search API index according to the [required schema documentation](docs/federated_schema.md)
+1. Index the content for the site using Search API
 
 Once each site is configured, you may begin to index content.
 
 In order to display results from the Solr index:
 
-    1. Configure the application route and settings at `/admin/config/search-api-federated-solr/search-app/settings`
-    2. Set permissions for `Use Federated Search` and `Administer Federated Search` for the proper roles.
-    3. Optional: [Theme the ReactJS search app](docs/theme.md)
-    4. Optional: Add the federated search page form block to your site theme
+1. Configure the application route and settings at `/admin/config/search-api-federated-solr/search-app/settings`
+1. Set permissions for `Use Federated Search` and `Administer Federated Search` for the proper roles.
+1. Optional: [Theme the ReactJS search app](docs/theme.md)
+1. Optional: Add the federated search page form block to your site theme
 
 
 ### Updating the bundled React application
 
 When changes to [federated-search-react](https://github.com/palantirnet/federated-search-react/) are made they'll need to be pulled into this module. To do so:
 
-    1. [Publish a release](https://github.com/palantirnet/federated-search-react#publishing-releases) of Federated Search React.
-    2. Update `search_api_federated_solr.libraries.yml` to reference the new release. Note: You'll need to edit the version number and the hash of both the CSS and JS files.
+1. [Publish a release](https://github.com/palantirnet/federated-search-react#publishing-releases) of Federated Search React.
+1. Update `search_api_federated_solr.libraries.yml` to reference the new release. Note: You'll need to edit the version number and the hash of both the CSS and JS files.
 
 ### More information
 
