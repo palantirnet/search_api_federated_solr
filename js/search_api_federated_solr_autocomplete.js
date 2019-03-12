@@ -201,6 +201,15 @@
                         counter = counter + 1;
                     });
 
+                    // On link click, emit an event whose data can be used to write to analytics, etc.
+                    $('.autocomplete-suggestion__link').on('click', function (e) {
+                      $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection", [{
+                        referrer: $(location).attr('href'),
+                        target: $(this).attr('href'),
+                        term: $input.val()
+                      }]);
+                    });
+
                     // Announce the number of suggestions.
                     var number = $results.children('[role="option"]').length;
                     if (number >= 1) {
