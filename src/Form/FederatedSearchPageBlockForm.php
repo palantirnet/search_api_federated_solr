@@ -41,7 +41,7 @@ class FederatedSearchPageBlockForm extends FormBase {
       '#attributes' => [
         'title' => $this->t('Enter the terms you wish to search for.'),
         'placeholder' => 'Search',
-        'autocomplete' => "off",
+        'autocomplete' => "off", // refers to html attribute, not our custom autocomplete.
       ],
       '#prefix' => '<div class="container-inline">',
     ];
