@@ -31,6 +31,7 @@ class FederatedSearchPageBlockForm extends FormBase {
     $renderer = \Drupal::service('renderer');
     $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
 
+    $form['#theme'] = 'search_api_federated_solr_block_form';
     $form['search'] = [
       '#type' => 'search',
       '#name' => 'search',
@@ -43,7 +44,7 @@ class FederatedSearchPageBlockForm extends FormBase {
         'placeholder' => 'Search',
         'autocomplete' => "off", // refers to html attribute, not our custom autocomplete.
       ],
-      '#prefix' => '<div class="container-inline">',
+      '#provider' => 'search_api_federated_solr',
     ];
 
     $form['actions'] = ['#type' => 'actions'];
@@ -51,7 +52,7 @@ class FederatedSearchPageBlockForm extends FormBase {
       '#type' => 'submit',
       '#value' => $this->t('Search'),
       '#name' => '',
-      '#suffix' => '</div>',
+      '#provider' => 'search_api_federated_solr',
     ];
 
     // Send site name as qs param if app is configured to load w/default site.

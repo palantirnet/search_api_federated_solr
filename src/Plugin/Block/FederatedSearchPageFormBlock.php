@@ -23,9 +23,11 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
   public function build() {
     $config = $this->getConfiguration();
 
-    $build = [];
+    $build = [
+      '#theme' => 'search_api_federated_solr_block',
+      '#search_form' => \Drupal::formBuilder()->getForm('Drupal\search_api_federated_solr\Form\FederatedSearchPageBlockForm'),
+    ];
 
-    $build['container']['form'] = \Drupal::formBuilder()->getForm('Drupal\search_api_federated_solr\Form\FederatedSearchPageBlockForm');
 
     // If autocomplete is enabled for this block, attach the js library.
     if (array_key_exists('autocomplete',$config)

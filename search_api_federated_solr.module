@@ -64,7 +64,39 @@ function search_api_federated_solr_theme($existing, $type, $theme, $path) {
         'federated_search_app_config' => NULL,
       ],
     ],
+    'search_api_federated_solr_block' => [
+      'variables' => [
+        'search_form' => NULL
+      ],
+    ],
+    'search_api_federated_solr_block_form' => [
+      'render element' => 'form'
+    ],
   ];
+}
+
+/**
+ * @param $suggestions
+ * @param array $variables
+ */
+function search_api_federated_solr_theme_suggestions_input_alter(&$suggestions, array $variables) {
+  $element = $variables['element'];
+
+  if (isset($element['#provider'])) {
+    $suggestions[] = 'input__' . $element['#provider'] . '__' . $element['#type'];
+  }
+}
+
+/**
+ * @param $suggestions
+ * @param array $variables
+ */
+function search_api_federated_solr_theme_suggestions_form_element_alter(&$suggestions, array $variables) {
+  $element = $variables['element'];
+
+  if (isset($element['#provider'])) {
+    $suggestions[] = 'form_element__' . $element['#provider'] . '__' . $element['#type'];
+  }
 }
 
 /**
