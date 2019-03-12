@@ -21,7 +21,7 @@
     attach: function (context, settings) {
       // Find our fields with autocomplete settings
       $(context)
-        .find('#edit-search[data-search-api-autocomplete-search]')
+        .find('.js-search-api-federated-solr-block-form-autocomplete #edit-search')
         .once('search-api-federated-solr-autocomplete-search')
         .each(function () {
           // Halt execution if we don't have the required config.

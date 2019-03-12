@@ -42,7 +42,6 @@ class FederatedSearchPageBlockForm extends FormBase {
         'title' => $this->t('Enter the terms you wish to search for.'),
         'placeholder' => 'Search',
         'autocomplete' => "off",
-        'data-search-api-autocomplete-search' => "quick_search",
       ],
       '#prefix' => '<div class="container-inline">',
     ];
