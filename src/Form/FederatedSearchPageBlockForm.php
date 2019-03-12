@@ -43,6 +43,7 @@ class FederatedSearchPageBlockForm extends FormBase {
         'title' => $this->t('Enter the terms you wish to search for.'),
         'placeholder' => 'Search',
       ],
+      '#provider' => 'search_api_federated_solr',
     ];
 
     $form['actions'] = ['#type' => 'actions'];
@@ -50,6 +51,7 @@ class FederatedSearchPageBlockForm extends FormBase {
       '#type' => 'submit',
       '#value' => $this->t('Search'),
       '#name' => '',
+      '#provider' => 'search_api_federated_solr',
     ];
 
     // Send site name as qs param if app is configured to load w/default site.
