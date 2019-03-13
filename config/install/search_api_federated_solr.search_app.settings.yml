@@ -1,5 +1,13 @@
 autocomplete:
-  is_enabled: false
+  isEnabled: 0
+  url: ''
+  appendWildcard: 0
+  suggestionRows: ''
+  numChars: ''
+  mode: result
+  result:
+    titleText: ''
+    hideDirectionsText: 0
 facet:
   site_name:
     set_default: false

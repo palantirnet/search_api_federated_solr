@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Contains install and update hooks for the Federated Solr Search API Module.
+ */
+
+// Set default values for autocomplete-related config.
+function search_api_federated_solr_update_8001(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('search_api_federated_solr.search_app.settings');
+
+  // Set the autocomplete config defaults.
+  $config->set('autocomplete.isEnabled', 0);
+  $config->set('autocomplete.url', '');
+  $config->set('autocomplete.appendWildcard', 0);
+  $config->set('autocomplete.suggestionRows', '');
+  $config->set('autocomplete.mode', 'result');
+  $config->set('autocomplete.result.titleText', '');
+  $config->set('autocomplete.result.hideDirectionsText', 0);
+
+  // Set the hidden facet/filter defaults.
+  $config->set('facet.site_name.is_hidden', false);
+  $config->set('facet.federated_terms.is_hidden', false);
+  $config->set('facet.federated_type.is_hidden', false);
+  $config->set('filter.federated_date.is_hidden', false);
+
+  // Set the index defaults for property flags.
+  $config->set('index.has_federated_date_property', false);
+  $config->set('index.has_federated_term_property', false);
+  $config->set('index.has_federated_type_property', false);
+
+  $config->save(TRUE);
+}
