@@ -76,7 +76,7 @@ In order to display results from the Solr index:
 1. Set permissions for `Use Federated Search` and `Administer Federated Search` for the proper roles.
 1. Optional: [Theme the ReactJS search app](docs/theme.md)
 1. Optional: Add the federated search page form block to your site theme + configure the block settings
-1. Optional: If you want autocomplete functionality and would prefer that results come from a view, [create a Search API search view with a rest export](https://www.drupal.org/docs/8/modules/search-api/getting-started/search-forms-and-results-pages/searching-with-views-0) or create a content view with a rest export (see view added as optional config for this module in `config/optional`) and use that url as your autocomplete endpoint.
+1. Optional: If you want autocomplete functionality and would prefer that results come from a view, [create a Search API search view with a rest export](https://www.drupal.org/docs/8/modules/search-api/getting-started/search-forms-and-results-pages/searching-with-views-0) or create a content view with a rest export (see the "Search API Federated Solr Block Form Autocomplete" view added as optional config for this module in `config/optional`) and use that url as your autocomplete endpoint.
     1. Under format, choose Solr Serializer as the format (this wraps the view results with the same response object as Solr so they can be rendered)
     1. Under format, choose fields.  Add the title (for Search views, we recommend adding a full text version of your title to the index and adding that instead) and link to content (for Search views, url) fields.
     1. Under format, configure settings for the fields.  Use the alias `ss_federated_title` for your title field and `ss_url` for your url field.
