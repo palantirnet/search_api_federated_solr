@@ -152,17 +152,6 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('index.password'),
     ];
 
-    $form['setup']['autocomplete_is_enabled'] = [
-      '#type' => 'checkbox',
-      '#title' => '<b>' . $this->t('Enable autocomplete for the search results page search form') . '</b>',
-      '#default_value' => $config->get('autocomplete.isEnabled'),
-      '#description' => $this
-        ->t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
-      '#attributes' => [
-        'id' => ['autocomplete-is-enabled'],
-      ],
-    ];
-
     /**
      * Search results page options:
      *   - show empty search results (i.e. filterable listing page),
