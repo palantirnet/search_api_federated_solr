@@ -1,8 +1,29 @@
+autocomplete:
+  isEnabled: 0
+  url: ''
+  appendWildcard: 0
+  suggestionRows: ''
+  numChars: ''
+  mode: result
+  result:
+    titleText: ''
+    hideDirectionsText: 0
 facet:
   site_name:
     set_default: false
+    is_hidden: false
+  federated_type:
+    is_hidden: false
+  federated_terms:
+    is_hidden: false
+filter:
+  federated_date:
+    is_hidden: false
 index:
   id: ''
+  has_federated_date_property: false
+  has_federated_terms_property: false
+  has_federated_type_property: false
   has_site_name_property: false
   server_url: ''
   username: ''

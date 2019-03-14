@@ -16,12 +16,45 @@ search_api_federated_solr.search_app.settings:
             set_default:
               type: boolean
               label: 'When true, only search results from this site will be shown.'
+            is_hidden:
+              type: boolean
+              label: 'When true, this facet option is hidden in the UI.'
+        federated_type:
+          type: mapping
+          mapping:
+            is_hidden:
+              type: boolean
+              label: 'When true, this facet option is hidden in the UI.'
+        federated_terms:
+          type: mapping
+          mapping:
+            is_hidden:
+              type: boolean
+              label: 'When true, this facet option is hidden in the UI.'
+    filter:
+      type: mapping
+      mapping:
+        federated_date:
+          type: mapping
+          mapping:
+            is_hidden:
+              type: boolean
+              label: 'When true, this filter option is hidden in the UI.'
     index:
       type: mapping
       mapping:
         id:
           type: string
           label: 'Defines which search_api index and server the search app should use.'
+        has_federated_date_property:
+          type: boolean
+          label: 'Has federated date flag.'
+        has_federated_terms_property:
+          type: boolean
+          label: 'Has federated terms flag.'
+        has_federated_type_property:
+          type: boolean
+          label: 'Has federated type flag.'
         has_site_name_property:
           type: boolean
           label: 'Has site name flag.'
@@ -55,3 +88,33 @@ search_api_federated_solr.search_app.settings:
         buttons:
           type: integer
           label: 'The max number of numbered pagination buttons to show at a given time.'
+    autocomplete:
+      type: mapping
+      mapping:
+        isEnabled:
+          type: integer
+          label: 'When true, autocomplete is enabled for the search app.'
+        url:
+          type: string
+          label: 'The autocomplete endpoint url to be used.'
+        appendWildcard:
+          type: integer
+          label: 'When checked, the query will have a wildcard appended.'
+        suggestionRows:
+          type: string
+          label: 'The number of results to return from the autocomplete request.'
+        numChars:
+          type: string
+          label: 'The number of characters, after which the autocomplete request should be made.'
+        mode:
+          type: string
+          label: 'The type of results returned by the autocomplete request: results or terms.'
+        result:
+          type: mapping
+          mapping:
+            titleText:
+              type: string
+              label: 'The title text for the autocomplete results.'
+            hideDirectionsText:
+              type: integer
+              label: 'When true, the keyboard directions text will be hidden from autocomplete dropdown.'

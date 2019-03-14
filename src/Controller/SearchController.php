@@ -34,7 +34,9 @@ class SearchController extends ControllerBase {
      * The username and password will be
      * combined and base64 encoded as per the application.
      */
-    $federated_search_app_config['userpass'] = base64_encode($config->get('index.username') . ':' . $config->get('index.password'));
+    $username = $config->get('index.username');
+    $pass = $config->get('index.password');
+    $federated_search_app_config['userpass'] = $username && $pass ? base64_encode($config->get('index.username') . ':' . $config->get('index.password')) : '';
 
     // Validate that there is still a site name property set for this index.
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
@@ -51,6 +53,36 @@ class SearchController extends ControllerBase {
     if ($set_default_site && !$site_name_property) {
       $config->set('facet.site_name.set_default', 0);
     }
+
+    // Create an index property field map array to determine which fields
+    // exist on the index and should be hidden in the app UI.
+    $search_fields = [
+      "sm_site_name" => [
+        "property" => $site_name_property,
+        "is_hidden" => $config->get('facet.site_name.is_hidden'),
+      ],
+      "ss_federated_type" => [
+        "property" =>  $config->get('index.has_federated_type_property'),
+        "is_hidden" => $config->get('facet.federated_type.is_hidden'),
+      ],
+      "ds_federated_date" => [
+        "property" => $config->get('index.has_federated_date_property'),
+        "is_hidden" => $config->get('filter.federated_date.is_hidden'),
+      ],
+      "sm_federated_terms" => [
+        "property" => $config->get('index.has_federated_terms_property'),
+        "is_hidden" => $config->get('facet.federated_terms.is_hidden'),
+      ],
+    ];
+
+    // Set hiddenSearchFields to an array of keys of those $search_fields items
+    // which both exist as an index property and are set to be hidden.
+
+    // OPTIONAL: Machine name of those search fields whose facets/filter and
+    // current values should be hidden in UI.
+    $federated_search_app_config['hiddenSearchFields'] = array_keys(array_filter($search_fields, function  ($value) {
+      return $value['property'] && $value['is_hidden'];
+    }));
 
     // OPTIONAL: The text to display when the app loads with no search term.
     if ($search_prompt = $config->get('content.search_prompt')) {
@@ -80,6 +112,38 @@ class SearchController extends ControllerBase {
     // OPTIONAL: The rendered title of the search page.
     if ($page_title = $config->get('page_title')) {
       $federated_search_app_config['pageTitle'] = $page_title;
+    }
+
+    $federated_search_app_config['autocomplete'] = FALSE;
+    if ($autocomplete_is_enabled = $config->get('autocomplete.isEnabled')) {
+      // REQUIRED: Autocomplete endpoint, defaults to main search url
+      if ($autocomplete_url = $config->get('autocomplete.url')) {
+        $federated_search_app_config['autocomplete']['url'] = $autocomplete_url;
+      }
+      // OPTIONAL: defaults to false, whether or not to append wildcard to query term
+      if ($autocomplete_append_wildcard = $config->get('autocomplete.appendWildcard')) {
+        $federated_search_app_config['autocomplete']['appendWildcard'] = $autocomplete_append_wildcard;
+      }
+      // OPTIONAL: defaults to 5, max number of autocomplete results to return
+      if ($autocomplete_suggestion_rows = $config->get('autocomplete.suggestionRows')) {
+        $federated_search_app_config['autocomplete']['suggestionRows'] = $autocomplete_suggestion_rows;
+      }
+      // OPTIONAL: defaults to 2, number of characters *after* which autocomplete results should appear
+      if ($autocomplete_num_chars = $config->get('autocomplete.numChars')) {
+        $federated_search_app_config['autocomplete']['numChars'] = $autocomplete_num_chars;
+      }
+      // REQUIRED: show search-as-you-type results ('result', default) or search term ('term') suggestions
+      if ($autocomplete_mode = $config->get('autocomplete.mode')) {
+        $federated_search_app_config['autocomplete']['mode'] = $autocomplete_mode;
+        // OPTIONAL: default set, title to render above autocomplete results
+        if ($autocomplete_mode_title_text = $config->get('autocomplete.' . $autocomplete_mode . '.titleText')) {
+          $federated_search_app_config['autocomplete'][$autocomplete_mode]['titleText'] = $autocomplete_mode_title_text;
+        }
+        // OPTIONAL: defaults to false, whether or not to hide the keyboard usage directions text
+        if ($autocomplete_mode_hide_directions = $config->get('autocomplete.' . $autocomplete_mode . '.hideDirectionsText')) {
+          $federated_search_app_config['autocomplete'][$autocomplete_mode]['showDirectionsText'] = FALSE;
+        }
+      }
     }
 
     $element = [

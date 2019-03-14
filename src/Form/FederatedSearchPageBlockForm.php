@@ -42,6 +42,7 @@ class FederatedSearchPageBlockForm extends FormBase {
       '#attributes' => [
         'title' => $this->t('Enter the terms you wish to search for.'),
         'placeholder' => 'Search',
+        'autocomplete' => "off", // refers to html attribute, not our custom autocomplete.
       ],
       '#provider' => 'search_api_federated_solr',
     ];
