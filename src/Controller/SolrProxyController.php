@@ -32,6 +32,11 @@ class SolrProxyController extends ControllerBase {
       $connector = $backend->getSolrConnector();
       $query = $connector->getSelectQuery();
       $query->setQuery($term);
+      // Configure highlight component.
+      $hl = $query->getHighlighting();
+        $hl->setFields('tm_rendered_item');
+        $hl->setSimplePrefix('<strong>');
+        $hl->setSimplePostfix('</strong>');
 
         // Build a filter.
 //    $filter = $query->createFilter('OR');
@@ -45,14 +50,13 @@ class SolrProxyController extends ControllerBase {
 //    $query->sort('timestamp_field');
 
       // Fetch results.
-      $response = $connector->search($query);
+      $query_response = $connector->execute($query);
+      $data = $query_response->getData();
     }
     catch (SearchApiException $e) {
       watchdog_exception('search_api_federated_solr', $e, '%type while executed query on @server: @message in %function (line %line of %file).', array('@server' => $server->label()));
     }
 
-//    $data['response'] = $results->getExtraData('search_api_solr_response')['response'];
-    $data['response'] = json_decode($response->getBody())->response;
 
     // Add Cache settings for Max-age and URL context.
     // You can use any of Drupal's contexts, tags, and time.
