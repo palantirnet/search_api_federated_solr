@@ -24,7 +24,7 @@ class SolrProxyController extends ControllerBase {
     /** @var \Drupal\search_api\ServerInterface $server */
     $server = Server::load($server_id);
 
-    // Get the query data from the qs.
+    // @todo Get query data from route variables.
     $term = 'qui';
 
     try {
