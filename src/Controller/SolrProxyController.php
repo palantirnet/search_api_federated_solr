@@ -7,7 +7,6 @@ use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\search_api\Entity\Server;
 use Drupal\search_api\SearchApiException;
-use Drupal\search_api\Query;
 use Symfony\Component\HttpFoundation\Request;
 
 class SolrProxyController extends ControllerBase {
@@ -24,8 +23,8 @@ class SolrProxyController extends ControllerBase {
     /** @var \Drupal\search_api\ServerInterface $server */
     $server = Server::load($server_id);
 
-    // @todo Get query data from route variables.
-    $term = 'qui';
+    //  Get query data from route variables.
+    $term = $request->get('q');
 
     try {
       /** @var \Drupal\search_api_solr\SolrBackendInterface $backend */
