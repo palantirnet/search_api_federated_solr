@@ -21,16 +21,16 @@
     attach: function (context, settings) {
       // Find our fields with autocomplete settings
       $(context)
-      .find('.js-search-api-federated-solr-block-form-autocomplete #edit-search')
-      .once('search-api-federated-solr-autocomplete-search')
-      .each(function () {
-        // Halt execution if we don't have the required config.
-        if (!Object.hasOwnProperty.call(drupalSettings, 'searchApiFederatedSolr')
-          || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr, 'block')
-          || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block, 'autocomplete')
-          || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block.autocomplete, 'url')) {
-          return;
-        }
+        .find('.js-search-api-federated-solr-block-form-autocomplete #edit-search')
+        .once('search-api-federated-solr-autocomplete-search')
+        .each(function () {
+          // Halt execution if we don't have the required config.
+          if (!Object.hasOwnProperty.call(drupalSettings, 'searchApiFederatedSolr')
+            || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr, 'block')
+            || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block, 'autocomplete')
+            || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block.autocomplete, 'url')) {
+            return;
+          }
 
         // Set default settings.
         var defaultSettings = {
@@ -52,21 +52,21 @@
 
         // Set scaffolding markup for suggestions container
         var suggestionsContainerScaffoldingMarkup = `
-            <div class="js-search-autocomplete-container visually-hidden">
-              <div class="js-search-autocomplete-container__title">
-                 ${options[options.mode].titleText}
-                 <button class="js-search-autocomplete-container__close-button">x</button>
-               </div>
-               <div id="js-search-autocomplete">
-                <div id="res" role="listbox" tabindex="-1"></div>
-            </div>`;
+          <div class="js-search-autocomplete-container visually-hidden">
+            <div class="js-search-autocomplete-container__title">
+               ${options[options.mode].titleText}
+               <button class="js-search-autocomplete-container__close-button">x</button>
+             </div>
+             <div id="js-search-autocomplete">
+              <div id="res" role="listbox" tabindex="-1"></div>
+          </div>`;
 
         if (!options[options.mode].hideDirectionsText) {
           suggestionsContainerScaffoldingMarkup += `
-            <div class="js-search-autocomplete-container__directions">
-              <span class="js-search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span>
-              <span class="js-search-autocomplete-container__directions-item">Press ↑ and ↓ to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span>
-            </div>`;
+          <div class="js-search-autocomplete-container__directions">
+            <span class="js-search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span>
+            <span class="js-search-autocomplete-container__directions-item">Press ↑ and ↓ to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span>
+          </div>`;
         }
 
         suggestionsContainerScaffoldingMarkup +=  '</div>';
