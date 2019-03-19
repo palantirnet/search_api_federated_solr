@@ -19,7 +19,7 @@ class SolrProxyController extends ControllerBase {
     // Add Cache settings for Max-age and URL context.
     // You can use any of Drupal's contexts, tags, and time.
     $data['#cache'] = [
-      'max-age' => 600,
+      'max-age' => 0,
       'contexts' => [
         'url',
       ],
