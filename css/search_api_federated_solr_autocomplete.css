@@ -2,7 +2,7 @@
   position: relative;
 }
 
-#federated-search-page-block-form .search-autocomplete-container {
+#federated-search-page-block-form .js-search-autocomplete-container {
   position: absolute;
   border: 1px solid #999;
   background: #fff;
@@ -11,7 +11,7 @@
   display: block;
 }
 
-#federated-search-page-block-form .search-autocomplete-container:not(.visually-hidden) .search-autocomplete-container__title {
+#federated-search-page-block-form .js-search-autocomplete-container:not(.visually-hidden) .js-search-autocomplete-container__title {
   font-size:.8em;
   line-height:1.46667em;
   position: relative;
@@ -20,7 +20,7 @@
   border-bottom: 1px dashed #ccc;
   display: block;
 }
-.search-autocomplete-container:not(.visually-hidden) .search-autocomplete-container__close-button {
+.js-search-autocomplete-container:not(.visually-hidden) .js-search-autocomplete-container__close-button {
   font-size:.8em;
   line-height:1.46667em;
   font-style:normal;
@@ -32,29 +32,29 @@
   right:5px
 }
 
-.search-autocomplete-container:not(.visually-hidden) .search-autocomplete-container__close-button:hover {
+.js-search-autocomplete-container:not(.visually-hidden) .js-search-autocomplete-container__close-button:hover {
   border-color:#b5b5b5;
   background-color:#f6f6f6
 }
 
-#federated-search-page-block-form .search-autocomplete-container:not(.visually-hidden) .search-autocomplete-container__directions {
+#federated-search-page-block-form .js-search-autocomplete-container:not(.visually-hidden) .js-search-autocomplete-container__directions {
   display: block;
   padding:10px 20px;
 }
 
-#federated-search-page-block-form .search-autocomplete-container:not(.visually-hidden) .search-autocomplete-container__directions-item {
+#federated-search-page-block-form .js-search-autocomplete-container:not(.visually-hidden) .js-search-autocomplete-container__directions-item {
   display: block;
   font-size:.8em;
   line-height:1.46667em;
 }
 
-.search-autocomplete-container:not(.visually-hidden) .autocomplete-suggestion {
+.js-search-autocomplete-container:not(.visually-hidden) .autocomplete-suggestion {
   cursor:pointer;
   background-color:#fff;
   white-space: nowrap;
 }
 
-.search-autocomplete-container:not(.visually-hidden) .autocomplete-suggestion__link {
+.js-search-autocomplete-container:not(.visually-hidden) .js-autocomplete-suggestion__link {
   display: block;
   color:#737373;
   text-decoration: none;
@@ -65,8 +65,8 @@
   border-bottom-color:#ccc;
 }
 
-.search-autocomplete-container:not(.visually-hidden) .highlight .autocomplete-suggestion__link,
-.search-autocomplete-container:not(.visually-hidden) .autocomplete-suggestion__link:hover {
+.js-search-autocomplete-container:not(.visually-hidden) .highlight .js-autocomplete-suggestion__link,
+.js-search-autocomplete-container:not(.visually-hidden) .js-autocomplete-suggestion__link:hover {
   text-decoration: underline;
   background-color:#f6f6f6;
   border:1px solid #f6f6f6;
