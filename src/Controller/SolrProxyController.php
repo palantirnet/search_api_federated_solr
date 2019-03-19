@@ -54,7 +54,6 @@ class SolrProxyController extends ControllerBase {
 
 //    $data['response'] = $results->getExtraData('search_api_solr_response')['response'];
     $data['response'] = json_decode($response->getBody())->response;
-      if (true){}
 
     // Add Cache settings for Max-age and URL context.
     // You can use any of Drupal's contexts, tags, and time.
