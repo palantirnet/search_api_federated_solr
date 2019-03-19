@@ -6,5 +6,12 @@ search_api_federated_solr.search_app.settings:
   requirements:
     _permission: 'administer federated search'
 
+search_api_federated_solr.solr_proxy:
+  path: '/search-api-federated-solr/search'
+  defaults:
+    _controller: '\Drupal\search_api_federated_solr\Controller\SolrProxyController::getResultsJson'
+  requirements:
+    _permission: 'access content'
+
 route_callbacks:
   - '\Drupal\search_api_federated_solr\Routing\SearchApiFederatedSolrRoutes::routes'
