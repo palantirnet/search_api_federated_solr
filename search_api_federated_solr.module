@@ -481,7 +481,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
   ];
 
   $form['autocomplete']['search_api_federated_solr_autocomplete_url'] = [
-    '#type' => 'url',
+    '#type' => 'textfield',
     '#title' => t('Solr Endpoint URL'),
     '#default_value' => variable_get('search_api_federated_solr_autocomplete_url'),
     '#maxlength' => 2048,
@@ -497,10 +497,11 @@ function search_api_federated_solr_admin($form, &$form_state) {
   ];
 
   $form['autocomplete']['search_api_federated_solr_autocomplete_suggestion_rows'] = [
-    '#type' => 'number',
+    '#type' => 'textfield',
     '#title' => t('Number of results'),
     '#default_value' => variable_get('search_api_federated_solr_autocomplete_suggestion_rows'),
     '#description' => t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
+    '#size' => 5,
     '#states' => [
       'visible' => [
         ':input[data-autocomplete-enabler]' => [
@@ -511,10 +512,11 @@ function search_api_federated_solr_admin($form, &$form_state) {
   ];
 
   $form['autocomplete']['search_api_federated_solr_autocomplete_num_chars'] = [
-    '#type' => 'number',
+    '#type' => 'textfield',
     '#title' => t('Number of characters after which autocomplete query should execute'),
     '#default_value' => variable_get('search_api_federated_solr_autocomplete_num_chars'),
     '#description' => t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
+    '#size' => 5,
     '#states' => [
       'visible' => [
         ':input[data-autocomplete-enabler]' => [
@@ -848,13 +850,13 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/js/main.d41fc3fe.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.0/js/main.6a547bbe.js' => array(
         'type' => 'external',
         'scope' => 'footer',
       ),
     ),
     'css' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/css/main.cf6a58ce.css' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.0/css/main.ec684809.css' => array(
         'type' => 'external',
       ),
     ),
