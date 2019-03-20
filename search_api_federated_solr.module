@@ -227,25 +227,6 @@ function search_api_federated_solr_admin($form, &$form_state) {
     ],
   ];
 
-  $form['search_api_federated_solr_has_site_name_property'] = [
-    '#type' => 'hidden',
-    '#default_value' => variable_get('search_api_federated_solr_has_site_name_property') ? 'true' : NULL,
-  ];
-
-  $form['search_api_federated_solr_set_search_site'] = [
-    '#type' => 'checkbox',
-    '#title' => t('Set the "Site name" facet to this site'),
-    '#default_value' => variable_get('search_api_federated_solr_set_search_site'),
-    '#description' => t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
-    '#states' => [
-      'visible' => [
-        ':input[name="search_api_federated_solr_has_site_name_property"]' => [
-          'value' => "true"
-        ],
-      ],
-    ],
-  ];
-
   $form['setup']['search_api_federated_solr_search_index_basic_auth'] = [
     '#type' => 'fieldset',
     '#title' => t('Search Index Basic Authentication'),
@@ -273,28 +254,64 @@ function search_api_federated_solr_admin($form, &$form_state) {
     ],
   ];
 
-  $form['search_api_federated_solr_show_empty_search_results'] = [
+  /**
+   * Search results page options:
+   *   - show empty search results (i.e. filterable listing page),
+   *   - customize "no results" text
+   *   - custom search prompt
+   *     - renders in result area when show empty results no enabled and no query value
+   *   - max number of search results per page
+   *   - max number of "numbered" pagination buttons to show
+   */
+
+  $form['search_page_options'] = [
+    '#type' => 'fieldset',
+    '#title' => 'Search Results Page > Options',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  ];
+
+  $form['search_api_federated_solr_has_site_name_property'] = [
+    '#type' => 'hidden',
+    '#default_value' => variable_get('search_api_federated_solr_has_site_name_property') ? 'true' : NULL,
+  ];
+
+  $form['search_api_federated_solr_set_search_site'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Set the "Site name" facet to this site'),
+    '#default_value' => variable_get('search_api_federated_solr_set_search_site'),
+    '#description' => t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="search_api_federated_solr_has_site_name_property"]' => [
+          'value' => "true"
+        ],
+      ],
+    ],
+  ];
+
+  $form['search_page_options']['search_api_federated_solr_show_empty_search_results'] = [
     '#type' => 'checkbox',
     '#title' => t('Show results for empty search'),
     '#default_value' => variable_get('search_api_federated_solr_show_empty_search_results'),
     '#description' => t('When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
   ];
 
-  $form['search_api_federated_solr_no_results_text'] = [
+  $form['search_page_options']['search_api_federated_solr_no_results_text'] = [
     '#type' => 'textfield',
     '#title' => t('No results text'),
     '#default_value' => variable_get('search_api_federated_solr_no_results_text'),
     '#description' => t('This text is shown when a query returns no results. (Default: "Your search yielded no results.")'),
   ];
 
-  $form['search_api_federated_solr_search_prompt_text'] = [
+  $form['search_page_options']['search_api_federated_solr_search_prompt_text'] = [
     '#type' => 'textfield',
     '#title' => t('Search prompt text'),
     '#default_value' => variable_get('search_api_federated_solr_search_prompt_text'),
     '#description' => t('This text is shown when no query term has been entered. (Default: "Please enter a search term.")'),
   ];
 
-  $form['search_api_federated_solr_rows'] = [
+  $form['search_page_options']['search_api_federated_solr_rows'] = [
     '#type' => 'textfield',
     '#attributes' => array(
       ' type' => 'number',
@@ -304,7 +321,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#description' => t('The max number of results to render per search results page. (Default: 20)'),
   ];
 
-  $form['search_api_federated_solr_page_buttons'] = [
+  $form['search_page_options']['search_api_federated_solr_page_buttons'] = [
     '#type' => 'textfield',
     '#attributes' => array(
       ' type' => 'number',
