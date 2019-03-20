@@ -16,8 +16,10 @@ class SolrProxyController extends ControllerBase {
    * @see: http://php.net/manual/en/function.parse-str.php#76792
    *
    * @param $str
+   *  The querystring from the request object.
    *
    * @return array
+   *  Array of querystring params and their values.
    */
   private static function parse_str_multiple($str) {
     # result array
