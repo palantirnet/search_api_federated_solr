@@ -271,25 +271,6 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#collapsed' => TRUE,
   ];
 
-  $form['search_api_federated_solr_has_site_name_property'] = [
-    '#type' => 'hidden',
-    '#default_value' => variable_get('search_api_federated_solr_has_site_name_property') ? 'true' : NULL,
-  ];
-
-  $form['search_api_federated_solr_set_search_site'] = [
-    '#type' => 'checkbox',
-    '#title' => t('Set the "Site name" facet to this site'),
-    '#default_value' => variable_get('search_api_federated_solr_set_search_site'),
-    '#description' => t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
-    '#states' => [
-      'visible' => [
-        ':input[name="search_api_federated_solr_has_site_name_property"]' => [
-          'value' => "true"
-        ],
-      ],
-    ],
-  ];
-
   $form['search_page_options']['search_api_federated_solr_show_empty_search_results'] = [
     '#type' => 'checkbox',
     '#title' => t('Show results for empty search'),
@@ -329,6 +310,141 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#title' => t('Number of pagination buttons'),
     '#default_value' => variable_get('search_api_federated_solr_page_buttons'),
     '#description' => t('The max number of numbered pagination buttons to show at a given time. (Default: 5)'),
+  ];
+
+  /**
+   * Settings and values for search facets and filters:
+   *   - set the site name facet to the current site name property
+   */
+
+  $form['search_form_values'] = [
+    '#type' => 'fieldset',
+    '#title' => 'Search Results Page > Facets & Filters',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  ];
+
+  /**
+   * Set hidden form element value based on presence of field properties on
+   *   the selected index.  This value will determine which inputs are
+   *   visible for setting default facet/filter values and hiding in the UI.
+   */
+  $form['search_form_values']['defaults'] = [
+    '#type' => 'fieldset',
+    '#title' => 'Set facet / filter default values'
+  ];
+
+  $form['search_form_values']['defaults']['search_api_federated_solr_set_search_site'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Set the "Site name" facet to this site'),
+    '#default_value' => variable_get('search_api_federated_solr_set_search_site'),
+    '#description' => t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="search_api_federated_solr_has_site_name_property"]' => [
+          'value' => "true"
+        ],
+      ],
+    ],
+  ];
+
+  $form['search_form_values']['search_api_federated_solr_has_site_name_property'] = [
+    '#type' => 'hidden',
+    '#attributes' => [
+      'id' => ['site-name-property'],
+    ],
+    '#default_value' => variable_get('search_api_federated_solr_has_site_name_property') ? 'true' : NULL,
+  ];
+
+  $form['search_form_values']['search_api_federated_solr_has_federated_date_property'] = [
+    '#type' => 'hidden',
+    '#attributes' => [
+      'id' => ['date-property'],
+    ],
+    '#value' => variable_get('search_api_federated_solr_has_federated_date_property') ? 'true' : '',
+  ];
+
+  $form['search_form_values']['search_api_federated_solr_has_federated_type_property'] = [
+    '#type' => 'hidden',
+    '#attributes' => [
+      'id' => ['type-property'],
+    ],
+    '#value' => variable_get('search_api_federated_solr_has_federated_type_property') ? 'true' : '',
+  ];
+
+  $form['search_form_values']['search_api_federated_solr_has_federated_terms_property'] = [
+    '#type' => 'hidden',
+    '#attributes' => [
+      'id' => ['terms-property'],
+    ],
+    '#value' => variable_get('search_api_federated_solr_has_federated_terms_property') ? 'true' : '',
+  ];
+
+  /**
+   * Enable hiding available facets / filters.
+   * These form elements will only be visible if their corresopnding
+   *   property exists on the index.
+   */
+  $form['search_form_values']['hidden'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Hide facets / filters from sidebar'),
+    '#description' => t('The checked facets / filters will be hidden from the search app.'),
+  ];
+
+  $form['search_form_values']['hidden']['search_api_federated_solr_hide_site_name'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Site name facet'),
+    '#default_value' => variable_get('search_api_federated_solr_hide_site_name'),
+    '#description' => t('When checked, the ability to select which sites should be included in the results will be hidden.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="site_name_property"]' => [
+          'value' => "true",
+        ],
+      ],
+    ],
+  ];
+
+  $form['search_form_values']['hidden']['search_api_federated_solr_hide_type'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Type facet'),
+    '#default_value' => variable_get('search_api_federated_solr_hide_type'),
+    '#description' => t('When checked, the ability to select those types (i.e. bundles) which should have results returned will be hidden.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="type_property"]' => [
+          'value' => "true",
+        ],
+      ],
+    ],
+  ];
+
+  $form['search_form_values']['hidden']['search_api_federated_solr_hide_date'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Date filter'),
+    '#default_value' => variable_get('search_api_federated_solr_hide_date'),
+    '#description' => t('When checked, the ability to filter results by date will be hidden.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="date_property"]' => [
+          'value' => "true",
+        ],
+      ],
+    ],
+  ];
+
+  $form['search_form_values']['hidden']['search_api_federated_solr_hide_terms'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Terms facet'),
+    '#default_value' => variable_get('search_api_federated_solr_hide_terms'),
+    '#description' => t('When checked, the ability to select those terms which should have results returned will be hidden.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="terms_property"]' => [
+          'value' => "true",
+        ],
+      ],
+    ],
   ];
 
   $form['#cache'] = ['max-age' => 0];
