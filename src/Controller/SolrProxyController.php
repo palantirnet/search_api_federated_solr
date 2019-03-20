@@ -97,10 +97,14 @@ class SolrProxyController extends ControllerBase {
       $query->setStart($start)->setRows($rows);
 
       // Configure highlight component.
+      $hl_field = array_key_exists('hl.fl', $params) ? $params['hl.fl'] : 'tm_rendered_item';
+      $hl_use_phrase_highlighter = array_key_exists('hl.usePhraseHighlighter', $params) ? $params['hl.usePhraseHighlighter'] : TRUE;
+
       $hl = $query->getHighlighting();
-        $hl->setFields('tm_rendered_item');
+        $hl->setFields($hl_field);
         $hl->setSimplePrefix('<strong>');
         $hl->setSimplePostfix('</strong>');
+        $hl->setUsePhraseHighlighter($hl_use_phrase_highlighter);
 
         // Build a filter.
 //    $filter = $query->createFilter('OR');
