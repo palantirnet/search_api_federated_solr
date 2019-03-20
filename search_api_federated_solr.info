@@ -1,4 +1,4 @@
-; @copyright (c) Copyright 2018 Palantir.net
+; @copyright (c) Copyright 2018-19 Palantir.net
 
 name = Search API Federated Solr
 description = Allows indexing multiple Drupal sites into a single Solr search index.
