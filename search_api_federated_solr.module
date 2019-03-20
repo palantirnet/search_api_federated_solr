@@ -234,9 +234,7 @@ function search_api_federated_solr_config_json() {
   // Get the index configuration object.
   $index = search_api_index_load($search_index);
   $server = search_api_server_load($index->server);
-  $server_url = $server->options['scheme'] . '://' . $server->options['host'] . ':' . $server->options['port'];
-  // Check for the non-required server config field data before appending.
-  $server_url .= $server->options['path'] ?: '';
+  $server_url = trim($server->getSolrConnection()->getBaseUrl(), '/');
   // Append the request handler.
   $server_url .= '/select';
 
