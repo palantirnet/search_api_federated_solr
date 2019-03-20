@@ -9,6 +9,7 @@ namespace Drupal\search_api_federated_solr\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Class SearchApiFederatedSolrSearchAppSettingsForm.
@@ -94,8 +95,9 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
      *   - search results page path
      *   - search results page title
      *   - autocomplete enable triggers display of autocopmlete config fieldset
-     *   - serach index to use as datasource,
-     *   - basic auth credentials for index
+     *   - search index to use as datasource,
+     *   - disable the query proxy
+     *   - basic auth credentials for index (if proxy disabled)
      */
 
     $form['setup'] = [
@@ -134,10 +136,28 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
+    $form['setup']['disable_query_proxy'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Allow the search app to query solr server directly') . '</b>',
+      '#default_value' => $config->get('proxy.isDisabled'),
+      '#description' => $this
+        ->t('Check this box to enable the search app to query the solr server directly (as opposed to using a Drupal route defined by this module as a proxy).  When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app.  Note: Acquia Search customers must leave this box unchecked.'),
+      '#attributes' => [
+        'data-direct-query-enabler' => TRUE,
+      ],
+    ];
+
     $form['setup']['search_index_basic_auth'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Search Index Basic Authentication'),
       '#description' => $this->t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+      '#states' => [
+        'visible' => [
+          ':input[data-direct-query-enabler]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['setup']['search_index_basic_auth']['username'] = [
@@ -545,6 +565,15 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $show_empty_search_results = $form_state->getValue('show_empty_search_results');
     $config->set('content.show_empty_search_results', $show_empty_search_results);
 
+    // Set the proxy URL from the proxy route.
+    $proxy_url = Url::fromRoute('search_api_federated_solr.solr_proxy');
+    $proxy_url_string = $proxy_url->toString();
+    $config->set('proxy.url', $proxy_url_string);
+
+    // Determine whether or not we should be using the proxy.
+    $proxy_is_disabled = $form_state->getValue('disable_query_proxy');
+    $config->set('proxy.isDisabled', $proxy_is_disabled);
+
     // Get the id of the chosen index.
     $search_index = $form_state->getValue('search_index');
     // Save the selected index option in search app config (for form state).
@@ -627,6 +656,9 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
    *   An associative array containing the structure of the form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
+   *
+   * @return array $elem
+   *   Hidden form element used to flag the state of the site name in the index.
    */
   public function getSiteName(array &$form, FormStateInterface $form_state) {
     // Get the id of the chosen index.

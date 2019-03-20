@@ -26,10 +26,20 @@ class SearchController extends ControllerBase {
     // the search app: https://github.com/palantirnet/federated-search-react/blob/master/src/.env.local.js.example
     $federated_search_app_config = [];
 
-    // REQUIRED: The default solr backend.
-    $federated_search_app_config['url'] = $config->get('index.server_url');
+    // REQUIRED: The url where requests are made with query information.
+    $url = $config->get('proxy.url');
+    // REQUIRED: Whether or not are using the proxy.
+    $proxy_is_disabled = FALSE;
+    if ($config->get('proxy.isDisabled') === 1) {
+      $url = $config->get('index.server_url');
+      $proxy_is_disabled = TRUE;
+    }
 
-    /* OPTIONAL:
+    $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;
+    $federated_search_app_config['url'] = $url;
+
+    /*
+     * OPTIONAL:
      * The username and password for Basic Authentication on the server.
      * The username and password will be
      * combined and base64 encoded as per the application.
