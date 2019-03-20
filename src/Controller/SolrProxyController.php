@@ -60,8 +60,9 @@ class SolrProxyController extends ControllerBase {
    * @param \Symfony\Component\HttpFoundation\Request $request
    *
    * @return \Drupal\Core\Cache\CacheableJsonResponse
-   *  Structure mirrors the solr api response object with the addition of the
-   *   '#cache' key.
+   *  Structure mirrors the solr api response object written with the JSON
+   *    Response Writer with the addition of a '#cache' key for cache metadata.
+   *  @see https://lucene.apache.org/solr/guide/7_2/response-writers.html#json-response-writer
    */
   public function getResultsJson(Request $request) {
     $data = [];
