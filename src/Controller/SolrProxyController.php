@@ -89,6 +89,13 @@ class SolrProxyController extends ControllerBase {
       // Set main query param.
       $q = is_array($params) && array_key_exists('q', $params) ? $params['q'] : '*';
       $query->setQuery($q);
+
+      // Set query conditions.
+      $start = is_array($params) && array_key_exists('start', $params) ? $params['start'] : 0;
+      $rows = is_array($params) && array_key_exists('rows', $params) ? $params['rows'] : 20;
+      // Set query start + number of results.
+      $query->setStart($start)->setRows($rows);
+
       // Configure highlight component.
       $hl = $query->getHighlighting();
         $hl->setFields('tm_rendered_item');
