@@ -11,6 +11,46 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SolrProxyController extends ControllerBase {
 
+  /**
+   * Parses a querystring with support for multiple keys not using array[] syntax.
+   * @see: http://php.net/manual/en/function.parse-str.php#76792
+   *
+   * @param $str
+   *
+   * @return array
+   */
+  private static function parse_str_multiple($str) {
+    # result array
+    $arr = [];
+
+    # split on outer delimiter
+    $pairs = explode('&', $str);
+
+    # loop through each pair
+    foreach ($pairs as $i) {
+      # split into name and value
+      list($name,$value) = explode('=', $i, 2);
+
+      # if name already exists
+      if( isset($arr[$name]) ) {
+        # stick multiple values into an array
+        if( is_array($arr[$name]) ) {
+          $arr[$name][] = $value;
+        }
+        else {
+          $arr[$name] = array($arr[$name], $value);
+        }
+      }
+      # otherwise, simply stick it in a scalar
+      else {
+        $arr[$name] = $value;
+      }
+    }
+
+    # return result array
+    return $arr;
+  }
+
   public function getResultsJson(Request $request) {
     $data = [];
     // Get index id from search app config.
@@ -23,15 +63,32 @@ class SolrProxyController extends ControllerBase {
     /** @var \Drupal\search_api\ServerInterface $server */
     $server = Server::load($server_id);
 
-    //  Get query data from route variables.
-    $term = $request->get('q');
+    // Get query data from route variables.
+    $qs = $request->getQueryString();
+    // Parse the querystring, with support for multiple values for a key,
+    // not using array[] syntax.
+    // Can't use \Drupal\Core\Routing\RouteMatchInterface::getParameters()
+    //   because the route doesn't / can't define qs params as parameters.
+    // Can't use \Drupal\Component\Utility\UrlHelper::parse() because it uses
+    //   str_parse which requires array brackets [] syntax for param keys with
+    //   multiple values and that is not the syntax that solr expects.
+    // @see: http://php.net/manual/en/function.parse-str.php#76792
+    $params = self::parse_str_multiple($qs);
 
     try {
       /** @var \Drupal\search_api_solr\SolrBackendInterface $backend */
       $backend = $server->getBackend();
+      /** @var \Drupal\search_api_solr\SolrConnectorInterface $connector */
       $connector = $backend->getSolrConnector();
+
+      // Create the select query.
+      // Note: this proxy will only execute select queries.
       $query = $connector->getSelectQuery();
-      $query->setQuery($term);
+      // $debug = $query->getDebug(); // uncomment to enable $query_response->getDebug();
+
+      // Set main query param.
+      $q = is_array($params) && array_key_exists('q', $params) ? $params['q'] : '*';
+      $query->setQuery($q);
       // Configure highlight component.
       $hl = $query->getHighlighting();
         $hl->setFields('tm_rendered_item');
