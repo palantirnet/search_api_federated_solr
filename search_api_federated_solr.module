@@ -200,14 +200,21 @@ function search_api_federated_solr_admin($form, &$form_state) {
   $form['#prefix'] = '<div id="search-api-federated-solr-config-form">';
   $form['#suffix'] = '</div>';
 
-  $form['search_api_federated_solr_path'] = [
+  $form['setup'] = [
+    '#type' => 'fieldset',
+    '#title' => 'Search Results Page > Set Up',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  ];
+
+  $form['setup']['search_api_federated_solr_path'] = [
     '#type' => 'textfield',
     '#title' => t('Search app path'),
     '#default_value' => variable_get('search_api_federated_solr_path', 'search-app'),
     '#description' => t('The path for the search app (Default: "search-app").'),
   ];
 
-  $form['search_api_federated_solr_search_index'] = [
+  $form['setup']['search_api_federated_solr_search_index'] = [
     '#type' => 'select',
     '#title' => t('Search API index'),
     '#description' => t('Defines <a href="/admin/config/search/search-api">which search_api index and server</a> the search app should use.'),
@@ -239,22 +246,31 @@ function search_api_federated_solr_admin($form, &$form_state) {
     ],
   ];
 
-  $form['search_api_federated_solr_search_index_basic_auth'] = [
+  $form['setup']['search_api_federated_solr_search_index_basic_auth'] = [
     '#type' => 'fieldset',
     '#title' => t('Search Index Basic Authentication'),
     '#description' => t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.')
   ];
 
-  $form['search_api_federated_solr_search_index_basic_auth']['search_api_federated_solr_search_index_basic_auth_username'] = [
+  $form['setup']['search_api_federated_solr_search_index_basic_auth']['search_api_federated_solr_search_index_basic_auth_username'] = [
     '#type' => 'textfield',
     '#title' => t('Username'),
     '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_username'),
   ];
 
-  $form['search_api_federated_solr_search_index_basic_auth']['search_api_federated_solr_search_index_basic_auth_password'] = [
+  $form['setup']['search_api_federated_solr_search_index_basic_auth']['search_api_federated_solr_search_index_basic_auth_password'] = [
     '#type' => 'textfield',
     '#title' => t('Password'),
     '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_password'),
+  ];
+  $form['setup']['search_api_federated_solr_autocomplete_is_enabled'] = [
+    '#type' => 'checkbox',
+    '#title' => '<b>' . t('Enable autocomplete for the search results page search form') . '</b>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_is_enabled'),
+    '#description' => t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
+    '#attributes' => [
+      'id' => ['autocomplete-is-enabled'],
+    ],
   ];
 
   $form['search_api_federated_solr_show_empty_search_results'] = [
