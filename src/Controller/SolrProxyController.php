@@ -106,16 +106,36 @@ class SolrProxyController extends ControllerBase {
         $hl->setSimplePostfix('</strong>');
         $hl->setUsePhraseHighlighter($hl_use_phrase_highlighter);
 
-        // Build a filter.
-//    $filter = $query->createFilter('OR');
-//    $filter->condition('type', 'article', '=');
-//    $filter->condition('type', 'blog_post', '=');
-//    $query->filter($filter);
+      // Configure FacetSet component.
+      $facet_set = $query->getFacetSet();
 
-        // Conditions.
-//    $query->condition('title_field', $term, '=');
-//    $query->condition('language', $language->language, '=');
-//    $query->sort('timestamp_field');
+      // Set FacetSet limit + sort.
+      $facet_limit = is_array($params) && array_key_exists('facet.limit', $params) ? $params['facet.limit'] : -1;
+      $facet_sort = is_array($params) && array_key_exists('facet.sort', $params) ? $params['facet.sort'] : 'index';
+      $facet_set->setLimit($facet_limit);
+      $facet_set->setSort($facet_sort);
+
+      // Create FacetSet fields.
+      if (is_array($params) && array_key_exists('facet.field', $params) && is_array($params['facet.field'])) {
+        foreach ($params['facet.field'] as $facet_field) {
+          $facet_set->createFacetField($facet_field)->setField($facet_field);
+        }
+      }
+
+      // Create Filter Queries.
+      if (is_array($params) && array_key_exists('fq', $params)) {
+        // When there is only 1 filter query, make it an array.
+        if ( !is_array($params['fq'])) {
+          $fq = $params['fq'];
+          $params['fq'] = [$fq];
+        }
+        // Write filter queries.
+        foreach ($params['fq'] as $fq) {
+          $fq = urldecode($fq);
+          $parts = explode(':', $fq);
+          $query->createFilterQuery($parts[0] . '=' . $parts[1])->setQuery($fq);
+        }
+      }
 
       // Fetch results.
       $query_response = $connector->execute($query);
