@@ -51,6 +51,16 @@ class SolrProxyController extends ControllerBase {
     return $arr;
   }
 
+  /**
+   * Uses the selected index server's backend connector to execute
+   * a select query on the index based on request qs params passed from the app.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *
+   * @return \Drupal\Core\Cache\CacheableJsonResponse
+   *  Structure mirrors the solr api response object with the addition of the
+   *   '#cache' key.
+   */
   public function getResultsJson(Request $request) {
     $data = [];
     // Get index id from search app config.
@@ -148,7 +158,7 @@ class SolrProxyController extends ControllerBase {
 
     // Add Cache settings for Max-age and URL context.
     $data['#cache'] = [
-      'max-age' => 0, // @todo change this
+      'max-age' => 0, // @todo change this when ready to try caching response
       'contexts' => [
         'url',
         'url.path',
