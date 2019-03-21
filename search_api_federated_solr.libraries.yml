@@ -1,14 +1,19 @@
 search:
-  version: 1.x
+  version: 2.x
   css:
     theme:
-      https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.0/css/main.ec684809.css:
-        type: external
+      css/main.ec684809.css:
         minified: true
+#      https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.0/css/main.ec684809.css:
+#        type: external
+#        minified: true
   js:
-    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.0/js/main.6a547bbe.js:
-      preprocess: false
+    js/main.1399e3cb.js:
+      prepocess: false
       minified: true
+#    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.0/js/main.6a547bbe.js:
+#      preprocess: false
+#      minified: true
 
 search_form_autocomplete:
   css:
