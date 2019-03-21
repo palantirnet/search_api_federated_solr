@@ -350,6 +350,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       ];
       $proxy_url_object = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
       $proxy_url = $proxy_url_object->toString();
+      $proxy_url .= '?q=[val]';
       $autocomplete['proxyUrl'] = $proxy_url;
 
       // Determine the url to be used for autocomplete queries based on proxy flag.
