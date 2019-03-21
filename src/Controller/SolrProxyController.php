@@ -168,7 +168,7 @@ class SolrProxyController extends ControllerBase {
     // Add Cache settings for Max-age and URL context.
     $data['#cache'] = [
       'contexts' => [
-        'url',
+        'url', // vary by the entire url, including path + query args
       ],
     ];
 
