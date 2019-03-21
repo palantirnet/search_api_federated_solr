@@ -134,6 +134,9 @@ class SearchController extends ControllerBase {
       if ($autocomplete_url = $config->get('autocomplete.url')) {
         $federated_search_app_config['autocomplete']['url'] = $autocomplete_url;
       }
+      if ($autocomplete_username = $config->get('autocomplete.username') && $autocomplete_password = $config->get('autocomplete.password')) {
+        $federated_search_app_config['autocomplete']['userpass'] = base64_encode($autocomplete_username . ':' . $autocomplete_password);
+      }
       // OPTIONAL: defaults to false, whether or not to append wildcard to query term
       if ($autocomplete_append_wildcard = $config->get('autocomplete.appendWildcard')) {
         $federated_search_app_config['autocomplete']['appendWildcard'] = $autocomplete_append_wildcard;

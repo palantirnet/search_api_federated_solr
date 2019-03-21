@@ -458,6 +458,54 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
+    $form['autocomplete']['direct']['basic_auth'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Search App Autocomplete Endpoint Basic Authentication'),
+      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication (highly recommended), enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-direct-query-enabler]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['direct']['basic_auth']['autocomplete_use_search_app_creds'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use credentials provided for Search Index Basic Authentication in Search Results Page > Set Up above'),
+      '#default_value' => $config->get('autocomplete.use_search_app_creds'),
+      '#attributes' => [
+        'data-autocomplete-use-search-app-creds' => TRUE,
+      ],
+    ];
+
+    $form['autocomplete']['direct']['basic_auth']['autocomplete_username'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Username'),
+      '#default_value' => $config->get('autocomplete.username'),
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-use-search-app-creds]' => [
+            'checked' => FALSE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['direct']['basic_auth']['autocomplete_password'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Password'),
+      '#default_value' => $config->get('autocomplete.password'),
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-use-search-app-creds]' => [
+            'checked' => FALSE,
+          ],
+        ],
+      ],
+    ];
+
     $form['autocomplete']['autocomplete_suggestion_rows'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of results'),
@@ -624,8 +672,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $config->set('index.server_url', $server_url);
 
     // Set the Basic Auth username and password.
-    $config->set('index.username', $form_state->getValue('username'));
-    $config->set('index.password', $form_state->getValue('password'));
+    $username = $form_state->getValue('username');
+    $password = $form_state->getValue('password');
+    $config->set('index.username', $username);
+    $config->set('index.password', $password);
 
     // Set the no results text.
     $config->set('content.no_results', $form_state->getValue('no_results_text'));
@@ -656,12 +706,24 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $proxy_is_disabled = $form_state->getValue('disable_query_proxy');
       $autocomplete_url = $proxy_is_disabled ? $autocomplete_direct_url : $proxy_url;
 
+      // Default to the form values
+      $autocomplete_username = $form_state->getValue('autocomplete_username');
+      $autocomplete_password = $form_state->getValue('autocomplete_password');
+      $use_search_app_creds = $form_state->getValue('autocomplete_use_search_app_creds');
+      // Add basic auth credentials
+      if ($use_search_app_creds) {
+        $autocomplete_username = $username;
+        $autocomplete_password = $password;
+      }
+
       // Set the actual autocomplete config options.
       $config->set('autocomplete.proxy.isDisabled', $proxy_is_disabled);
       $config->set('autocomplete.proxy.url', $proxy_url);
       $config->set('autocomplete.direct.url', $autocomplete_direct_url);
       $config->set('autocomplete.url', $autocomplete_url);
       $config->set('autocomplete.appendWildcard', $form_state->getValue('autocomplete_is_append_wildcard'));
+      $config->set('autocomplete.username', $autocomplete_username);
+      $config->set('autocomplete.password', $autocomplete_password);
       $config->set('autocomplete.suggestionRows', $form_state->getValue('autocomplete_suggestion_rows'));
       $config->set('autocomplete.numChars', $form_state->getValue('autocomplete_num_chars'));
       if ($autocomplete_mode) {
