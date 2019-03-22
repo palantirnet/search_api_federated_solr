@@ -8,7 +8,7 @@ search:
 #        type: external
 #        minified: true
   js:
-    js/main.1399e3cb.js:
+    js/main.5bd4d516.js:
       prepocess: false
       minified: true
 #    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.0/js/main.6a547bbe.js:
