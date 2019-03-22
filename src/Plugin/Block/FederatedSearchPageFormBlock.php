@@ -108,7 +108,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#title' => '<b>' . $this->t('Append a wildcard \'*\' to support partial text search') . '</b>',
       '#default_value' => isset($config['autocomplete']['appendWildcard']) ? $config['autocomplete']['appendWildcard'] : 0,
       '#description' => $this
-        ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
+        ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car*").  This option is only recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
       '#states' => [
         'visible' => [
           ':input[data-autocomplete-enable]' => [
