@@ -113,19 +113,23 @@
             if (query.length > options.numChars) {
               // Append wildcard to the query if configured to do so.
               if (options.appendWildcard) {
-                // One method of supporting search-as-you-type is to append a wildcard '*'
-                //   to match zero or more additional characters at the end of the users search term.
-                // @see: https://lucene.apache.org/solr/guide/6_6/the-standard-query-parser.html#TheStandardQueryParser-WildcardSearches
-                // @see: https://opensourceconnections.com/blog/2013/06/07/search-as-you-type-with-solr/
-                // Split into word chunks.
-                const words = trimmed.split(" ");
-                // If there are multiple chunks, join them with "+", repeat the last word + append "*".
-                if (words.length > 1) {
-                  query = words.join("+") + words.pop() + '*';
+                if (options.proxyIsDisabled) {
+                  // One method of supporting search-as-you-type is to append a wildcard '*'
+                  //   to match zero or more additional characters at the end of the users search term.
+                  // @see: https://lucene.apache.org/solr/guide/6_6/the-standard-query-parser.html#TheStandardQueryParser-WildcardSearches
+                  // @see: https://opensourceconnections.com/blog/2013/06/07/search-as-you-type-with-solr/
+                  // Split into word chunks.
+                  const words = trimmed.split(" ");
+                  // If there are multiple chunks, join them with "+", repeat the last word + append "*".
+                  if (words.length > 1) {
+                    query = words.join("+") + words.pop() + '*';
+                  } else {
+                    // If there is only 1 word, repeat it an append "*".
+                    query = words + '+' + words + '*';
+                  }
                 }
                 else {
-                  // If there is only 1 word, repeat it an append "*".
-                  query = words + '+' + words + '*';
+                  query = trimmed + '*';
                 }
               }
 
