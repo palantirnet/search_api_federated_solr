@@ -96,8 +96,9 @@ class SolrProxyController extends ControllerBase {
 
       // Create the select query.
       // Note: this proxy will only execute select queries.
+      // @see: https://solarium.readthedocs.io/en/stable/queries/select-query/building-a-select-query/building-a-select-query/
       $query = $connector->getSelectQuery();
-      // $debug = $query->getDebug(); // uncomment to enable $query_response->getDebug();
+      $debug = $query->getDebug(); // adds debug data to response
 
       // Set main query param.
       $q = is_array($params) && array_key_exists('q', $params) ? $params['q'] : '*';
@@ -153,6 +154,8 @@ class SolrProxyController extends ControllerBase {
         foreach ($params['fq'] as $fq) {
           $fq = urldecode($fq);
           $parts = explode(':', $fq);
+          // Sets a unique key for filter queries <facet.field>=<value> (required),
+          // then sets query value <facet.field>:<value>
           $query->createFilterQuery($parts[0] . '=' . $parts[1])->setQuery($fq);
         }
       }
