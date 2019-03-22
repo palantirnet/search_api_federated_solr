@@ -127,9 +127,8 @@ class SearchController extends ControllerBase {
     $federated_search_app_config['autocomplete'] = FALSE;
     if ($autocomplete_is_enabled = $config->get('autocomplete.isEnabled')) {
       // REQUIRED: Autocomplete proxy flag.
-      if ($autocomplete_proxy_is_disabled = $config->get('autocomplete.proxy.isDisabled')) {
-        $federated_search_app_config['autocomplete']['proxyIsDisabled'] = $proxy_is_disabled;
-      }
+      $federated_search_app_config['autocomplete']['proxyIsDisabled'] = $config->get('autocomplete.proxy.isDisabled') || 0;
+
       // REQUIRED: Autocomplete endpoint, defaults to main search url
       if ($autocomplete_url = $config->get('autocomplete.url')) {
         $federated_search_app_config['autocomplete']['url'] = $autocomplete_url;
