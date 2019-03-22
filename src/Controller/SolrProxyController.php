@@ -101,7 +101,7 @@ class SolrProxyController extends ControllerBase {
       $debug = $query->getDebug(); // adds debug data to response
 
       // Set main query param.
-      $q = is_array($params) && array_key_exists('q', $params) ? $params['q'] : '*';
+      $q = is_array($params) && array_key_exists('q', $params) ? urldecode($params['q']) : '*';
       $query->setQuery($q);
 
       // Set query conditions.
