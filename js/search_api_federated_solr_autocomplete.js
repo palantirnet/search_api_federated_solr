@@ -113,6 +113,7 @@
             if (query.length > options.numChars) {
               // Append wildcard to the query if configured to do so.
               if (options.appendWildcard) {
+                // Note: syntax for wildcard query depends on the query endpoint
                 if (options.proxyIsDisabled) {
                   // One method of supporting search-as-you-type is to append a wildcard '*'
                   //   to match zero or more additional characters at the end of the users search term.
