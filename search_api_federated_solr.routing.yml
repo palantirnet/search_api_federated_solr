@@ -12,7 +12,7 @@ search_api_federated_solr.solr_proxy:
   defaults:
     _controller: '\Drupal\search_api_federated_solr\Controller\SolrProxyController::getResultsJson'
   requirements:
-    _permission: 'access content'
+    _permission: 'use federated search'
 
 route_callbacks:
   - '\Drupal\search_api_federated_solr\Routing\SearchApiFederatedSolrRoutes::routes'
