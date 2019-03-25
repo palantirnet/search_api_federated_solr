@@ -5,6 +5,8 @@
  * Contains install and update hooks for the Federated Solr Search API Module.
  */
 
+use Drupal\Core\Url;
+
 // Set default values for autocomplete-related config.
 function search_api_federated_solr_update_8001(&$sandbox) {
   $config_factory = \Drupal::configFactory();
@@ -33,11 +35,10 @@ function search_api_federated_solr_update_8001(&$sandbox) {
   $config->save(TRUE);
 }
 
-// Configure the search + autocomplete proxy:
-// Search proxy enabled by default.
-// Autocomplete proxy disabled by default, to respect potential
-//  external endpoints that might be set.
-function search_api_federated_solr_update_8002(&$sandbox) {
+/**
+ * Configures the search proxy (enabled) and app + block autocomplete proxies (disabled).
+ */
+function search_api_federated_solr_update_8201(&$sandbox) {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('search_api_federated_solr.search_app.settings');
 
