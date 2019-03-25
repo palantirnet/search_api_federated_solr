@@ -141,7 +141,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => '<b>' . $this->t('Do not use the proxy for the search query') . '</b>',
       '#default_value' => $config->get('proxy.isDisabled'),
       '#description' => $this
-        ->t('Check this box to configure the search app to query the Solr server directly, instead of using the Drupal route defined by this module as a proxy to the Solr backend of the chosen Search API index.  When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app.<br /><br />Note: Acquia Search customers must leave this box unchecked.'),
+        ->t('Check this box to configure the search app to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the chosen Search API index using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must leave this box unchecked.'),
       '#attributes' => [
         'data-direct-query-enabler' => TRUE,
       ],
@@ -423,7 +423,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => '<b>' . $this->t('Do not use the proxy for the search app autocomplete query') . '</b>',
       '#default_value' => $config->get('autocomplete.proxy.isDisabled'),
       '#description' => $this
-        ->t('Check this box to configure the search app to query the Solr server directly for autocomplete, instead of using the Drupal route defined by this module as a proxy to the Solr backend of the Search API index chosen above in Search Results Page > Set Up.  When checked, it is highly recommended that you also procure and configure read-only basic auth credentials and use them here.<br /><br />Note: Acquia Search customers must leave this box unchecked.'),
+        ->t('Check this box to configure the search app to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the Search API index chosen above in Search Results Page > Set Up using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must leave this box unchecked.'),
       '#attributes' => [
         'data-autocomplete-direct-query-enabler' => TRUE,
       ],
