@@ -98,7 +98,9 @@ class SolrProxyController extends ControllerBase {
       // Note: this proxy will only execute select queries.
       // @see: https://solarium.readthedocs.io/en/stable/queries/select-query/building-a-select-query/building-a-select-query/
       $query = $connector->getSelectQuery();
-      $debug = $query->getDebug(); // adds debug data to response
+
+      // Uncomment to add debug data to response object.
+      //  $debug = $query->getDebug();
 
       // Set main query param.
       $q = is_array($params) && array_key_exists('q', $params) ? urldecode($params['q']) : '*';
