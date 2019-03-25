@@ -87,7 +87,8 @@
           // Determine param values for any set default filters/facets.
           var defaultParams = '';
           $('input[type="hidden"]', $form).each(function(index, input) {
-            defaultParams += '&' + $(input).attr('name') + '=' + encodeURI($(input).val());
+            var fq = $(input).attr('name') + ':("' + $(input).val() + '")';
+            defaultParams += '&fq=' + encodeURI(fq);
           });
           var urlWithDefaultParams = options.url + defaultParams;
 
