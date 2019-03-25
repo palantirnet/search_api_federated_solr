@@ -51,10 +51,22 @@
           var options = Object.assign({}, defaultSettings, config);
 
           // Set scaffolding markup for suggestions container
-          var suggestionsContainerScaffoldingMarkup = '<div class="search-autocomplete-container visually-hidden"><div class="search-autocomplete-container__title">' + options[options.mode].titleText  + '<button class="search-autocomplete-container__close-button">x</button></div><div id="search-autocomplete"><div id="res" role="listbox" tabindex="-1"></div></div>';
+          var suggestionsContainerScaffoldingMarkup = `
+            <div class="js-search-autocomplete-container search-autocomplete-container visually-hidden">
+              <div class="search-autocomplete-container__title">
+                 ${options[options.mode].titleText}
+                 <button class="js-search-autocomplete-container__close-button search-autocomplete-container__close-button">x</button>
+               </div>
+               <div id="js-search-autocomplete search-autocomplete">
+                <div id="res" role="listbox" tabindex="-1"></div>
+            </div>`;
 
           if (!options[options.mode].hideDirectionsText) {
-            suggestionsContainerScaffoldingMarkup += '<div class="search-autocomplete-container__directions"><span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span><span class="search-autocomplete-container__directions-item">Press ↑ and ↓ to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span></div>';
+            suggestionsContainerScaffoldingMarkup += `
+            <div class="search-autocomplete-container__directions">
+              <span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span>
+              <span class="search-autocomplete-container__directions-item">Press ↑ and ↓ to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span>
+            </div>`;
           }
 
           suggestionsContainerScaffoldingMarkup +=  '</div>';
@@ -70,8 +82,8 @@
           $(suggestionsContainerScaffoldingMarkup).insertAfter($input);
           // Cache inserted selectors.
           var $results = $('#res');
-          var $autocompleteContainer = $('.search-autocomplete-container');
-          var $closeButton = $('.search-autocomplete-container__close-button');
+          var $autocompleteContainer = $('.js-search-autocomplete-container');
+          var $closeButton = $('.js-search-autocomplete-container__close-button');
 
           // Initiate helper vars.
           var current;
@@ -175,7 +187,7 @@
                 .done(function( results ) {
                   if (results.response.docs.length >= 1) {
                     // Remove all suggestions
-                    $('.autocomplete-suggestion').remove();
+                    $('.js-autocomplete-suggestion').remove();
                     $autocompleteContainer.removeClass('visually-hidden');
                     $("#search-autocomplete").append('');
                     $input.attr("aria-expanded", "true");
@@ -187,34 +199,47 @@
                       event.stopPropagation();
                       $input.removeAttr("aria-activedescendant");
                       // Remove all suggestions
-                      $('.autocomplete-suggestion').remove();
+                      $('.js-autocomplete-suggestion').remove();
                       $autocompleteContainer.addClass('visually-hidden');
                       $input.attr("aria-expanded", "false");
                       $input.focus();
+
+                      // Emit a custom events for removing.
+                      $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{
+                      }]);
                     });
 
                     // Get first [suggestionRows] results
                     var limitedResults = results.response.docs.slice(0, suggestionRows);
                     limitedResults.forEach(function(item) {
-                        // Highlight query chars in returned title
-                        var pattern = new RegExp(trimmed, "gi");
-                        var highlighted = item.ss_federated_title.replace(pattern, function(string) {
-                          return "<strong>" + string + "</strong>"
-                        });
+                      // Highlight query chars in returned title
+                      var pattern = new RegExp(trimmed, "gi");
+                      var highlighted = item.ss_federated_title.replace(pattern, function(string) {
+                        return "<strong>" + string + "</strong>"
+                      });
 
-                        //Add results to the list
-                        $results.append("<div role='option' tabindex='-1' class='autocomplete-suggestion' id='suggestion-" + counter + "'><a class='autocomplete-suggestion__link' href='" + item.ss_url + "'>" + highlighted + "</a><span class='visually-hidden'>(" + counter + " of " + limitedResults.length + ")</span></div>");
-                        counter = counter + 1;
+                      //Add results to the list
+                      var $suggestionTemplate = `
+                      <div role='option' tabindex='-1' class='js-autocomplete-suggestion autocomplete-suggestion' id='suggestion-${counter}'>
+                        <a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='${item.ss_url}'>${highlighted}</a>
+                        <span class='visually-hidden'>(${counter} of ${limitedResults.length})</span>
+                      </div>`;
+                      $results.append($suggestionTemplate);
+                      counter = counter + 1;
                     });
 
                     // On link click, emit an event whose data can be used to write to analytics, etc.
-                    $('.autocomplete-suggestion__link').on('click', function (e) {
+                    $('.js-autocomplete-suggestion__link').on('click', function (e) {
                       $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection", [{
                         referrer: $(location).attr('href'),
                         target: $(this).attr('href'),
                         term: $input.val()
                       }]);
                     });
+
+                    // Emit a custom events for results.
+                    $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsLoaded", [{
+                    }]);
 
                     // Announce the number of suggestions.
                     var number = $results.children('[role="option"]').length;
@@ -223,22 +248,30 @@
                     }
                   } else {
                     // No results, remove suggestions and hide container
-                    $('.autocomplete-suggestion').remove();
+                    $('.js-autocomplete-suggestion').remove();
                     $autocompleteContainer.addClass('visually-hidden');
                     $input.attr("aria-expanded","false");
+
+                    // Emit a custom events for removing.
+                    $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{
+                    }]);
                   }
                 });
             }
             else {
               // Remove suggestions and hide container
-              $('.autocomplete-suggestion').remove();
+              $('.js-autocomplete-suggestion').remove();
               $autocompleteContainer.addClass('visually-hidden');
               $input.attr("aria-expanded","false");
+
+              // Emit a custom events for removing.
+              $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{
+              }]);
             }
           }
 
           function doKeypress(keys, event) {
-            var $suggestions = $('.autocomplete-suggestion');
+            var $suggestions = $('.js-autocomplete-suggestion');
             var highlighted = false;
             highlighted = $results.children('div').hasClass('highlight');
 
