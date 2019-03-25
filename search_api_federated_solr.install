@@ -77,7 +77,7 @@ function search_api_federated_solr_update_8002(&$sandbox) {
   // Configure block autocomplete proxy.
   if ($block = \Drupal\block\Entity\Block::load('federatedsearchpageformblock')) {
     $block_config = $config_factory->getEditable('block.block.federatedsearchpageformblock');
-    $block_config->set('settings.autocomplete.proxyIsDisabled', 0);
+    $block_config->set('settings.autocomplete.proxyIsDisabled', 1);
     // Add the string to be replaced with the query value to proxy url.
     $proxy_url .= '?q=[val]';
     $block_config->set('settings.autocomplete.proxyUrl', $proxy_url);
