@@ -136,6 +136,15 @@ search_api_federated_solr.search_app.settings:
             url:
               type: string
               label: 'URL of the autocomplete direct endpoint (defaults to selected index solr server select handler).'
+        username:
+          type: string
+          label: 'Username to be used for autocomplete direct requests basic auth.'
+        password:
+          type: string
+          label: 'Password to be used for autocomplete direct request basic auth.'
+        use_search_app_creds:
+          type: integer
+          label: 'Flag to indicate whether or not we are using basic auth credentials added to search app.'
     proxy:
       type: mapping
       mapping:

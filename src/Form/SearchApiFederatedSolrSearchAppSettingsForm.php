@@ -722,6 +722,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $config->set('autocomplete.direct.url', $autocomplete_direct_url);
       $config->set('autocomplete.url', $autocomplete_url);
       $config->set('autocomplete.appendWildcard', $form_state->getValue('autocomplete_is_append_wildcard'));
+      $config->set('autocomplete.use_search_app_creds', $use_search_app_creds);
       $config->set('autocomplete.username', $autocomplete_username);
       $config->set('autocomplete.password', $autocomplete_password);
       $config->set('autocomplete.suggestionRows', $form_state->getValue('autocomplete_suggestion_rows'));
