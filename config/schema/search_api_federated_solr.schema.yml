@@ -76,6 +76,9 @@ search_api_federated_solr.search_app.settings:
         search_prompt:
           type: string
           label: 'This text is shown when no query term has been entered.'
+        show_empty_search_results:
+          type: integer
+          label: 'Flag to render search page as a listing page with all results rendering when no search term is entered.'
     results:
       type: mapping
       mapping:
@@ -118,3 +121,27 @@ search_api_federated_solr.search_app.settings:
             hideDirectionsText:
               type: integer
               label: 'When true, the keyboard directions text will be hidden from autocomplete dropdown.'
+        proxy:
+          type: mapping
+          mapping:
+            isDisabled:
+              type: integer
+              label: 'Flag to disable use of Drupal as a Solr proxy for autocomplete query requests.'
+            url:
+              type: string
+              label: 'URL of the Drupal Solr proxy.'
+        direct:
+          type: mapping
+          mapping:
+            url:
+              type: string
+              label: 'URL of the autocomplete direct endpoint (defaults to selected index solr server select handler).'
+    proxy:
+      type: mapping
+      mapping:
+        isDisabled:
+          type: integer
+          label: 'Flag to disable use of Drupal as a Solr proxy for search query requests.'
+        url:
+          type: string
+          label: 'URL of the Drupal Solr proxy.'
