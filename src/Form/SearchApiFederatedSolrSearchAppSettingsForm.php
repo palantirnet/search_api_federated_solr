@@ -9,6 +9,7 @@ namespace Drupal\search_api_federated_solr\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Class SearchApiFederatedSolrSearchAppSettingsForm.
@@ -94,8 +95,9 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
      *   - search results page path
      *   - search results page title
      *   - autocomplete enable triggers display of autocopmlete config fieldset
-     *   - serach index to use as datasource,
-     *   - basic auth credentials for index
+     *   - search index to use as datasource,
+     *   - disable the query proxy
+     *   - basic auth credentials for index (if proxy disabled)
      */
 
     $form['setup'] = [
@@ -134,10 +136,28 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
+    $form['setup']['disable_query_proxy'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Do not use the proxy for the search query') . '</b>',
+      '#default_value' => $config->get('proxy.isDisabled'),
+      '#description' => $this
+        ->t('Check this box to configure the search app to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the chosen Search API index using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must leave this box unchecked.'),
+      '#attributes' => [
+        'data-direct-query-enabler' => TRUE,
+      ],
+    ];
+
     $form['setup']['search_index_basic_auth'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Search Index Basic Authentication'),
-      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication (highly recommended), enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+      '#states' => [
+        'visible' => [
+          ':input[data-direct-query-enabler]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['setup']['search_index_basic_auth']['username'] = [
@@ -388,7 +408,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => '<b>' . $this->t('Append a wildcard \'*\' to support partial text search') . '</b>',
       '#default_value' => $config->get('autocomplete.appendWildcard'),
       '#description' => $this
-        ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
+        ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car*").  This option is only recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
       '#states' => [
         'visible' => [
           ':input[data-autocomplete-enabler]' => [
@@ -398,18 +418,89 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
-    $form['autocomplete']['autocomplete_url'] = [
+    $form['autocomplete']['autocomplete_disable_query_proxy'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Do not use the proxy for the search app autocomplete query') . '</b>',
+      '#default_value' => $config->get('autocomplete.proxy.isDisabled'),
+      '#description' => $this
+        ->t('Check this box to configure the search app to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the Search API index chosen above in Search Results Page > Set Up using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must leave this box unchecked.'),
+      '#attributes' => [
+        'data-autocomplete-direct-query-enabler' => TRUE,
+      ],
+    ];
+
+    $form['autocomplete']['direct'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Autocomplete Direct Query Settings'),
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-direct-query-enabler]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['direct']['autocomplete_direct_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Solr Endpoint URL'),
-      '#default_value' => $config->get('autocomplete.url'),
+      '#default_value' => $config->get('autocomplete.direct.url'),
       '#maxlength' => 2048,
       '#size' => 50,
       '#description' => $this
-        ->t('The URL where requests for autocomplete queries should be made. (Default: the url of the  <code>select</code> <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> on the server of the selected Search API index.)<ul><li>Supports an absolute url pattern to any other Request Handler for an index on your solr server</li><li>The value of the main search field will be appended to the url as the main query param (i.e. <code>?q=[value of the search field, wildcard appended if enabled]</code>)</li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>The format param <code>&wt=json</code> will automatically be appended</li><li>Include any other necessary url params corresponding to <a href="https://lucene.apache.org/solr/guide/6_6/common-query-parameters.html" target="_blank">query parameters</a>.</li>'),
+        ->t('The URL where requests for autocomplete queries should be made. (Default: the url of the  <code>select</code> <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> on the server of the selected Search API index.)<ul><li>Supports an absolute url pattern to any other Request Handler for an index on your solr server</li><li>The value of the main search field will be appended to the url as the main query param (i.e. <code>?q=[value of the search field, wildcard appended if enabled]</code>)</li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>The format param <code>&wt=json</code> will automatically be appended</li><li>Include any other necessary url params corresponding to <a href="https://lucene.apache.org/solr/guide/6_6/common-query-parameters.html" target="_blank">query parameters</a>.</li></ul>'),
       '#states' => [
         'visible' => [
-          ':input[data-autocomplete-enabler]' => [
+          ':input[data-autocomplete-direct-query-enabler]' => [
             'checked' => TRUE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['direct']['basic_auth'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Search App Autocomplete Endpoint Basic Authentication'),
+      '#description' => $this->t('If your Solr server is protected by basic HTTP authentication (highly recommended), enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-direct-query-enabler]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['direct']['basic_auth']['autocomplete_use_search_app_creds'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use credentials provided for Search Index Basic Authentication in Search Results Page > Set Up above'),
+      '#default_value' => $config->get('autocomplete.use_search_app_creds'),
+      '#attributes' => [
+        'data-autocomplete-use-search-app-creds' => TRUE,
+      ],
+    ];
+
+    $form['autocomplete']['direct']['basic_auth']['autocomplete_username'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Username'),
+      '#default_value' => $config->get('autocomplete.username'),
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-use-search-app-creds]' => [
+            'checked' => FALSE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['direct']['basic_auth']['autocomplete_password'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Password'),
+      '#default_value' => $config->get('autocomplete.password'),
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-use-search-app-creds]' => [
+            'checked' => FALSE,
           ],
         ],
       ],
@@ -545,6 +636,18 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $show_empty_search_results = $form_state->getValue('show_empty_search_results');
     $config->set('content.show_empty_search_results', $show_empty_search_results);
 
+    // Set the proxy url from the proxy route
+    $proxy_url_options = [
+      'absolute' => TRUE,
+    ];
+    $proxy_url_object = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
+    $proxy_url = $proxy_url_object->toString();
+    $config->set('proxy.url', $proxy_url);
+
+    // Determine whether or not we should be using the proxy.
+    $proxy_is_disabled = $form_state->getValue('disable_query_proxy');
+    $config->set('proxy.isDisabled', $proxy_is_disabled);
+
     // Get the id of the chosen index.
     $search_index = $form_state->getValue('search_index');
     // Save the selected index option in search app config (for form state).
@@ -569,8 +672,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $config->set('index.server_url', $server_url);
 
     // Set the Basic Auth username and password.
-    $config->set('index.username', $form_state->getValue('username'));
-    $config->set('index.password', $form_state->getValue('password'));
+    $username = $form_state->getValue('username');
+    $password = $form_state->getValue('password');
+    $config->set('index.username', $username);
+    $config->set('index.password', $password);
 
     // Set the no results text.
     $config->set('content.no_results', $form_state->getValue('no_results_text'));
@@ -591,15 +696,35 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // If enabled, set the autocomplete options.
     if ($autocomplete_is_enabled) {
       // Cache form values that we'll use more than once.
-      $autocomplete_url_value = $form_state->getValue('autocomplete_url');
+      $autocomplete_direct_url_value = $form_state->getValue('autocomplete_direct_url');
       $autocomplete_mode = $form_state->getValue('autocomplete_mode');
 
-      // Set the default autocomplete endpoint url to the default search url if none was passed in.
-      $autocomplete_url = $autocomplete_url_value ? $autocomplete_url_value : $server_url;
+      // Set the default autocomplete direct endpoint url to the default search url if none was passed in.
+      $autocomplete_direct_url = $autocomplete_direct_url_value ? $autocomplete_direct_url_value : $server_url;
+
+      // Determine the url to be used for autocomplete queries based on proxy flag.
+      $proxy_is_disabled = $form_state->getValue('disable_query_proxy');
+      $autocomplete_url = $proxy_is_disabled ? $autocomplete_direct_url : $proxy_url;
+
+      // Default to the form values
+      $autocomplete_username = $form_state->getValue('autocomplete_username');
+      $autocomplete_password = $form_state->getValue('autocomplete_password');
+      $use_search_app_creds = $form_state->getValue('autocomplete_use_search_app_creds');
+      // Add basic auth credentials
+      if ($use_search_app_creds) {
+        $autocomplete_username = $username;
+        $autocomplete_password = $password;
+      }
 
       // Set the actual autocomplete config options.
+      $config->set('autocomplete.proxy.isDisabled', $proxy_is_disabled);
+      $config->set('autocomplete.proxy.url', $proxy_url);
+      $config->set('autocomplete.direct.url', $autocomplete_direct_url);
       $config->set('autocomplete.url', $autocomplete_url);
       $config->set('autocomplete.appendWildcard', $form_state->getValue('autocomplete_is_append_wildcard'));
+      $config->set('autocomplete.use_search_app_creds', $use_search_app_creds);
+      $config->set('autocomplete.username', $autocomplete_username);
+      $config->set('autocomplete.password', $autocomplete_password);
       $config->set('autocomplete.suggestionRows', $form_state->getValue('autocomplete_suggestion_rows'));
       $config->set('autocomplete.numChars', $form_state->getValue('autocomplete_num_chars'));
       if ($autocomplete_mode) {
@@ -627,6 +752,9 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
    *   An associative array containing the structure of the form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
+   *
+   * @return array $elem
+   *   Hidden form element used to flag the state of the site name in the index.
    */
   public function getSiteName(array &$form, FormStateInterface $form_state) {
     // Get the id of the chosen index.

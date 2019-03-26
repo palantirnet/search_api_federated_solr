@@ -5,6 +5,8 @@ namespace Drupal\search_api_federated_solr\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 /**
  * Provides a "Federated Search Page Form" block.
@@ -54,6 +56,15 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
 
+    // Create a link to the Search App Settings Page to be reused.
+    $options = [
+      'attributes' => [
+        'target' => '_blank'
+      ],
+    ];
+    $search_app_settings_page_url = Url::fromRoute('search_api_federated_solr.search_app.settings', [], $options);
+    $search_app_settings_page_link = Link::fromTextAndUrl('Federated Search App settings page', $search_app_settings_page_url)->toString();
+
     $config = $this->getConfiguration();
 
     $index_options = [];
@@ -77,7 +88,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     $form['autocomplete'] = [
       '#type' => 'details',
       '#title' => $this->t('Federated Search Page Form Block > Search Form > Autocomplete'),
-      '#description' => $this->t('These options apply to the autocomplete functionality on the search form which appears on pages that render the Federated Search Page Form Block.  Configure the search results page search form functionality on the Federated Search App settings page.'),
+      '#description' => $this->t('These options apply to the autocomplete functionality on the search form which appears on pages that render the Federated Search Page Form Block.  Configure the search results page search form functionality on the ' . $search_app_settings_page_link  . '.'),
       '#open' => TRUE,
     ];
 
@@ -97,7 +108,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#title' => '<b>' . $this->t('Append a wildcard \'*\' to support partial text search') . '</b>',
       '#default_value' => isset($config['autocomplete']['appendWildcard']) ? $config['autocomplete']['appendWildcard'] : 0,
       '#description' => $this
-        ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
+        ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car*").  This option is only recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
       '#states' => [
         'visible' => [
           ':input[data-autocomplete-enable]' => [
@@ -107,10 +118,40 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       ],
     ];
 
-    $form['autocomplete']['autocomplete_url'] = [
+    $form['autocomplete']['disable_query_proxy'] = [
+      '#type' => 'checkbox',
+      '#title' => '<b>' . $this->t('Do not use the solr proxy for the autocomplete search query') . '</b>',
+      '#default_value' => isset($config['autocomplete']['proxyIsDisabled']) ? $config['autocomplete']['proxyIsDisabled'] : 0,
+      '#description' => $this
+        ->t('Check this box to configure the block search form to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the Search API index chosen on the ' . $search_app_settings_page_link  . ' in Search Results Page > Set Up using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must either leave this box unchecked or check the box and enter the URL for a view REST export endpoint.  Using a url pointing directly to your solr backend will not work.'),
+      '#attributes' => [
+        'data-autocomplete-direct' => TRUE,
+      ],
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-enable]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['direct'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Direct Query Settings'),
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-direct]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
+    ];
+
+    $form['autocomplete']['direct']['autocomplete_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Endpoint URL'),
-      '#default_value' => isset($config['autocomplete']['url']) ? $config['autocomplete']['url'] : '',
+      '#default_value' => isset($config['autocomplete']['directUrl']) ? $config['autocomplete']['directUrl'] : '',
       '#maxlength' => 2048,
       '#size' => 50,
       '#description' => $this
@@ -127,36 +168,36 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
 }</code></pre></li><li>Include <code>[val]</code> in the URL to indicate where you would like the form value to be inserted: <code>http://d8.fs-demo.local/search-api-federated-solr-block-form-autocomplete/search-view?title=[val]&_format=json</code></li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>Include any other necessary url params (like <code>&_format=json</code> if you are using a Views Rest Export or <code>&wt=json</code> if you are using a different Request Handler on your Solr index.</li>'),
       '#states' => [
         'visible' => [
-          ':input[data-autocomplete-enable]' => [
+          ':input[data-autocomplete-direct]' => [
             'checked' => TRUE,
           ],
         ],
       ],
     ];
 
-    $form['autocomplete']['basic_auth'] = [
+    $form['autocomplete']['direct']['basic_auth'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Basic Authentication'),
-      '#description' => $this->t('If your endpoint is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+      '#title' => $this->t('Search Form Autocomplete Basic Authentication'),
+      '#description' => $this->t('If your autocomplete endpoint is protected by basic HTTP authentication (highly recommended), enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
       '#states' => [
         'visible' => [
-          ':input[data-autocomplete-enable]' => [
+          ':input[data-autocomplete-direct]' => [
             'checked' => TRUE,
           ],
         ],
       ],
     ];
 
-    $form['autocomplete']['basic_auth']['use_search_app_creds'] = [
+    $form['autocomplete']['direct']['basic_auth']['use_search_app_creds'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Use credentials provided to search app'),
+      '#title' => $this->t('Use credentials provided for Search Index Basic Authentication in Search Results Page > Set Up on ' . $search_app_settings_page_link),
       '#default_value' => isset($config['autocomplete']['use_search_app_creds']) ? $config['autocomplete']['use_search_app_creds'] : 0,
       '#attributes' => [
         'data-autocomplete-use-search-app-creds' => TRUE,
       ],
     ];
 
-    $form['autocomplete']['basic_auth']['username'] = [
+    $form['autocomplete']['direct']['basic_auth']['username'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
       '#default_value' => isset($config['autocomplete']['username']) ? $config['autocomplete']['username'] : '',
@@ -169,7 +210,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       ],
     ];
 
-    $form['autocomplete']['basic_auth']['password'] = [
+    $form['autocomplete']['direct']['basic_auth']['password'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Password'),
       '#default_value' => isset($config['autocomplete']['password']) ? $config['autocomplete']['password'] : '',
@@ -280,7 +321,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     // If enabled, set the autocomplete options.
     if ($autocomplete_is_enabled) {
       // Cache form values that we'll use more than once.
-      $autocomplete_url_value = $values['autocomplete']['autocomplete_url'];
+      $autocomplete_direct_url_value = $values['autocomplete']['direct']['autocomplete_url'];
       $autocomplete_mode = $values['autocomplete']['autocomplete_mode'];
 
       // Set the default autocomplete endpoint url to the default search url if none was passed in.
@@ -300,12 +341,27 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       $server_url .= $server['core'] ? '/' . $server['core'] : '';
       // Append the request handler, main query and format params.
       $server_url .= '/select?q=[val]&wt=json';
-      $autocomplete_url = $autocomplete_url_value ? $autocomplete_url_value : $server_url;
+      $autocomplete_direct_url = $autocomplete_direct_url_value ? $autocomplete_direct_url_value : $server_url;
+      $autocomplete['directUrl'] = $autocomplete_direct_url;
+
+      // Set the proxy url
+      $proxy_url_options = [
+        'absolute' => TRUE,
+      ];
+      $proxy_url_object = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
+      $proxy_url = $proxy_url_object->toString();
+      $proxy_url .= '?q=[val]';
+      $autocomplete['proxyUrl'] = $proxy_url;
+
+      // Determine the url to be used for autocomplete queries based on proxy flag.
+      $proxyIsDisabled = $values['autocomplete']['disable_query_proxy'];
+      $autocomplete['proxyIsDisabled'] = $proxyIsDisabled;
+      $autocomplete_url = $proxyIsDisabled ? $autocomplete_direct_url : $proxy_url;
 
       // Default to the form values
-      $username = $values['autocomplete']['basic_auth']['username'];
-      $password = $values['autocomplete']['basic_auth']['password'];
-      $use_search_app_creds = $values['autocomplete']['basic_auth']['use_search_app_creds'];
+      $username = $values['autocomplete']['direct']['basic_auth']['username'];
+      $password = $values['autocomplete']['direct']['basic_auth']['password'];
+      $use_search_app_creds = $values['autocomplete']['direct']['basic_auth']['use_search_app_creds'];
       // Add basic auth credentials
       if ($use_search_app_creds) {
         $username = $app_config->get('index.username');
