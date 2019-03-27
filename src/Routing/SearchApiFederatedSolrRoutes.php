@@ -69,7 +69,7 @@ class SearchApiFederatedSolrRoutes implements ContainerInjectionInterface {
     $path = $app_config->get('path') ?: '/search-app';
 
     $args = [
-      '_controller' => 'Drupal\search_api_federated_solr\Controller\SearchController::searchPage',
+      '_controller' => 'Drupal\search_api_federated_solr\Controller\SearchController::content',
       '_title' => 'Search',
     ];
 
