@@ -44,56 +44,45 @@ function search_api_federated_solr_update_8002(&$sandbox) {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('search_api_federated_solr.search_app.settings');
 
-  // Rebuild routes, to ensure the proxy route is created.
-  \Drupal::service("router.builder")->rebuild();
-  
-  // Create absolutely url for proxy from the defined route.
-  $proxy_url_options = [
-    'absolute' => TRUE,
-  ];
-  $proxy_url_object = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
-  $proxy_url = $proxy_url_object->toString();
-
-  // Set the proxy url config value.
-  $config->set('proxy.url', $proxy_url);
   // Enable the proxy by default.
   $config->set('proxy.isDisabled', 0);
 
   // Set the autocomplete proxy config.
-  // Add the proxy URL.
-  $config->set('autocomplete.proxy.url', $proxy_url);
   // Disable the autocomplete proxy to respect current endpoint?
-  $config->set('autocomplete.proxy.isDisabled', 1);
-  // Default the autocomplete direct url to the selected index server select handler.
-  $server_url = $config->get('index.server_url');
-  $direct_url = $server_url;
+  $config->set('autocomplete.proxy.isDisabled', 0);
   if ($config->get('autocomplete.isEnabled')) {
-    // Use the current autocomplete url as the direct url.
-    // Respects any potential other endpoint entered.
+    // If autocomplete enabled, respect current url by setting as direct url.
     $direct_url = $config->get('autocomplete.url');
+    $config->set('autocomplete.proxy.isDisabled', 1);
+    $config->set('autocomplete.direct.url', $direct_url);
   }
-  $config->set('autocomplete.direct.url', $direct_url);
+
   // Set autocomplete basic auth config.
   $config->set('autocomplete.username', '');
   $config->set('autocomplete.password', '');
   $config->set('autocomplete.use_search_app_creds', 0);
+
+  // Remove legacy stored urls as they are now computed.
+  $config->delete('autocomplete.url');
+  $config->delete('index.server_url');
 
   $config->save(TRUE);
 
   // Configure block autocomplete proxy.
   if ($block = \Drupal\block\Entity\Block::load('federatedsearchpageformblock')) {
     $block_config = $config_factory->getEditable('block.block.federatedsearchpageformblock');
-    $block_config->set('settings.autocomplete.proxyIsDisabled', 1);
+    $block_config->set('settings.autocomplete.proxyIsDisabled', 0);
     // Add the string to be replaced with the query value to proxy url.
-    $proxy_url .= '?q=[val]';
-    $block_config->set('settings.autocomplete.proxyUrl', $proxy_url);
     // Default direct url to server url + params.
-    $block_direct_url = $server_url . '?q=[val]&wt=json';
     if ($block_config->get('settings.autocomplete.isEnabled')) {
-      // If autocomplete enabled, respect current url.
+      // If autocomplete enabled, respect current url by setting as direct url.
       $block_direct_url = $block_config->get('settings.autocomplete.url');
+      $block_config->set('settings.autocomplete.proxyIsDisabled', 1);
+      $block_config->set('settings.autocomplete.directUrl', $block_direct_url);
     }
-    $block_config->set('settings.autocomplete.directUrl', $block_direct_url);
+
+    // Remove legacy stored autocomplete.url as it is now computed.
+    $block_config->delete('settings.autocomplete.url');
 
     $block_config->save(TRUE);
   }
