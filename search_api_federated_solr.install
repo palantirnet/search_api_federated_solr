@@ -64,7 +64,9 @@ function search_api_federated_solr_update_8002(&$sandbox) {
 
   // Remove legacy stored urls as they are now computed.
   $config->clear('autocomplete.url');
+  $config->clear('autocomplete.proxy.url');
   $config->clear('index.server_url');
+  $config->clear('proxy.url');
 
   $config->save(TRUE);
 
