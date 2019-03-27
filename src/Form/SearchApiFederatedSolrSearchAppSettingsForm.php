@@ -636,40 +636,9 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $show_empty_search_results = $form_state->getValue('show_empty_search_results');
     $config->set('content.show_empty_search_results', $show_empty_search_results);
 
-    // Set the proxy url from the proxy route
-    $proxy_url_options = [
-      'absolute' => TRUE,
-    ];
-    $proxy_url_object = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
-    $proxy_url = $proxy_url_object->toString();
-    $config->set('proxy.url', $proxy_url);
-
     // Determine whether or not we should be using the proxy.
     $proxy_is_disabled = $form_state->getValue('disable_query_proxy');
     $config->set('proxy.isDisabled', $proxy_is_disabled);
-
-    // Get the id of the chosen index.
-    $search_index = $form_state->getValue('search_index');
-    // Save the selected index option in search app config (for form state).
-    $config->set('index.id', $search_index);
-
-    // Get the id of the chosen index's server.
-    $index_config = \Drupal::config('search_api.index.' . $search_index);
-    $index_server = $index_config->get('server');
-
-    // Get the server url.
-    $server_config = \Drupal::config('search_api.server.' . $index_server);
-    $server = $server_config->get('backend_config.connector_config');
-    // Get the required server config field data.
-    $server_url = $server['scheme'] . '://' . $server['host'] . ':' . $server['port'];
-    // Check for the non-required server config field data before appending.
-    $server_url .= $server['path'] ?: '';
-    $server_url .= $server['core'] ? '/' . $server['core'] : '';
-    // Append the request handler.
-    $server_url .= '/select';
-
-    // Set the search app configuration setting for the solr backend url.
-    $config->set('index.server_url', $server_url);
 
     // Set the Basic Auth username and password.
     $username = $form_state->getValue('username');
@@ -696,15 +665,11 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // If enabled, set the autocomplete options.
     if ($autocomplete_is_enabled) {
       // Cache form values that we'll use more than once.
-      $autocomplete_direct_url_value = $form_state->getValue('autocomplete_direct_url');
+      $autocomplete_direct_url = $form_state->getValue('autocomplete_direct_url');
       $autocomplete_mode = $form_state->getValue('autocomplete_mode');
 
-      // Set the default autocomplete direct endpoint url to the default search url if none was passed in.
-      $autocomplete_direct_url = $autocomplete_direct_url_value ? $autocomplete_direct_url_value : $server_url;
-
       // Determine the url to be used for autocomplete queries based on proxy flag.
-      $proxy_is_disabled = $form_state->getValue('disable_query_proxy');
-      $autocomplete_url = $proxy_is_disabled ? $autocomplete_direct_url : $proxy_url;
+      $proxy_is_disabled = $form_state->getValue('autocomplete_disable_query_proxy');
 
       // Default to the form values
       $autocomplete_username = $form_state->getValue('autocomplete_username');
@@ -718,9 +683,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
       // Set the actual autocomplete config options.
       $config->set('autocomplete.proxy.isDisabled', $proxy_is_disabled);
-      $config->set('autocomplete.proxy.url', $proxy_url);
       $config->set('autocomplete.direct.url', $autocomplete_direct_url);
-      $config->set('autocomplete.url', $autocomplete_url);
       $config->set('autocomplete.appendWildcard', $form_state->getValue('autocomplete_is_append_wildcard'));
       $config->set('autocomplete.use_search_app_creds', $use_search_app_creds);
       $config->set('autocomplete.username', $autocomplete_username);
@@ -802,5 +765,4 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       }
     }
   }
-
 }

@@ -3,19 +3,81 @@
 namespace Drupal\search_api_federated_solr\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Url;
 
 /**
  * Provides route responses for the search results page.
  */
 class SearchController extends ControllerBase {
+  /**
+   * Determine the URL for the server of the selected index.
+   * @param $index_id
+   *
+   * @return string
+   */
+  private function get_server_url($index_id) {
+    $index_config = \Drupal::config('search_api.index.' . $index_id);
+    $index_server = $index_config->get('server');
+    // Get the server url.
+    $server_config = \Drupal::config('search_api.server.' . $index_server);
+    $server = $server_config->get('backend_config.connector_config');
+    // Get the required server config field data.
+    $server_url = $server['scheme'] . '://' . $server['host'] . ':' . $server['port'];
+    // Check for the non-required server config field data before appending.
+    $server_url .= $server['path'] ?: '';
+    $server_url .= $server['core'] ? '/' . $server['core'] : '';
+    // Append the request handler, main query and format params.
+    $server_url .= '/select';
+
+    return $server_url;
+  }
 
   /**
-   * Returns a simple page.
+   * Determines url to use for app search + autocomplete queries based on config:
+   *  - is the proxy enabled?
+   *    - yes: compute absolute url to proxy route, append qs params
+   *    - no: was an direct url endpoint passed?
+   *      - yes: use that endpoint
+   *      - no: compute the server url, qs params
+   *
+   * @param integer $proxy_is_disabled
+   *   Flag indicating whether or not the autocomplete proxy is disabled (0 || 1)
+   * @param string $direct_url
+   *   Value of the direct url ("" || <absolute-url-with-qs-params>)
+   * @param string $index_id
+   *   The id of the chosen index
+   *
+   * @return string
+   */
+  private function get_endpoint($proxy_is_disabled, $direct_url, $index_id) {
+    if ($proxy_is_disabled) {
+      // Use a direct url if one was passed in.
+      $endpoint_url = $direct_url;
+
+      // Fall back to the server URL
+      if (!$endpoint_url) {
+        $endpoint_url = $this->get_server_url($index_id);
+      }
+    } else {
+      // Compute the proxy URL
+      $proxy_url_options = [
+        'absolute' => TRUE,
+      ];
+      $proxy_url_object = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
+      $proxy_url = $proxy_url_object->toString();
+      $endpoint_url = $proxy_url;
+    }
+
+    return $endpoint_url;
+  }
+
+  /**
+   * Returns a content for a search page.
    *
    * @return array
    *   A simple renderable array.
    */
-  public function searchPage() {
+  public function content() {
     $renderer = \Drupal::service('renderer');
 
     $config = \Drupal::configFactory()->getEditable('search_api_federated_solr.search_app.settings');
@@ -27,13 +89,11 @@ class SearchController extends ControllerBase {
     $federated_search_app_config = [];
 
     // REQUIRED: The url where requests are made with query information.
-    $url = $config->get('proxy.url');
-    // REQUIRED: Whether or not are using the proxy.
-    $proxy_is_disabled = FALSE;
-    if ($config->get('proxy.isDisabled') === 1) {
-      $url = $config->get('index.server_url');
-      $proxy_is_disabled = TRUE;
-    }
+    $proxy_is_disabled = $config->get('proxy.isDisabled') || 0;
+    $index_id = $config->get('index.id');
+    // Determine the URL by calling get_endpoint with no direct_url option
+    //   because we don't accept a custom direct endpoint for search.
+    $url = $this->get_endpoint($proxy_is_disabled, '', $index_id);
 
     $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;
     $federated_search_app_config['url'] = $url;
@@ -126,11 +186,14 @@ class SearchController extends ControllerBase {
 
     $federated_search_app_config['autocomplete'] = FALSE;
     if ($autocomplete_is_enabled = $config->get('autocomplete.isEnabled')) {
-      // REQUIRED: Autocomplete proxy flag.
-      $federated_search_app_config['autocomplete']['proxyIsDisabled'] = $config->get('autocomplete.proxy.isDisabled') || 0;
 
-      // REQUIRED: Autocomplete endpoint, defaults to main search url
-      if ($autocomplete_url = $config->get('autocomplete.url')) {
+      $autocomplete_proxy_is_disabled = $config->get('autocomplete.proxy.isDisabled') || 0;
+      $federated_search_app_config['autocomplete']['proxyIsDisabled'] = $autocomplete_proxy_is_disabled;
+
+      $autocomplete_direct_url = $config->get('autocomplete.direct.url');
+      $autocomplete_url = $this->get_endpoint($autocomplete_proxy_is_disabled, $autocomplete_direct_url, $index_id);
+
+      if ($autocomplete_url) {
         $federated_search_app_config['autocomplete']['url'] = $autocomplete_url;
       }
       if ($autocomplete_username = $config->get('autocomplete.username') && $autocomplete_password = $config->get('autocomplete.password')) {
