@@ -572,7 +572,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#size' => 50,
       '#default_value' => $autocomplete_mode ? $config->get($title_text_config_key) : '',
       '#description' => $this
-        ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode and "What would you like to search for?" for Search Term mode.)'),
+        ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode.)'),
       '#states' => [
         'visible' => [
           ':input[data-autocomplete-enabler]' => [
