@@ -88,11 +88,10 @@ class SearchController extends ControllerBase {
     // the search app: https://github.com/palantirnet/federated-search-react/blob/master/src/.env.local.js.example
     $federated_search_app_config = [];
 
-    // REQUIRED: The url where requests are made with query information.
-    $proxy_is_disabled = $config->get('proxy.isDisabled') || 0;
-    $index_id = $config->get('index.id');
     // Determine the URL by calling get_endpoint with no direct_url option
     //   because we don't accept a custom direct endpoint for search.
+    $proxy_is_disabled = $config->get('proxy.isDisabled') || 0;
+    $index_id = $config->get('index.id');
     $url = $this->get_endpoint($proxy_is_disabled, '', $index_id);
 
     $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;
