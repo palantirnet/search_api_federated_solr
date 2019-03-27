@@ -427,6 +427,13 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#attributes' => [
         'data-autocomplete-direct-query-enabler' => TRUE,
       ],
+      '#states' => [
+        'visible' => [
+          ':input[data-autocomplete-enabler]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     $form['autocomplete']['direct'] = [
