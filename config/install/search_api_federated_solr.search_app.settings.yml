@@ -30,6 +30,7 @@ index:
   has_site_name_property: false
   username: ''
   password: ''
+  query_fields: []
 content:
   no_results: ''
   search_prompt: ''
