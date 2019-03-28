@@ -66,8 +66,9 @@ class SolrProxyController extends ControllerBase {
    */
   public function getResultsJson(Request $request) {
     $data = [];
+    // \Drupal\Core\Controller\ControllerBase::config loads config with overrides
+    $config = $this->config('search_api_federated_solr.search_app.settings');
     // Get index id from search app config.
-    $config = \Drupal::configFactory()->getEditable('search_api_federated_solr.search_app.settings');
     $index_id = $config->get('index.id');
     // Get the server id from index config.
     $index_config = \Drupal::config('search_api.index.' . $index_id);
