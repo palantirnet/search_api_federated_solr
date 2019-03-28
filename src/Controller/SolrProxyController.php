@@ -100,6 +100,33 @@ class SolrProxyController extends ControllerBase {
       // @see: https://solarium.readthedocs.io/en/stable/queries/select-query/building-a-select-query/building-a-select-query/
       $query = $connector->getSelectQuery();
 
+      // Use supplied query fields if configured in settings.php.
+      $query_fields_config = $config->get('index.query_fields');
+      if (is_array($query_fields_config) && !empty($query_fields_config)) {
+        // Load the index.
+        $indexes = $server->getIndexes();
+        /** @var \Drupal\search_api\IndexInterface $federated_search_index */
+        $federated_search_index = $indexes[$index_id];
+
+        // Get index field names mapped to their solr field name counterparts
+        $backend_field_names_map = $backend->getSolrFieldNames($federated_search_index);
+        // Get all full text fields from the index.
+        $full_text_fields = $federated_search_index->getFulltextFields();
+        // We can only search full text fields, so validate supplied field names.
+        $full_text_query_fields = array_intersect($query_fields_config, $full_text_fields);
+        // Filter the field names map by our query fields.
+        $query_fields_map = array_intersect_key($backend_field_names_map, array_flip($full_text_query_fields));
+        // Get the solr field name for our supplied full text query fields.
+        $query_fields = array_values($query_fields_map);
+
+        if (!empty($query_fields)) {
+          // Get edismax query parser (used by the default request handler).
+          $edismax = $query->getEDisMax();
+          // Set default query fields, overriding solr config.
+          $edismax->setQueryFields(implode(' ', $query_fields));
+        }
+      }
+
       // Uncomment to add debug data to response object.
       //  $debug = $query->getDebug();
 
