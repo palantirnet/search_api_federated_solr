@@ -149,6 +149,9 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       '#title' => $this->t('Direct Query Settings'),
       '#states' => [
         'visible' => [
+          ':input[data-autocomplete-enable]' => [
+            'checked' => TRUE,
+          ],
           ':input[data-autocomplete-direct]' => [
             'checked' => TRUE,
           ],
