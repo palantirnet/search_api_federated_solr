@@ -61,6 +61,7 @@ function search_api_federated_solr_update_8002(&$sandbox) {
   $config->set('autocomplete.username', '');
   $config->set('autocomplete.password', '');
   $config->set('autocomplete.use_search_app_creds', 0);
+  $config->set('index.query_fields', []);
 
   // Remove legacy stored urls as they are now computed.
   $config->clear('autocomplete.url');
