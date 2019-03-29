@@ -3,6 +3,8 @@
 namespace Drupal\search_api_federated_solr\Utility;
 
 use Drupal\Core\Url;
+use Drupal\search_api\Entity\Server;
+use Drupal\search_api\SearchApiException;
 
 /**
  * Contains helper methods for the Search API Federated Solr module.
@@ -15,25 +17,34 @@ class Helpers {
    *   URL for the solr backend /select request handler
    */
   public static function getSelectHandlerUrl() {
+    $server_url = '';
+
     // Get the id of the chosen index's server.
     $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
     $index_id = $app_config->get('index.id');
     // Get index config.
     $index_config = \Drupal::config('search_api.index.' . $index_id);
     // Get the index's server name.
-    $index_server = $index_config->get('server');
-    // Get the server config.
-    $server_config = \Drupal::config('search_api.server.' . $index_server);
-    // Get the server's backend connector config.
-    $server = $server_config->get('backend_config.connector_config');
-    // Compute the server URL.
-    // Get the required server config field data.
-    $server_url = $server['scheme'] . '://' . $server['host'] . ':' . $server['port'];
-    // Check for the non-required server config field data before appending.
-    $server_url .= $server['path'] ?: '';
-    $server_url .= $server['core'] ? '/' . $server['core'] : '';
-    // Append the request handler, main query and format params.
-    $server_url .= '/select';
+    $server_id = $index_config->get('server');
+    // Load the server.
+    /** @var \Drupal\search_api\ServerInterface $server */
+    $server = Server::load($server_id);
+    try {
+      /** @var \Drupal\search_api_solr\SolrBackendInterface $backend */
+      $backend = $server->getBackend();
+      /** @var \Drupal\search_api_solr\SolrConnectorInterface $connector */
+      $connector = $backend->getSolrConnector();
+      $server_link = $connector->getServerLink();
+      $server_url = $server_link->getUrl()->toUriString();
+      // Get the server's solr core.
+      $core = $connector->getConfiguration()['core'];
+      $server_url .= $core;
+      // Append the request handler, main query and format params.
+      $server_url .= '/select';
+    }
+    catch (SearchApiException $e) {
+      watchdog_exception('search_api_federated_solr', $e, '%type while getting backend + connector for @server: @message in %function (line %line of %file).', array('@server' => $server->label()));
+    }
 
     return $server_url;
   }
@@ -60,8 +71,8 @@ class Helpers {
     $proxy_url_options = [
       'absolute' => TRUE,
     ];
-    $proxy_url_object = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
-    $proxy_url = $proxy_url_object->toString();
+    $proxy_link = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
+    $proxy_url = $proxy_link->toString();
 
     // Default to proxy url.
     $endpoint_url = $proxy_url;
