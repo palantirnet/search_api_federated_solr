@@ -29,7 +29,7 @@ class SearchController extends ControllerBase {
     // Determine the URL by calling get_endpoint with no direct_url option
     //   because we don't accept a custom direct endpoint for search.
     $proxy_is_disabled = $config->get('proxy.isDisabled') || 0;
-    $url = Helpers::get_endpoint_url($proxy_is_disabled, '');
+    $url = Helpers::getEndpointUrl($proxy_is_disabled, '');
 
     $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;
     $federated_search_app_config['url'] = $url;
@@ -127,7 +127,7 @@ class SearchController extends ControllerBase {
       $federated_search_app_config['autocomplete']['proxyIsDisabled'] = $autocomplete_proxy_is_disabled;
 
       $autocomplete_direct_url = $config->get('autocomplete.direct.url');
-      $autocomplete_url = Helpers::get_endpoint_url($autocomplete_proxy_is_disabled, $autocomplete_direct_url);
+      $autocomplete_url = Helpers::getEndpointUrl($autocomplete_proxy_is_disabled, $autocomplete_direct_url);
 
       if ($autocomplete_url) {
         $federated_search_app_config['autocomplete']['url'] = $autocomplete_url;

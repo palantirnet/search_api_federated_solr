@@ -44,7 +44,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       $direct_url = array_key_exists('directUrl', $autocomplete) ? $autocomplete['directUrl'] : '';
 
       // Determine the url that should be used for autocomplete.
-      $autocomplete['url'] = Helpers::get_endpoint_url($proxy_is_disabled, $direct_url, '?q=[val]&wt=json');
+      $autocomplete['url'] = Helpers::getEndpointUrl($proxy_is_disabled, $direct_url, '?q=[val]&wt=json');
 
       // Write the block autocomplete config to Drupal settings.
       $build['#attached']['drupalSettings']['searchApiFederatedSolr'] = [

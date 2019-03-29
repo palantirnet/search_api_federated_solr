@@ -14,7 +14,7 @@ class Helpers {
    * @return string
    *   URL for the solr backend /select request handler
    */
-  public static function get_select_handler_url() {
+  public static function getSelectHandlerUrl() {
     // Get the id of the chosen index's server.
     $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
     $index_id = $app_config->get('index.id');
@@ -55,7 +55,7 @@ class Helpers {
    * @return string
    *   URL for the endpoint to be used for query requests.
    */
-  public static function get_endpoint_url($proxy_is_disabled, $direct_url, $qs = '') {
+  public static function getEndpointUrl($proxy_is_disabled, $direct_url, $qs = '') {
     // Create proxy URL.
     $proxy_url_options = [
       'absolute' => TRUE,
@@ -72,7 +72,7 @@ class Helpers {
         $endpoint_url = $direct_url;
       } else {
         // Fallback to solr backend select handler URL.
-        $endpoint_url = self::get_select_handler_url();
+        $endpoint_url = self::getSelectHandlerUrl();
       }
     }
 
