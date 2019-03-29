@@ -7,6 +7,7 @@ use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\search_api_federated_solr\Utility\Helpers;
 
 /**
  * Provides a "Federated Search Page Form" block.
@@ -43,7 +44,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       $direct_url = array_key_exists('directUrl', $autocomplete) ? $autocomplete['directUrl'] : '';
 
       // Determine the url that should be used for autocomplete.
-      $autocomplete['url'] = $this->get_autocomplete_url($proxy_is_disabled, $direct_url);
+      $autocomplete['url'] = Helpers::get_endpoint_url($proxy_is_disabled, $direct_url, '?q=[val]&wt=json');
 
       // Write the block autocomplete config to Drupal settings.
       $build['#attached']['drupalSettings']['searchApiFederatedSolr'] = [
@@ -325,9 +326,10 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
     $values = $form_state->getValues();
+    // Define return object.
+    $autocomplete = [];
     // Set autocomplete options.
     $autocomplete_is_enabled = $values['autocomplete']['autocomplete_is_enabled'];
-
     // If enabled, set the autocomplete options.
     if ($autocomplete_is_enabled) {
       // Cache form values that we'll use more than once.
@@ -380,69 +382,5 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     }
 
     $this->configuration['autocomplete'] = $autocomplete;
-  }
-
-  /**
-   * Determine the URL for the server of the selected index.
-   * @param $index_id
-   *
-   * @return string
-   */
-  private function get_server_url($index_id) {
-    $index_config = \Drupal::config('search_api.index.' . $index_id);
-    $index_server = $index_config->get('server');
-    // Get the server url.
-    $server_config = \Drupal::config('search_api.server.' . $index_server);
-    $server = $server_config->get('backend_config.connector_config');
-    // Get the required server config field data.
-    $server_url = $server['scheme'] . '://' . $server['host'] . ':' . $server['port'];
-    // Check for the non-required server config field data before appending.
-    $server_url .= $server['path'] ?: '';
-    $server_url .= $server['core'] ? '/' . $server['core'] : '';
-    // Append the request handler, main query and format params.
-    $server_url .= '/select?q=[val]&wt=json';
-
-    return $server_url;
-  }
-
-  /**
-   * Determines the url to use for autocomplete based on config:
-   *  - is the proxy enabled?
-   *    - yes: compute absolute url to proxy route, append qs params
-   *    - no: was an direct url endpoint passed?
-   *      - yes: use that endpoint
-   *      - no: compute the server url, qs params
-   *
-   * @param integer $proxy_is_disabled
-   *   Flag indicating whether or not the autocomplete proxy is disabled (0 || 1)
-   * @param string $direct_url
-   *   Value of the direct url ("" || <absolute-url-with-qs-params>)
-   *
-   * @return string
-   */
-  private function get_autocomplete_url($proxy_is_disabled, $direct_url) {
-    if ($proxy_is_disabled) {
-      // Use a direct url if one was passed in.
-      $autocomplete_url = $direct_url;
-
-      // Fall back to the server URL
-      if (!$autocomplete_url) {
-        // Get the id of the chosen index's server.
-        $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
-        $search_index = $app_config->get('index.id');
-        $autocomplete_url = $this->get_server_url($search_index);
-      }
-    } else {
-      // Compute the proxy URL
-      $proxy_url_options = [
-        'absolute' => TRUE,
-      ];
-      $proxy_url_object = Url::fromRoute('search_api_federated_solr.solr_proxy', [], $proxy_url_options);
-      $proxy_url = $proxy_url_object->toString();
-      $proxy_url .= '?q=[val]';
-      $autocomplete_url = $proxy_url;
-    }
-
-    return $autocomplete_url;
   }
 }

@@ -7,52 +7,10 @@ use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\search_api\Entity\Server;
 use Drupal\search_api\SearchApiException;
+use Drupal\search_api_federated_solr\Utility\Helpers;
 use Symfony\Component\HttpFoundation\Request;
 
 class SolrProxyController extends ControllerBase {
-
-  /**
-   * Parses a querystring with support for multiple keys not using array[] syntax.
-   * @see: http://php.net/manual/en/function.parse-str.php#76792
-   *
-   * @param $str
-   *  The querystring from the request object.
-   *
-   * @return array
-   *  Array of querystring params and their values.
-   */
-  private static function parse_str_multiple($str) {
-    # result array
-    $arr = [];
-
-    # split on outer delimiter
-    $pairs = explode('&', $str);
-
-    # loop through each pair
-    foreach ($pairs as $i) {
-      # split into name and value
-      list($name,$value) = explode('=', $i, 2);
-
-      # if name already exists
-      if( isset($arr[$name]) ) {
-        # stick multiple values into an array
-        if( is_array($arr[$name]) ) {
-          $arr[$name][] = $value;
-        }
-        else {
-          $arr[$name] = array($arr[$name], $value);
-        }
-      }
-      # otherwise, simply stick it in a scalar
-      else {
-        $arr[$name] = $value;
-      }
-    }
-
-    # return result array
-    return $arr;
-  }
-
   /**
    * Uses the selected index server's backend connector to execute
    * a select query on the index based on request qs params passed from the app.
@@ -87,7 +45,7 @@ class SolrProxyController extends ControllerBase {
     //   str_parse which requires array brackets [] syntax for param keys with
     //   multiple values and that is not the syntax that solr expects.
     // @see: http://php.net/manual/en/function.parse-str.php#76792
-    $params = self::parse_str_multiple($qs);
+    $params = Helpers::parse_str_multiple($qs);
 
     try {
       /** @var \Drupal\search_api_solr\SolrBackendInterface $backend */
