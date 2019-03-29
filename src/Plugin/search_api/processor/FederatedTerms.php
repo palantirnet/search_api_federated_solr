@@ -96,7 +96,7 @@ class FederatedTerms extends ProcessorPluginBase {
 
         // If there are no taxonomy terms on this $entity, do nothing.
         if (empty($entity_terms)) {
-          return;
+          continue;
         }
 
         // Iterate through this item's terms to find federated_terms values.
