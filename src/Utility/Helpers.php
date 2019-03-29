@@ -70,7 +70,8 @@ class Helpers {
       // Override with direct URL if provided.
       if ($direct_url) {
         $endpoint_url = $direct_url;
-      } else {
+      }
+      else {
         // Fallback to solr backend select handler URL.
         $endpoint_url = self::getSelectHandlerUrl();
       }
@@ -107,9 +108,9 @@ class Helpers {
       list($name,$value) = explode('=', $i, 2);
 
       # if name already exists
-      if( isset($arr[$name]) ) {
+      if (isset($arr[$name])) {
         # stick multiple values into an array
-        if( is_array($arr[$name]) ) {
+        if (is_array($arr[$name])) {
           $arr[$name][] = $value;
         }
         else {

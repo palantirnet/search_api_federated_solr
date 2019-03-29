@@ -10,7 +10,7 @@ use Drupal\search_api_federated_solr\Utility\Helpers;
  */
 class SearchController extends ControllerBase {
   /**
-   * Returns a content for a search page.
+   * Returns content for a search page.
    *
    * @return array
    *   A simple renderable array.
