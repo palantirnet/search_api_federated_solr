@@ -58,15 +58,15 @@ search_api_federated_solr.search_app.settings:
         has_site_name_property:
           type: boolean
           label: 'Has site name flag.'
-        server_url:
-          type: string
-          label: 'The server url for the search app.'
         username:
           type: string
           label: 'Basic Auth username.'
         password:
           type: string
           label: 'Basic Auth password.'
+        query_fields:
+          type: sequence
+          label: 'Default search fields for queries.'
     content:
       type: mapping
       mapping:
@@ -97,9 +97,6 @@ search_api_federated_solr.search_app.settings:
         isEnabled:
           type: integer
           label: 'When true, autocomplete is enabled for the search app.'
-        url:
-          type: string
-          label: 'The autocomplete endpoint url to be used.'
         appendWildcard:
           type: integer
           label: 'When checked, the query will have a wildcard appended.'
@@ -127,9 +124,6 @@ search_api_federated_solr.search_app.settings:
             isDisabled:
               type: integer
               label: 'Flag to disable use of Drupal as a Solr proxy for autocomplete query requests.'
-            url:
-              type: string
-              label: 'URL of the Drupal Solr proxy.'
         direct:
           type: mapping
           mapping:
@@ -151,6 +145,3 @@ search_api_federated_solr.search_app.settings:
         isDisabled:
           type: integer
           label: 'Flag to disable use of Drupal as a Solr proxy for search query requests.'
-        url:
-          type: string
-          label: 'URL of the Drupal Solr proxy.'

@@ -1,6 +1,9 @@
 autocomplete:
   isEnabled: 0
-  url: ''
+  direct:
+    url: ''
+  proxy:
+    isDisabled: 0
   appendWildcard: 0
   suggestionRows: ''
   numChars: ''
@@ -25,9 +28,10 @@ index:
   has_federated_terms_property: false
   has_federated_type_property: false
   has_site_name_property: false
-  server_url: ''
   username: ''
   password: ''
+  query_fields:
+    - 'rendered_item'
 content:
   no_results: ''
   search_prompt: ''
@@ -36,3 +40,5 @@ results:
 pagination:
   buttons: null
 path: /search-app
+proxy:
+  isDisabled: 0

@@ -7,52 +7,10 @@ use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\search_api\Entity\Server;
 use Drupal\search_api\SearchApiException;
+use Drupal\search_api_federated_solr\Utility\Helpers;
 use Symfony\Component\HttpFoundation\Request;
 
 class SolrProxyController extends ControllerBase {
-
-  /**
-   * Parses a querystring with support for multiple keys not using array[] syntax.
-   * @see: http://php.net/manual/en/function.parse-str.php#76792
-   *
-   * @param $str
-   *  The querystring from the request object.
-   *
-   * @return array
-   *  Array of querystring params and their values.
-   */
-  private static function parse_str_multiple($str) {
-    # result array
-    $arr = [];
-
-    # split on outer delimiter
-    $pairs = explode('&', $str);
-
-    # loop through each pair
-    foreach ($pairs as $i) {
-      # split into name and value
-      list($name,$value) = explode('=', $i, 2);
-
-      # if name already exists
-      if( isset($arr[$name]) ) {
-        # stick multiple values into an array
-        if( is_array($arr[$name]) ) {
-          $arr[$name][] = $value;
-        }
-        else {
-          $arr[$name] = array($arr[$name], $value);
-        }
-      }
-      # otherwise, simply stick it in a scalar
-      else {
-        $arr[$name] = $value;
-      }
-    }
-
-    # return result array
-    return $arr;
-  }
-
   /**
    * Uses the selected index server's backend connector to execute
    * a select query on the index based on request qs params passed from the app.
@@ -66,8 +24,9 @@ class SolrProxyController extends ControllerBase {
    */
   public function getResultsJson(Request $request) {
     $data = [];
+    // \Drupal\Core\Controller\ControllerBase::config loads config with overrides
+    $config = $this->config('search_api_federated_solr.search_app.settings');
     // Get index id from search app config.
-    $config = \Drupal::configFactory()->getEditable('search_api_federated_solr.search_app.settings');
     $index_id = $config->get('index.id');
     // Get the server id from index config.
     $index_config = \Drupal::config('search_api.index.' . $index_id);
@@ -86,7 +45,7 @@ class SolrProxyController extends ControllerBase {
     //   str_parse which requires array brackets [] syntax for param keys with
     //   multiple values and that is not the syntax that solr expects.
     // @see: http://php.net/manual/en/function.parse-str.php#76792
-    $params = self::parse_str_multiple($qs);
+    $params = Helpers::parseStrMultiple($qs);
 
     try {
       /** @var \Drupal\search_api_solr\SolrBackendInterface $backend */
@@ -98,6 +57,33 @@ class SolrProxyController extends ControllerBase {
       // Note: this proxy will only execute select queries.
       // @see: https://solarium.readthedocs.io/en/stable/queries/select-query/building-a-select-query/building-a-select-query/
       $query = $connector->getSelectQuery();
+
+      // Use supplied query fields if configured in settings.php.
+      $query_fields_config = $config->get('index.query_fields');
+      if (is_array($query_fields_config) && !empty($query_fields_config)) {
+        // Load the index.
+        $indexes = $server->getIndexes();
+        /** @var \Drupal\search_api\IndexInterface $federated_search_index */
+        $federated_search_index = $indexes[$index_id];
+
+        // Get index field names mapped to their solr field name counterparts
+        $backend_field_names_map = $backend->getSolrFieldNames($federated_search_index);
+        // Get all full text fields from the index.
+        $full_text_fields = $federated_search_index->getFulltextFields();
+        // We can only search full text fields, so validate supplied field names.
+        $full_text_query_fields = array_intersect($query_fields_config, $full_text_fields);
+        // Filter the field names map by our query fields.
+        $query_fields_map = array_intersect_key($backend_field_names_map, array_flip($full_text_query_fields));
+        // Get the solr field name for our supplied full text query fields.
+        $query_fields = array_values($query_fields_map);
+
+        if (!empty($query_fields)) {
+          // Get edismax query parser (used by the default request handler).
+          $edismax = $query->getEDisMax();
+          // Set default query fields, overriding solr config.
+          $edismax->setQueryFields(implode(' ', $query_fields));
+        }
+      }
 
       // Uncomment to add debug data to response object.
       //  $debug = $query->getDebug();
