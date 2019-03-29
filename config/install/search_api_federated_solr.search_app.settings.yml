@@ -30,7 +30,8 @@ index:
   has_site_name_property: false
   username: ''
   password: ''
-  query_fields: []
+  query_fields:
+    - 'rendered_item'
 content:
   no_results: ''
   search_prompt: ''
