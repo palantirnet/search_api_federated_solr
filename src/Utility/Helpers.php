@@ -106,7 +106,7 @@ class Helpers {
    * @return array
    *  Array of querystring params and their values.
    */
-  public static function parse_str_multiple($str) {
+  public static function parseStrMultiple($str) {
     # result array
     $arr = [];
 

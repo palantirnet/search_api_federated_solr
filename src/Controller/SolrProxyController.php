@@ -45,7 +45,7 @@ class SolrProxyController extends ControllerBase {
     //   str_parse which requires array brackets [] syntax for param keys with
     //   multiple values and that is not the syntax that solr expects.
     // @see: http://php.net/manual/en/function.parse-str.php#76792
-    $params = Helpers::parse_str_multiple($qs);
+    $params = Helpers::parseStrMultiple($qs);
 
     try {
       /** @var \Drupal\search_api_solr\SolrBackendInterface $backend */
