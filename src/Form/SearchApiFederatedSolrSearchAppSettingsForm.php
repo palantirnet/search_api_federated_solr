@@ -62,10 +62,13 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       // Determine if the index has a site name property, which could have been
       // added / removed since last form load.
       $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
-      $config->set('index.has_site_name_property', $site_name_property ? TRUE : FALSE);
+      $use_system_site_name = $index_config->get('field_settings.site_name.configuration.use_system_site_name');
+
+      $is_site_name_property = ($site_name_property || $use_system_site_name) ? 'true': '';
+      $config->set('index.has_site_name_property', $is_site_name_property ? TRUE : FALSE);
 
       // If the index does have a site name property, ensure the hidden form field reflects that.
-      if ($site_name_property) {
+      if ($is_site_name_property) {
         $site_name_property_value = 'true';
         $site_name_property_default_value = 'true';
       }
@@ -285,7 +288,14 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
     $form['search_form_values']['defaults'] = [
       '#type' => 'fieldset',
-      '#title' => 'Set facet / filter default values'
+      '#title' => 'Set facet / filter default values',
+      '#states' => [
+        'visible' => [
+          ':input[name="site_name_property"]' => [
+            'value' => "true",
+          ],
+        ],
+      ],
     ];
 
     $form['search_form_values']['defaults']['set_search_site'] = [
@@ -312,6 +322,17 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#type' => 'fieldset',
       '#title' => $this->t('Hide facets / filters from sidebar'),
       '#description' => $this->t('The checked facets / filters will be hidden from the search app.'),
+      '#states' => [
+        'visible' => [
+          [':input[name="site_name_property"]' => ['value' => "true"]],
+          'or',
+          [':input[name="type_property"]' => ['value' => "true"]],
+          'or',
+          [':input[name="terms_property"]' => ['value' => "true"]],
+          'or',
+          [':input[name="date_property"]' => ['value' => "true"]],
+        ],
+      ],
     ];
 
     $form['search_form_values']['hidden']['hide_site_name'] = [
@@ -734,7 +755,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $search_index = $form_state->getValue('search_index');
     // Get the index configuration object.
     $index_config = \Drupal::config('search_api.index.' . $search_index);
-    $is_site_name_property = $index_config->get('field_settings.site_name.configuration.site_name') ? 'true' : '';
+    $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
+    $use_system_site_name = $index_config->get('field_settings.site_name.configuration.use_system_site_name');
+
+    $is_site_name_property = ($site_name_property !== '') || ($use_system_site_name === 1) ? 'true': '';
 
     $elem = [
       '#type' => 'hidden',
