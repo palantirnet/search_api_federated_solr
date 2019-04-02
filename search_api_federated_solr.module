@@ -67,7 +67,7 @@ function search_api_federated_solr_menu() {
   );
 
   $items['admin/config/search/federated-search-settings'] = array(
-    'title' => 'Search API Federated Solr: Search App Settings',
+    'title' => 'Federated Search App',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('search_api_federated_solr_admin'),
     'access arguments' => array('administer federated search'),
