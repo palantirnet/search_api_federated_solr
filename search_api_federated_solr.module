@@ -620,3 +620,52 @@ function search_api_federated_solr_get_server_url() {
   $server_url .= '/select';
   return $server_url;
 }
+
+/**
+ * Lists our variables.
+ */
+function search_api_federated_solr_variables() {
+  return [
+    'search_api_federated_solr_path',
+    'search_api_federated_solr_search_index',
+    'search_api_federated_solr_disable_query_proxy',
+    'search_api_federated_solr_search_index_basic_auth',
+    'search_api_federated_solr_show_empty_search_results',
+    'search_api_federated_solr_no_results_text',
+    'search_api_federated_solr_search_prompt_text',
+    'search_api_federated_solr_rows',
+    'search_api_federated_solr_page_buttons',
+    'search_api_federated_solr_has_site_name_property',
+    'search_api_federated_solr_has_federated_date_property',
+    'search_api_federated_solr_has_federated_type_property',
+    'search_api_federated_solr_has_federated_terms_property',
+    'search_api_federated_solr_hide_site_name',
+    'search_api_federated_solr_hide_type',
+    'search_api_federated_solr_hide_date',
+    'search_api_federated_solr_hide_terms',
+    'search_api_federated_solr_autocomplete_is_enabled',
+    'search_api_federated_solr_autocomplete_is_append_wildcard',
+    'search_api_federated_solr_autocomplete_disable_query_proxy',
+    'search_api_federated_solr_autocomplete_url',
+    'search_api_federated_solr_autocomplete_use_search_app_creds',
+    'search_api_federated_solr_autocomplete_username',
+    'search_api_federated_solr_autocomplete_password',
+    'search_api_federated_solr_autocomplete_suggestion_rows',
+    'search_api_federated_solr_autocomplete_num_chars',
+    'search_api_federated_solr_autocomplete_mode',
+    'search_api_federated_solr_autocomplete_result_title_text',
+    'search_api_federated_solr_autocomplete_result_hide_directions_text',
+    'search_api_federated_solr_autocomplete_block_is_enabled',
+    'search_api_federated_solr_autocomplete_block_is_append_wildcard',
+    'search_api_federated_solr_autocomplete_block_disable_query_proxy',
+    'search_api_federated_solr_autocomplete_block_suggestion_rows',
+    'search_api_federated_solr_autocomplete_block_num_chars',
+    'search_api_federated_solr_autocomplete_block_mode',
+    'search_api_federated_solr_autocomplete_block_result_title_text',
+    'search_api_federated_solr_autocomplete_block_result_hide_directions_text',
+    'search_api_federated_solr_autocomplete_block_url',
+    'search_api_federated_solr_autocomplete_block_use_search_app_creds',
+    'search_api_federated_solr_autocomplete_block_username',
+    'search_api_federated_solr_autocomplete_block_password',
+  ];
+}
