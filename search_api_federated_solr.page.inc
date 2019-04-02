@@ -25,16 +25,29 @@ function page_search_api_federated_solr() {
 function search_api_federated_solr_config_json() {
   $federated_search_app_config = [];
 
-  $search_index = variable_get('search_api_federated_solr_search_index');
-  // Get the index configuration object.
-  $index = search_api_index_load($search_index);
-  $server = search_api_server_load($index->server);
-  $server_url = trim($server->getSolrConnection()->getBaseUrl(), '/');
-  // Append the request handler.
-  $server_url .= '/select';
+  // Determine the proper endpoint for searches.
+  $proxy_is_disabled = variable_get('search_api_federated_solr_disable_query_proxy', 0);
+  $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;
 
-  // REQUIRED: The default solr backend.
-  $federated_search_app_config['url'] = $server_url;
+  if (!$proxy_is_disabled) {
+    $qs = $_GET;
+    unset($qs['q']);
+    $options = ['absolute' => true, 'query' => $qs];
+    $proxy_url = url('search-api-federated-solr/search', $options);
+    $federated_search_app_config['url'] = $proxy_url;
+  }
+  else {
+    $search_index = variable_get('search_api_federated_solr_search_index');
+    // Get the index configuration object.
+    $index = search_api_index_load($search_index);
+    $server = search_api_server_load($index->server);
+    $server_url = trim($server->getSolrConnection()->getBaseUrl(), '/');
+    // Append the request handler.
+    $server_url .= '/select';
+
+    // REQUIRED: The default solr backend.
+    $federated_search_app_config['url'] = $server_url;
+  }
 
   /* OPTIONAL:
    * The username and password for Basic Authentication on the server.

@@ -17,9 +17,30 @@ function search_api_federated_solr_proxy() {
   $data = [];
 
   // @TODO: Get server config.
+  // Test URL:
+  // http://d7.fs-demo.local/search-api-federated-solr/search?search=soup&sm_site_name[]=Federated%20Search%20Demo%20(D8%2C%20single)&ss_federated_type=Recipe
 
-  $qs = func_get_args();
+  $qs = $_GET;
+  unset($qs['q']);
   $data += $qs;
+  // Parse the querystring, with support for multiple values for a key,
+  // not using array[] syntax.
+  // We may not need this function.
+  // $params = search_api_federated_solr_parse_multiple($qs);
 
   return drupal_json_output($data);
 }
+
+/**
+ * Parses a querystring with support for multiple keys not using array[] syntax.
+ * @see: http://php.net/manual/en/function.parse-str.php#76792
+ *
+ * @param $str
+ *  The querystring from the request object.
+ *
+ * @return array
+ *  Array of querystring params and their values.
+
+function search_api_federated_solr_parse_multiple($qs) {
+
+} */
