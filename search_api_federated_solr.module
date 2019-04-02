@@ -113,6 +113,249 @@ function search_api_federated_solr_block_view($delta = '') {
 }
 
 /**
+ * Configuration options for the block.
+ */
+function search_api_federated_solr_block_configure($delta = '') {
+  if ($delta != 'federated_search_page_form_block') {
+    return;
+  }
+  $form = [];
+  /**
+   * Autocomplete settings:
+   *   - endpoint URL
+   *   - use wildcard to support partial terms
+   *   - customize number of autocomplete results
+   *   - number of characters after which autocomplete query should be executed
+   *   - autocomplete results mode (search results, terms)
+   *   - title for autocomplete results
+   *   - show/hide autocomplete keyboard directions
+   */
+
+  $form['autocomplete'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Search Results Page > Search Form > Autocomplete'),
+    '#description' => '<p>' . t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.') . '</p>',
+    '#collapsible' => TRUE,
+    '#collapsed' => !variable_get('search_api_federated_solr_autocomplete_block_is_enabled'),
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_is_enabled'] = [
+    '#type' => 'checkbox',
+    '#title' => '<b>' . t('Enable autocomplete for the search results page search form') . '</b>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_is_enabled'),
+    '#description' => t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
+    '#attributes' => [
+      'id' => ['autocomplete-is-enabled'],
+    ],
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_is_append_wildcard'] = [
+    '#type' => 'checkbox',
+    '#title' => '<b>' . t('Append a wildcard \'*\' to support partial text search') . '</b>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_is_append_wildcard'),
+    '#description' => t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_disable_query_proxy'] = [
+    '#type' => 'checkbox',
+    '#title' => '<strong>' . t('Do not use the proxy for the search app autocomplete query') . '</strong>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_disable_query_proxy', 0),
+    '#description' => t('Check this box to configure the block search form to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the Search API index chosen on the <a href="@url">Federated Search App settings page</a> in Search Results Page > Set Up using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must either leave this box unchecked or check the box and enter the URL for a view REST export endpoint.  Using a url pointing directly to your Solr backend will not work.',
+      ['@url' => url('admin/config/search/federated-search-settings')]
+    ),
+    '#attributes' => [
+      'data-autocomplete-direct-query-enabler' => TRUE,
+    ],
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Autocomplete Direct Query Settings'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['search_api_federated_solr_autocomplete_block_url'] = [
+    '#type' => 'textfield',
+    '#title' => t('Solr Endpoint URL'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_url'),
+    '#maxlength' => 2048,
+    '#size' => 50,
+    '#description' => t('The URL where requests for autocomplete queries should be made. (Default: the url of the  <code>select</code> <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> on the server of the selected Search API index.)<ul><li>Supports an absolute url pattern to any other Request Handler for an index on your solr server</li><li>The value of the main search field will be appended to the url as the main query param (i.e. <code>?q=[value of the search field, wildcard appended if enabled]</code>)</li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>The format param <code>&wt=json</code> will automatically be appended</li><li>Include any other necessary url params corresponding to <a href="https://lucene.apache.org/solr/guide/6_6/common-query-parameters.html" target="_blank">query parameters</a>.</li>'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Search App Autocomplete Endpoint Basic Authentication'),
+    '#description' => '<p>' . t('If your Solr server is protected by basic HTTP authentication (highly recommended), enter the login data here. These credentials will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.') . '</p>',
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_block_use_search_app_creds'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Use credentials provided for Search Index Basic Authentication in Search Results Page > Set Up above'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_use_search_app_creds'),
+    '#attributes' => [
+      'data-autocomplete-use-search-app-creds' => TRUE,
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_block_username'] = [
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_username'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-use-search-app-creds]' => [
+          'checked' => FALSE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_block_password'] = [
+    '#type' => 'textfield',
+    '#title' => t('Password'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_password'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-use-search-app-creds]' => [
+          'checked' => FALSE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_suggestion_rows'] = [
+    '#type' => 'textfield',
+    '#title' => t('Number of results'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_suggestion_rows'),
+    '#description' => t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
+    '#size' => 5,
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_num_chars'] = [
+    '#type' => 'textfield',
+    '#title' => t('Number of characters after which autocomplete query should execute'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_num_chars'),
+    '#description' => t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
+    '#size' => 5,
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $autocomplete_mode = variable_get('search_api_federated_solr_autocomplete_block_mode') ?: 'result' ;
+  $title_text_config_key = 'search_api_federated_solr_autocomplete_block_' . $autocomplete_mode . '_title_text';
+  $hide_directions_text_config_key = 'search_api_federated_solr_autocomplete_block_' . $autocomplete_mode . '_hide_directions_text';
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_mode'] = [
+    '#type' => 'select',
+    '#title' => t('Autocomplete mode'),
+    '#description' => t('Type of results the autocomplete response returns: search results (default) or search terms.'),
+    '#options' => [
+      'result' => t('Search results (i.e. search as you type functionality)'),
+      'Search terms (coming soon)' => [],
+    ],
+    '#default_value' => $autocomplete_mode || 'result',
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete'][$title_text_config_key] = [
+    '#type' => 'textfield',
+    '#title' => t('Results title text'),
+    '#size' => 50,
+    '#default_value' => $autocomplete_mode ? variable_get($title_text_config_key) : '',
+    '#description' => t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?")'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete'][$hide_directions_text_config_key] = [
+    '#type' => 'checkbox',
+    '#title' => '<b>' . t('Hide keyboard directions') . '</b>',
+    '#default_value' => $autocomplete_mode ? variable_get($hide_directions_text_config_key) : 0,
+    '#description' => t('Check this box to hide the autocomplete keyboard usage directions in the results dropdown. For sites that want to maximize their accessibility UX for sighted keyboard users, we recommend leaving this unchecked. (Default: directions are visible)'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function search_api_federated_solr_block_save($delta = '', $edit) {
+  if ($delta != 'federated_search_page_form_block') {
+    return;
+  }
+  foreach ($edit as $key => $value) {
+    if (substr_count($key, 'search_api_federated_solr_autocomplete_block') > 0) {
+      variable_set($key, $value);
+    }
+  }
+}
+
+/**
  * Create custom search form.
  */
 function search_api_federated_solr_search_block_form($form, &$form_state) {
