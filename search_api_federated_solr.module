@@ -561,7 +561,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#title' => t('Results title text'),
     '#size' => 50,
     '#default_value' => $autocomplete_mode ? variable_get($title_text_config_key) : '',
-    '#description' => t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode and "What would you like to search for?" for Search Term mode.)'),
+    '#description' => t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?")'),
     '#states' => [
       'visible' => [
         ':input[data-autocomplete-enabler]' => [
