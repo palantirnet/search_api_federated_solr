@@ -195,6 +195,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
   $indexes = [];
   foreach (search_api_index_load_multiple(FALSE) as $index) {
     $indexes[$index->machine_name] = $index->name;
+    $settings[$index->machine_name] = $index->options;
   }
 
   $form['#prefix'] = '<div id="search-api-federated-solr-config-form">';
@@ -348,12 +349,19 @@ function search_api_federated_solr_admin($form, &$form_state) {
     ],
   ];
 
+  if (!empty(variable_get('search_api_federated_solr_search_index'))) {
+    $index = variable_get('search_api_federated_solr_search_index');
+    if (isset($settings[$index])) {
+      $fields = $settings[$index]['fields'];
+    }
+  }
+
   $form['search_form_values']['search_api_federated_solr_has_site_name_property'] = [
     '#type' => 'hidden',
     '#attributes' => [
       'id' => ['site-name-property'],
     ],
-    '#default_value' => 'true', #variable_get('search_api_federated_solr_has_site_name_property'),
+    '#default_value' => isset($fields['site_name']) ? 'true' : variable_get('search_api_federated_solr_has_site_name_property'),
   ];
 
   $form['search_form_values']['search_api_federated_solr_has_federated_date_property'] = [
@@ -361,7 +369,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#attributes' => [
       'id' => ['date-property'],
     ],
-    '#value' => 'true', #variable_get('search_api_federated_solr_has_federated_date_property') ? 'true' : '',
+    '#value' => isset($fields['federated_date']) ? 'true' : variable_get('search_api_federated_solr_has_federated_date_property', 'true'),
   ];
 
   $form['search_form_values']['search_api_federated_solr_has_federated_type_property'] = [
@@ -369,7 +377,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#attributes' => [
       'id' => ['type-property'],
     ],
-    '#value' => 'true', #variable_get('search_api_federated_solr_has_federated_type_property') ? 'true' : '',
+    '#value' => isset($fields['federated_type']) ? 'true' : variable_get('search_api_federated_solr_has_federated_type_property', 'true'),
   ];
 
   $form['search_form_values']['search_api_federated_solr_has_federated_terms_property'] = [
@@ -377,7 +385,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#attributes' => [
       'id' => ['terms-property'],
     ],
-    '#value' => 'true', #variable_get('search_api_federated_solr_has_federated_terms_property') ? 'true' : '',
+    '#value' => isset($fields['federated_terms']) ? 'true' : variable_get('search_api_federated_solr_has_federated_terms_property', 'true'),
   ];
 
   /**
@@ -661,7 +669,7 @@ function search_api_federated_solr_config_json() {
       "is_hidden" => variable_get('search_api_federated_solr_hide_terms'),
     ],
   ];
-dpm($search_fields);
+
   // Set hiddenSearchFields to an array of keys of those $search_fields items
   // which both exist as an index property and are set to be hidden.
 
