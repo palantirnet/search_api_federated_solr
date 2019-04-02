@@ -45,8 +45,12 @@ class SearchController extends ControllerBase {
     $federated_search_app_config['userpass'] = $username && $pass ? base64_encode($config->get('index.username') . ':' . $config->get('index.password')) : '';
 
     // Validate that there is still a site name property set for this index.
+    // Determine if the index has a site name property, which could have been
+    // added / removed since last form load.
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
-    $config->set('index.has_site_name_property', $site_name_property ? TRUE : FALSE);
+    $use_system_site_name = $index_config->get('field_settings.site_name.configuration.use_system_site_name');
+    $is_site_name_property = ($site_name_property || $use_system_site_name) ? 'true': '';
+    $config->set('index.has_site_name_property', $is_site_name_property ? TRUE : FALSE);
 
     // Determine if config option to set default site name is set.
     $set_default_site = $config->get('facet.site_name.set_default');
@@ -56,7 +60,7 @@ class SearchController extends ControllerBase {
      * The default "Site Name" facet value is passed by search form
      * in initial get request.
      */
-    if ($set_default_site && !$site_name_property) {
+    if ($set_default_site && !$is_site_name_property) {
       $config->set('facet.site_name.set_default', 0);
     }
 
@@ -64,7 +68,7 @@ class SearchController extends ControllerBase {
     // exist on the index and should be hidden in the app UI.
     $search_fields = [
       "sm_site_name" => [
-        "property" => $site_name_property,
+        "property" => $is_site_name_property,
         "is_hidden" => $config->get('facet.site_name.is_hidden'),
       ],
       "ss_federated_type" => [
