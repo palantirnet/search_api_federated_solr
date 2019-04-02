@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file search_api_federated_solr.module
+ * @file search_api_federated_solr.admin.inc
  * Contains form implementations for the Federated Solr Search API Module.
  *
  * @copyright Copyright (c) 2018-19 Palantir.net
@@ -49,22 +49,53 @@ function search_api_federated_solr_admin($form, &$form_state) {
     ],
   ];
 
+  $form['setup']['search_api_federated_solr_disable_query_proxy'] = [
+    '#type' => 'checkbox',
+    '#title' => '<strong>' . t('Do not use the proxy for the search query') . '</strong>',
+    '#default_value' => variable_get('search_api_federated_solr_disable_query_proxy'),
+    '#description' => t('Check this box to configure the search app to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the chosen Search API index using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must leave this box unchecked.'),
+    '#attributes' => [
+      'data-direct-query-enabler' => TRUE,
+    ],
+  ];
+
   $form['setup']['search_api_federated_solr_search_index_basic_auth'] = [
     '#type' => 'fieldset',
     '#title' => t('Search Index Basic Authentication'),
-    '#description' => t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.')
+    '#description' => t('If your Solr server is protected by basic HTTP authentication, enter the login data here. These credentials will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.'),
+    '#states' => [
+      'visible' => [
+        ':input[data-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
   ];
 
   $form['setup']['search_api_federated_solr_search_index_basic_auth']['search_api_federated_solr_search_index_basic_auth_username'] = [
     '#type' => 'textfield',
     '#title' => t('Username'),
     '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_username'),
+    '#states' => [
+      'visible' => [
+        ':input[data-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
   ];
 
   $form['setup']['search_api_federated_solr_search_index_basic_auth']['search_api_federated_solr_search_index_basic_auth_password'] = [
     '#type' => 'textfield',
     '#title' => t('Password'),
     '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_password'),
+    '#states' => [
+      'visible' => [
+        ':input[data-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
   ];
 
   /**
