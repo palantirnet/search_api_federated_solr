@@ -28,7 +28,26 @@ function search_api_federated_solr_proxy() {
   // We may not need this function.
   // $params = search_api_federated_solr_parse_multiple($qs);
 
-  return drupal_json_output($data);
+  // Create the select query.
+  // Note: this proxy will only execute select queries.
+  #$server_url = search_api_federated_solr_get_server_url();
+  $search_index = variable_get('search_api_federated_solr_search_index');
+  // Get the index configuration object.
+  $index = search_api_index_load($search_index);
+  $server = $index->server();
+
+  # dpm($server);
+
+  $options['parse mode'] = 'direct';
+  $query = search_api_query($search_index, $options);
+
+  // Set query fields.
+  $fields = variable_get('search_api_federated_solr_query_fields', ['rendered_item']);
+  $query->fields($fields);
+
+  $results = $index->server()->search($query, $qs);
+
+  return drupal_json_output($results);
 }
 
 /**

@@ -37,14 +37,7 @@ function search_api_federated_solr_config_json() {
     $federated_search_app_config['url'] = $proxy_url;
   }
   else {
-    $search_index = variable_get('search_api_federated_solr_search_index');
-    // Get the index configuration object.
-    $index = search_api_index_load($search_index);
-    $server = search_api_server_load($index->server);
-    $server_url = trim($server->getSolrConnection()->getBaseUrl(), '/');
-    // Append the request handler.
-    $server_url .= '/select';
-
+    $server_url = search_api_federated_solr_get_server_url();
     // REQUIRED: The default solr backend.
     $federated_search_app_config['url'] = $server_url;
   }
