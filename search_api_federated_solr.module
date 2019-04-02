@@ -42,6 +42,14 @@ function search_api_federated_solr_menu() {
     'file' => 'search_api_federated_solr.admin.inc',
    );
 
+  $items['search-api-federated-solr/search'] = array(
+    'title' => 'Federated Search App',
+    'page callback' => 'search_api_federated_solr_proxy',
+    'access arguments' => array('use federated search'),
+    'type' => MENU_CALLBACK,
+    'file' => 'search_api_federated_solr.proxy.inc',
+   );
+
   return $items;
 }
 
