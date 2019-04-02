@@ -245,15 +245,6 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#title' => t('Password'),
     '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_password'),
   ];
-  $form['setup']['search_api_federated_solr_autocomplete_is_enabled'] = [
-    '#type' => 'checkbox',
-    '#title' => '<b>' . t('Enable autocomplete for the search results page search form') . '</b>',
-    '#default_value' => variable_get('search_api_federated_solr_autocomplete_is_enabled'),
-    '#description' => t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
-    '#attributes' => [
-      'id' => ['autocomplete-is-enabled'],
-    ],
-  ];
 
   /**
    * Search results page options:
@@ -469,9 +460,19 @@ function search_api_federated_solr_admin($form, &$form_state) {
   $form['autocomplete'] = [
     '#type' => 'fieldset',
     '#title' => t('Search Results Page > Search Form > Autocomplete'),
-    '#description' => t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.'),
-    '#collapsable' => TRUE,
+    '#description' => '<p>' . t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.') . '</p>',
+    '#collapsible' => TRUE,
     '#collapsed' => !variable_get('search_api_federated_solr_autocomplete_is_enabled'),
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_is_enabled'] = [
+    '#type' => 'checkbox',
+    '#title' => '<b>' . t('Enable autocomplete for the search results page search form') . '</b>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_is_enabled'),
+    '#description' => t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
+    '#attributes' => [
+      'id' => ['autocomplete-is-enabled'],
+    ],
   ];
 
   $form['autocomplete']['search_api_federated_solr_autocomplete_is_append_wildcard'] = [
@@ -488,7 +489,36 @@ function search_api_federated_solr_admin($form, &$form_state) {
     ],
   ];
 
-  $form['autocomplete']['search_api_federated_solr_autocomplete_url'] = [
+  $form['autocomplete']['search_api_federated_solr_autocomplete_disable_query_proxy'] = [
+    '#type' => 'checkbox',
+    '#title' => '<strong>' . t('Do not use the proxy for the search app autocomplete query') . '</strong>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_disable_query_proxy', 0),
+    '#description' => t('Check this box to configure the search app to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the Search API index chosen above in Search Results Page > Set Up using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must leave this box unchecked.'),
+    '#attributes' => [
+      'data-autocomplete-direct-query-enabler' => TRUE,
+    ],
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Autocomplete Direct Query Settings'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['search_api_federated_solr_autocomplete_url'] = [
     '#type' => 'textfield',
     '#title' => t('Solr Endpoint URL'),
     '#default_value' => variable_get('search_api_federated_solr_autocomplete_url'),
@@ -497,8 +527,56 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#description' => t('The URL where requests for autocomplete queries should be made. (Default: the url of the  <code>select</code> <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> on the server of the selected Search API index.)<ul><li>Supports an absolute url pattern to any other Request Handler for an index on your solr server</li><li>The value of the main search field will be appended to the url as the main query param (i.e. <code>?q=[value of the search field, wildcard appended if enabled]</code>)</li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>The format param <code>&wt=json</code> will automatically be appended</li><li>Include any other necessary url params corresponding to <a href="https://lucene.apache.org/solr/guide/6_6/common-query-parameters.html" target="_blank">query parameters</a>.</li>'),
     '#states' => [
       'visible' => [
-        ':input[data-autocomplete-enabler]' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
           'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Search App Autocomplete Endpoint Basic Authentication'),
+    '#description' => '<p>' . t('If your Solr server is protected by basic HTTP authentication (highly recommended), enter the login data here. These credentials will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.') . '</p>',
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_use_search_app_creds'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Use credentials provided for Search Index Basic Authentication in Search Results Page > Set Up above'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_use_search_app_creds'),
+    '#attributes' => [
+      'data-autocomplete-use-search-app-creds' => TRUE,
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_username'] = [
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_username'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-use-search-app-creds]' => [
+          'checked' => FALSE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_password'] = [
+    '#type' => 'textfield',
+    '#title' => t('Password'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_password'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-use-search-app-creds]' => [
+          'checked' => FALSE,
         ],
       ],
     ],
