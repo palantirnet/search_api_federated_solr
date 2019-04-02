@@ -16,5 +16,10 @@
 function search_api_federated_solr_proxy() {
   $data = [];
 
+  // @TODO: Get server config.
+
+  $qs = func_get_args();
+  $data += $qs;
+
   return drupal_json_output($data);
 }
