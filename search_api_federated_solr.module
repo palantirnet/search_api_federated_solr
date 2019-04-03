@@ -373,9 +373,25 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
   );
 
   // @TODO: Block autocomplete.
-  #if (!empty(variable_get('search_api_federated_solr_autocomplete_is_enabled'))) {
-  #  $form['q']['#autocomplete_path'] = variable_get('search_api_federated_solr_autocomplete_url');
-  #}
+  if (!empty(variable_get('search_api_federated_solr_autocomplete_is_enabled'))) {
+    $autocomplete = [];
+    drupal_add_js(drupal_get_path('module', 'search_api_federated_solr') . '/js/search_api_federated_solr_autocomplete.js', 'file');
+    $form['q']['#attributes']['class'][] = 'js-search-api-federated-solr-block-form-autocomplete';
+    // Write the block autocomplete config to Drupal settings.
+    $vars = search_api_federated_solr_variables();
+    foreach ($vars as $key => $value) {
+      if (substr_count($key, 'search_api_federated_solr_autocomplete_block') > 0) {
+        $autocomplete[$key] = $value;
+      }
+    }
+    drupal_add_js(
+      ['searchApiFederatedSolr' => [
+        'block' => [
+          'autocomplete' => $autocomplete,
+          ],
+        ],
+      ], 'setting');
+  }
 
   $form['submit'] = array(
     '#type' => 'submit',
