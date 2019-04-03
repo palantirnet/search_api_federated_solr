@@ -371,6 +371,12 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
     ),
     '#prefix' => '<div class="container-inline">',
   );
+
+  // @TODO: Block autocomplete.
+  #if (!empty(variable_get('search_api_federated_solr_autocomplete_is_enabled'))) {
+  #  $form['q']['#autocomplete_path'] = variable_get('search_api_federated_solr_autocomplete_url');
+  #}
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Search'),
