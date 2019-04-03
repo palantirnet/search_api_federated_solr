@@ -25,6 +25,10 @@ function page_search_api_federated_solr() {
 function search_api_federated_solr_config_json() {
   $federated_search_app_config = [];
 
+  $search_index = variable_get('search_api_federated_solr_search_index');
+  if (empty($search_index)) {
+    return json_encode($federated_search_app_config);
+  }
   // Determine the proper endpoint for searches.
   $proxy_is_disabled = variable_get('search_api_federated_solr_disable_query_proxy', 0);
   $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;

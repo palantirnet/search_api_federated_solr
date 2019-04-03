@@ -608,10 +608,13 @@ function search_api_federated_solr_image_default_styles() {
 /**
  * Returns the URL for the active search service.
  *
- * @return string URL
+ * @return string URL|NULL if not set.
  */
 function search_api_federated_solr_get_server_url() {
   $search_index = variable_get('search_api_federated_solr_search_index');
+  if (empty($search_index)) {
+    return NULL;
+  }
   // Get the index configuration object.
   $index = search_api_index_load($search_index);
   $server = search_api_server_load($index->server);
