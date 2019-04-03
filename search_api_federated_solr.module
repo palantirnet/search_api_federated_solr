@@ -373,17 +373,12 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
   );
 
   // @TODO: Block autocomplete.
-  if (!empty(variable_get('search_api_federated_solr_autocomplete_is_enabled'))) {
-    $autocomplete = [];
+  $auto = variable_get('search_api_federated_solr_autocomplete_is_enabled');
+  if (!empty($auto)) {
     drupal_add_js(drupal_get_path('module', 'search_api_federated_solr') . '/js/search_api_federated_solr_autocomplete.js', 'file');
     $form['q']['#attributes']['class'][] = 'js-search-api-federated-solr-block-form-autocomplete';
     // Write the block autocomplete config to Drupal settings.
-    $vars = search_api_federated_solr_variables();
-    foreach ($vars as $key => $value) {
-      if (substr_count($key, 'search_api_federated_solr_autocomplete_block') > 0) {
-        $autocomplete[$key] = $value;
-      }
-    }
+    $autocomplete = search_api_federated_solr_block_variables();
     drupal_add_js(
       ['searchApiFederatedSolr' => [
         'block' => [
@@ -400,8 +395,23 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
     '#suffix' => '</div>',
   );
 
-
   return $form;
+}
+
+/**
+ * Gets and transforms D7 variables for use with the JS code.
+ *
+ * @return array.
+ */
+function search_api_federated_solr_block_variables() {
+  $autocomplete = [];
+  $vars = search_api_federated_solr_variables();
+  foreach ($vars as $key => $value) {
+    if (substr_count($value, 'search_api_federated_solr_autocomplete_block') > 0) {
+      $autocomplete[$value] = variable_get($value);
+    }
+  }
+  return search_api_federated_solr_map_variables($autocomplete);
 }
 
 /**
@@ -693,4 +703,34 @@ function search_api_federated_solr_variables() {
     'search_api_federated_solr_autocomplete_block_username',
     'search_api_federated_solr_autocomplete_block_password',
   ];
+}
+
+function search_api_federated_solr_map_variables($variables) {
+  $mode = $variables['search_api_federated_solr_autocomplete_block_mode'];
+  $proxy_disabled = $variables['search_api_federated_solr_autocomplete_block_disable_query_proxy'];
+
+  if ($proxy_disabled) {
+    // @TODO -- get the right vars here.
+    $use_search_app_creds = $variables['search_api_federated_solr_autocomplete_block_use_search_app_creds'];
+    // Get creds.
+    $autocomplete['userpass'] = base64_encode($variables['search_api_federated_solr_autocomplete_block_username']
+      . ':' . $variables['search_api_federated_solr_autocomplete_block_password']);
+    $url = $variables['search_api_federated_solr_autocomplete_block_url'];
+  }
+  else {
+    $url = search_api_federated_solr_get_server_url();
+  }
+
+  $autocomplete['url'] = $url;
+  $autocomplete['isEnabled'] = $variables['search_api_federated_solr_autocomplete_block_is_enabled'];
+  $autocomplete['appendWildcard'] = $variables['search_api_federated_solr_autocomplete_block_is_append_wildcard'];
+  $autocomplete['numChars'] = $variables['search_api_federated_solr_autocomplete_block_num_chars'];
+  $autocomplete['suggestionRows'] = $variables['search_api_federated_solr_autocomplete_block_suggestion_rows'];
+  $autocomplete['mode'] = $mode;
+  $autocomplete['result'] = [
+    'titleText' => $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'],
+    'hideDirectionsText' => $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_hide_directions_text'],
+  ];
+
+  return $autocomplete;
 }

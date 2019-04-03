@@ -3,7 +3,7 @@
  * Adds autocomplete functionality to search_api_solr_federated block form.
  */
 
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal) {
 
   'use strict';
 
@@ -21,14 +21,15 @@
     attach: function (context, settings) {
       // Find our fields with autocomplete settings
       $(context)
-        .find('.js-search-api-federated-solr-block-form-autocomplete #edit-search')
+        .find('.js-search-api-federated-solr-block-form-autocomplete #edit-q')
         .once('search-api-federated-solr-autocomplete-search')
         .each(function () {
           // Halt execution if we don't have the required config.
-          if (!Object.hasOwnProperty.call(drupalSettings, 'searchApiFederatedSolr')
-              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr, 'block')
-              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block, 'autocomplete')
-              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block.autocomplete, 'url')) {
+          if (!Object.hasOwnProperty.call(Drupal.settings, 'searchApiFederatedSolr')
+              || !Object.hasOwnProperty.call(Drupal.settings.searchApiFederatedSolr, 'block')
+              || !Object.hasOwnProperty.call(Drupal.settings.searchApiFederatedSolr.block, 'autocomplete')
+              || !Object.hasOwnProperty.call(Drupal.settings.searchApiFederatedSolr.block.autocomplete, 'url')) {
+              console.log('return');
             return;
           }
 
@@ -46,7 +47,7 @@
             }
           };
           // Get passed in config from block config.
-          var config = drupalSettings.searchApiFederatedSolr.block.autocomplete;
+          var config = Drupal.settings.searchApiFederatedSolr.block.autocomplete;
           // Merge defaults with passed in config.
           var options = Object.assign({}, defaultSettings, config);
 
@@ -384,4 +385,4 @@
 
   Drupal.SearchApiFederatedSolrAutocomplete = autocomplete;
 
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal);
