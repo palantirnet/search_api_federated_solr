@@ -49,6 +49,8 @@ function search_api_federated_solr_proxy() {
     }
   }
 
+  // @TODO EDismax fields?
+
   $results = [];
 
   if (isset($params['search'])) {
