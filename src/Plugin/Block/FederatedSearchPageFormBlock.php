@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\search_api_federated_solr\Utility\Helpers;
+use Drupal\Component\Utility\UrlHelper;
 
 /**
  * Provides a "Federated Search Page Form" block.
@@ -161,7 +162,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     ];
 
     $form['autocomplete']['direct']['autocomplete_url'] = [
-      '#type' => 'url',
+      '#type' => 'textfield',
       '#title' => $this->t('Endpoint URL'),
       '#default_value' => isset($config['autocomplete']['directUrl']) ? $config['autocomplete']['directUrl'] : '',
       '#maxlength' => 2048,
@@ -318,6 +319,29 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     ];
 
     return $form;
+  }
+
+  /**
+   * Validates that the provided autocomplete endpoint path is a valid relative or
+   * absolute URL.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function blockValidate($form, FormStateInterface $form_state) {
+    $key = ['autocomplete', 'direct', 'autocomplete_url'];
+    $path = $form_state->getValue($key);
+    if ($path) {
+      if ($path !== '' && !UrlHelper::isValid($path, FALSE)) {
+        $element['#parents'] = $key;
+        $form_state
+          ->setError($element, t('The URL %url is not valid.', array(
+          '%url' => $path,
+        )));
+      }
+    }
   }
 
   /**
