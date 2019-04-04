@@ -333,7 +333,8 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
   public function blockValidate($form, FormStateInterface $form_state) {
     $key = ['autocomplete', 'direct', 'autocomplete_url'];
     $path = $form_state->getValue($key);
-    if ($path) {
+    $proxy_is_disabled = $form_state->getValue(['autocomplete', 'disable_query_proxy']);
+    if ($path && $proxy_is_disabled) {
       if ($path !== '' && !UrlHelper::isValid($path, FALSE)) {
         $element['#parents'] = $key;
         $form_state
