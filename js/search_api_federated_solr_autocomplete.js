@@ -47,7 +47,7 @@
           var config = Drupal.settings.searchApiFederatedSolr.block.autocomplete;
           // Merge defaults with passed in config.
           var options = Object.assign({}, defaultSettings, config);
-console.log(options);
+
           // Set scaffolding markup for suggestions container
           var suggestionsContainerScaffoldingMarkup = `
             <div class="js-search-autocomplete-container search-autocomplete-container visually-hidden">
