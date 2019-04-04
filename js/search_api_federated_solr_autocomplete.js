@@ -47,7 +47,7 @@
           var config = Drupal.settings.searchApiFederatedSolr.block.autocomplete;
           // Merge defaults with passed in config.
           var options = Object.assign({}, defaultSettings, config);
-
+console.log(options);
           // Set scaffolding markup for suggestions container
           var suggestionsContainerScaffoldingMarkup = `
             <div class="js-search-autocomplete-container search-autocomplete-container visually-hidden">
@@ -100,8 +100,10 @@
             var fq = $(input).attr('name') + ':("' + $(input).val() + '")';
             defaultParams += '&fq=' + encodeURI(fq);
           });
-          var urlWithDefaultParams = options.url + defaultParams;
 
+          // Set the text default query.
+          options.url += '?q=[val]';
+          var urlWithDefaultParams = options.url + defaultParams;
 
           // Bind events to input.
           $input.bind("input", function(event) {
