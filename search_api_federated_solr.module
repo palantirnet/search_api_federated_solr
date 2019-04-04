@@ -386,6 +386,7 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
           ],
         ],
       ], 'setting');
+    drupal_add_css(drupal_get_path('module', 'search_api_federated_solr') . '/css/search_api_federated_solr_autocomplete.css', 'file');
   }
 
   $form['submit'] = array(

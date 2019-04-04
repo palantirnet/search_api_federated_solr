@@ -3,9 +3,7 @@
  * Adds autocomplete functionality to search_api_solr_federated block form.
  */
 
-(function ($, Drupal) {
-
-  'use strict';
+(function ($) {
 
   var autocomplete = {};
 
@@ -18,10 +16,11 @@
    *   Attaches the autocomplete behaviors.
    */
   Drupal.behaviors.searchApiFederatedSolrAutocomplete = {
-    attach: function (context, settings) {
+    attach: function (context) {
+
       // Find our fields with autocomplete settings
       $(context)
-        .find('.js-search-api-federated-solr-block-form-autocomplete #edit-q')
+        .find('.js-search-api-federated-solr-block-form-autocomplete')
         .once('search-api-federated-solr-autocomplete-search')
         .each(function () {
           // Halt execution if we don't have the required config.
@@ -29,10 +28,8 @@
               || !Object.hasOwnProperty.call(Drupal.settings.searchApiFederatedSolr, 'block')
               || !Object.hasOwnProperty.call(Drupal.settings.searchApiFederatedSolr.block, 'autocomplete')
               || !Object.hasOwnProperty.call(Drupal.settings.searchApiFederatedSolr.block.autocomplete, 'url')) {
-              console.log('return');
             return;
           }
-
           // Set default settings.
           var defaultSettings = {
             isEnabled: false,
@@ -107,11 +104,11 @@
 
 
           // Bind events to input.
-          $input.on("input", function(event) {
+          $input.bind("input", function(event) {
             doSearch(options.suggestionRows);
           });
 
-          $input.on("keydown", function(event) {
+          $input.bind("keydown", function(event) {
             doKeypress(keys, event);
           });
 
@@ -170,7 +167,7 @@
                 headers: headers,
                 url: url,
                 dataType: 'json',
-              })
+                success: (function( results ) {
                   // Currently we only support the response structure from Solr:
                   // {
                   //    response: {
@@ -185,7 +182,6 @@
 
                   // @todo provide hook for transform function to be passed in
                   //   via Drupal.settings then all it here.
-                .done(function( results ) {
                   if (results.response.docs.length >= 1) {
                     // Remove all suggestions
                     $('.js-autocomplete-suggestion').remove();
@@ -257,7 +253,17 @@
                     $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{
                     }]);
                   }
-                });
+                }),
+                error: (function(jqXHR, textStatus, errorThrown ) {
+                  // No results, remove suggestions and hide container
+                  $('.js-autocomplete-suggestion').remove();
+                  $autocompleteContainer.addClass('visually-hidden');
+                  $input.attr("aria-expanded","false");
+                 // Emit a custom events for removing.
+                  $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{
+                  }]);
+                }),
+              });
             }
             else {
               // Remove suggestions and hide container
@@ -385,4 +391,4 @@
 
   Drupal.SearchApiFederatedSolrAutocomplete = autocomplete;
 
-})(jQuery, Drupal);
+})(jQuery);
