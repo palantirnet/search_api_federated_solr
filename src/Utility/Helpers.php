@@ -88,8 +88,9 @@ class Helpers {
       }
     }
 
-    // Append qs params for block form autocomplete js.
-    if ($qs) {
+    // Append qs params for block form autocomplete js unless configured
+    // with a direct url (like a view rest export endpoint).
+    if ($qs && !$direct_url) {
       $endpoint_url .= $qs;
     }
 
