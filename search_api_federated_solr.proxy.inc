@@ -51,10 +51,22 @@ function search_api_federated_solr_proxy() {
 
   // @TODO EDismax fields?
 
+  // Merge in defaults.
+  $params += [
+    'start' => 0,
+    'rows' => 20,
+ #   'sort' => 'score=desc', // throws fatal error.
+    'hl.fl' => 'tm_rendered_item',
+    'hl.usePhraseHighlighter' => TRUE,
+    'facet.limit' => -1,
+    'facet.sort' => 'index',
+    'queryfields' => $params['fields'], // EDmisMax? We don't have Solarium here.
+  ];
+
   $results = [];
 
   if (isset($params['search'])) {
-    $results = $connection->search($params['search'], $params);
+    $results = $connection->search(urldecode($params['search']), $params);
   }
 
   return drupal_json_output($results);
