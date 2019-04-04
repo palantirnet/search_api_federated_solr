@@ -49,7 +49,11 @@ function search_api_federated_solr_proxy() {
     }
   }
 
-  $results = $connection->search($params['q'], $params);
+  $results = [];
+
+  if (isset($params['search'])) {
+    $results = $connection->search($params['search'], $params);
+  }
 
   return drupal_json_output($results);
 }

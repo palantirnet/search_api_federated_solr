@@ -746,12 +746,7 @@ function search_api_federated_solr_proxy_params() {
   foreach ($query as $string) {
     $parts = explode('=', $string);
     if (isset($parts[1])) {
-      if ($parts[0] == 'search') {
-        $params['q'] = $parts[1];
-      }
-      else {
-        $params[$parts[0]] = $parts[1];
-      }
+      $params[$parts[0]] = $parts[1];
     }
   }
   return $params;

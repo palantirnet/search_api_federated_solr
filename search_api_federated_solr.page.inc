@@ -33,9 +33,8 @@ function search_api_federated_solr_config_json() {
   $proxy_is_disabled = variable_get('search_api_federated_solr_disable_query_proxy', 0);
   $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;
 
-  if (!$proxy_is_disabled) {
+  if (empty($proxy_is_disabled)) {
     $options['query'] = search_api_federated_solr_proxy_params();
-    $options = ['absolute' => true];
     $federated_search_app_config['url'] = url('search-api-federated-solr/search', $options);
   }
   else {
@@ -124,7 +123,11 @@ function search_api_federated_solr_config_json() {
   $federated_search_app_config['autocomplete'] = FALSE;
   if ($autocomplete_is_enabled = variable_get('search_api_federated_solr_autocomplete_is_enabled')) {
     // REQUIRED: Autocomplete endpoint, defaults to main search url
-    if ($autocomplete_url = variable_get('search_api_federated_solr_autocomplete_url')) {
+    $autocomplete_proxy = variable_get('search_api_federated_solr_autocomplete_disable_query_proxy');
+    if (empty($autocomplete_proxy)) {
+      $federated_search_app_config['autocomplete']['url'] = $federated_search_app_config['url'];
+    }
+    elseif ($autocomplete_url = variable_get('search_api_federated_solr_autocomplete_url')) {
       $federated_search_app_config['autocomplete']['url'] = $autocomplete_url;
     }
     // OPTIONAL: defaults to false, whether or not to append wildcard to query term
