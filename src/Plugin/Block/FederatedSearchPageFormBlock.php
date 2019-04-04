@@ -349,7 +349,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       // Set the actual autocomplete config options.
       $autocomplete['isEnabled'] = $autocomplete_is_enabled;
       $autocomplete['proxyIsDisabled'] = $values['autocomplete']['disable_query_proxy'];
-      $autocomplete['directUrl'] = $values['autocomplete']['direct']['autocomplete_url'];
+      $autocomplete['directUrl'] = $autocomplete['proxyIsDisabled'] ? $values['autocomplete']['direct']['autocomplete_url'] : '';
       $autocomplete['use_search_app_creds'] = $use_search_app_creds;
 
       if ($username) {

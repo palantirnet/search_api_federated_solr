@@ -675,11 +675,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // If enabled, set the autocomplete options.
     if ($autocomplete_is_enabled) {
       // Cache form values that we'll use more than once.
-      $autocomplete_direct_url = $form_state->getValue('autocomplete_direct_url');
       $autocomplete_mode = $form_state->getValue('autocomplete_mode');
-
       // Determine the url to be used for autocomplete queries based on proxy flag.
       $proxy_is_disabled = $form_state->getValue('autocomplete_disable_query_proxy');
+      $autocomplete_direct_url = $proxy_is_disabled ? $form_state->getValue('autocomplete_direct_url') : '';
 
       // Default to the form values
       $autocomplete_username = $form_state->getValue('autocomplete_username');
