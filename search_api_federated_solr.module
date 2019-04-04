@@ -719,6 +719,9 @@ function search_api_federated_solr_map_variables($variables) {
     $url = $variables['search_api_federated_solr_autocomplete_block_url'];
   }
   else {
+    // @TODO: Do we need contextual params?
+    $params = search_api_federated_solr_proxy_params();
+
     $url = search_api_federated_solr_get_server_url();
   }
 
@@ -735,3 +738,22 @@ function search_api_federated_solr_map_variables($variables) {
 
   return $autocomplete;
 }
+
+function search_api_federated_solr_proxy_params() {
+  $params = [];
+  $request = str_replace(request_path() . '?', '', request_uri());
+  $query = explode('&', trim($request, '/'));
+  foreach ($query as $string) {
+    $parts = explode('=', $string);
+    if (isset($parts[1])) {
+      if ($parts[0] == 'search') {
+        $params['q'] = $parts[1];
+      }
+      else {
+        $params[$parts[0]] = $parts[1];
+      }
+    }
+  }
+  return $params;
+}
+

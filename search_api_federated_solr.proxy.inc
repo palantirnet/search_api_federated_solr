@@ -20,9 +20,8 @@ function search_api_federated_solr_proxy() {
   // Test URL:
   // http://d7.fs-demo.local/search-api-federated-solr/search?search=soup&sm_site_name[]=Federated%20Search%20Demo%20(D8%2C%20single)&ss_federated_type=Recipe
 
-  $qs = $_GET;
-  unset($qs['q']);
-  $data += $qs;
+  $params = search_api_federated_solr_proxy_params();
+
   // Parse the querystring, with support for multiple values for a key,
   // not using array[] syntax.
   // We may not need this function.
@@ -30,22 +29,27 @@ function search_api_federated_solr_proxy() {
 
   // Create the select query.
   // Note: this proxy will only execute select queries.
-  #$server_url = search_api_federated_solr_get_server_url();
   $search_index = variable_get('search_api_federated_solr_search_index');
   // Get the index configuration object.
   $index = search_api_index_load($search_index);
-  $server = $index->server();
 
-  # dpm($server);
+  $connection = $index->server()->getSolrConnection();
 
+  // Set the base query.
   $options['parse mode'] = 'direct';
+
   $query = search_api_query($search_index, $options);
 
-  // Set query fields.
-  $fields = variable_get('search_api_federated_solr_query_fields', ['rendered_item']);
-  $query->fields($fields);
+  // Get the eligible text fields for the query.
+  $config_fields = variable_get('search_api_federated_solr_query_fields', ['rendered_item']);
+  $index_fields = $index->options['fields'];
+  foreach ($index_fields as $field => $value) {
+    if ($value['type'] == 'text' && in_array($field, $config_fields, TRUE)) {
+      $params['fields'][] = $field;
+    }
+  }
 
-  $results = $index->server()->search($query, $qs);
+  $results = $connection->search($params['q'], $params);
 
   return drupal_json_output($results);
 }

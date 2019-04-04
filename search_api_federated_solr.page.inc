@@ -34,9 +34,9 @@ function search_api_federated_solr_config_json() {
   $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;
 
   if (!$proxy_is_disabled) {
+    $options['query'] = search_api_federated_solr_proxy_params();
     $options = ['absolute' => true];
-    $proxy_url = url('search-api-federated-solr/search', $options);
-    $federated_search_app_config['url'] = $proxy_url;
+    $federated_search_app_config['url'] = url('search-api-federated-solr/search', $options);
   }
   else {
     $server_url = search_api_federated_solr_get_server_url();
