@@ -48,6 +48,8 @@ function search_api_federated_solr_proxy() {
       $params['fields'][] = $field;
     }
   }
+  // Get fields from Solr?
+  $cf = $connection->getFields();
 
   // @TODO EDismax fields?
 
@@ -55,7 +57,7 @@ function search_api_federated_solr_proxy() {
   $params += [
     'start' => 0,
     'rows' => 20,
- #   'sort' => 'score=desc', // throws fatal error.
+    #'sort' => 'score=desc', // throws fatal error.
     'hl.fl' => 'tm_rendered_item',
     'hl.usePhraseHighlighter' => TRUE,
     'facet.limit' => -1,
