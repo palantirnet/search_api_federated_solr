@@ -3,11 +3,10 @@
 namespace Drupal\search_api_federated_solr\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Cache\CacheableJsonResponse;
-use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\search_api\Entity\Server;
 use Drupal\search_api\SearchApiException;
 use Drupal\search_api_federated_solr\Utility\Helpers;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class SolrProxyController extends ControllerBase {
@@ -156,28 +155,8 @@ class SolrProxyController extends ControllerBase {
       watchdog_exception('search_api_federated_solr', $e, '%type while executed query on @server: @message in %function (line %line of %file).', array('@server' => $server->label()));
     }
 
-    // Get Browser and proxy cache maximum age config setting
-    $performance_config = \Drupal::configFactory()->getEditable('system.performance');
-    $max_age_setting = $performance_config->get('cache.page.max_age');
-    // Honor the max age setting, if set, default to one hour.
-    // Setting to one hour to help decrease the load for autocomplete queries.
-    $max_age = $max_age_setting || 3600;
-
-    // Add Cache settings for Max-age and URL context.
-    $data['#cache'] = [
-      'contexts' => [
-        'url', // vary by the entire url, including path + query args
-      ],
-    ];
-
-    // Create cacheable json response with 200 response code.
-    $response = new CacheableJsonResponse($data, 200);
-    // Add cache metadata set in $data['#cache'].
-    $response->addCacheableDependency(CacheableMetadata::createFromRenderArray($data));
-    // Set max age.
-    // @see: https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Cache%21CacheableJsonResponse.php/class/CacheableJsonResponse/8.2.x
-    $response->setMaxAge($max_age);
-    $response->setSharedMaxAge($max_age);
+    // Create json response with 200 response code.
+    $response = new JsonResponse($data, 200);
     return $response;
   }
 }

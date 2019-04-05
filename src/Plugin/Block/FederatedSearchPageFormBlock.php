@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\search_api_federated_solr\Utility\Helpers;
+use Drupal\Component\Utility\UrlHelper;
 
 /**
  * Provides a "Federated Search Page Form" block.
@@ -161,7 +162,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
     ];
 
     $form['autocomplete']['direct']['autocomplete_url'] = [
-      '#type' => 'url',
+      '#type' => 'textfield',
       '#title' => $this->t('Endpoint URL'),
       '#default_value' => isset($config['autocomplete']['directUrl']) ? $config['autocomplete']['directUrl'] : '',
       '#maxlength' => 2048,
@@ -321,6 +322,30 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
   }
 
   /**
+   * Validates that the provided autocomplete endpoint path is a valid relative or
+   * absolute URL.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function blockValidate($form, FormStateInterface $form_state) {
+    $key = ['autocomplete', 'direct', 'autocomplete_url'];
+    $path = $form_state->getValue($key);
+    $proxy_is_disabled = $form_state->getValue(['autocomplete', 'disable_query_proxy']);
+    if ($path && $proxy_is_disabled) {
+      if ($path !== '' && !UrlHelper::isValid($path, FALSE)) {
+        $element['#parents'] = $key;
+        $form_state
+          ->setError($element, t('The URL %url is not valid.', array(
+          '%url' => $path,
+        )));
+      }
+    }
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
@@ -349,7 +374,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
       // Set the actual autocomplete config options.
       $autocomplete['isEnabled'] = $autocomplete_is_enabled;
       $autocomplete['proxyIsDisabled'] = $values['autocomplete']['disable_query_proxy'];
-      $autocomplete['directUrl'] = $values['autocomplete']['direct']['autocomplete_url'];
+      $autocomplete['directUrl'] = $autocomplete['proxyIsDisabled'] ? $values['autocomplete']['direct']['autocomplete_url'] : '';
       $autocomplete['use_search_app_creds'] = $use_search_app_creds;
 
       if ($username) {

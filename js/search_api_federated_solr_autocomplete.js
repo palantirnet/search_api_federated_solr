@@ -218,10 +218,32 @@
                         return "<strong>" + string + "</strong>"
                       });
 
+                      // Default the URL to the passed ss_url.
+                      let href = item.ss_url;
+
+                      // Ensure that the result returned for the item from solr
+                      // (via proxy or directly) is assigned an absolute URL.
+                      if (!options.directUrl) {
+                        // Initialize url to compute from solr sm_urls array.
+                        let sm_url;
+                        // Use the canonical url.
+                        if (Array.isArray(item.sm_urls)) {
+                          sm_url = item.sm_urls[0];
+                        }
+
+                        // If no valid urls are passed from solr, skip this item.
+                        if (!sm_url) {
+                          return;
+                        }
+
+                        // Override the current href value.
+                        href = sm_url;
+                      }
+
                       //Add results to the list
                       var $suggestionTemplate = `
                       <div role='option' tabindex='-1' class='js-autocomplete-suggestion autocomplete-suggestion' id='suggestion-${counter}'>
-                        <a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='${item.ss_url}'>${highlighted}</a>
+                        <a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='${href}'>${highlighted}</a>
                         <span class='visually-hidden'>(${counter} of ${limitedResults.length})</span>
                       </div>`;
                       $results.append($suggestionTemplate);
