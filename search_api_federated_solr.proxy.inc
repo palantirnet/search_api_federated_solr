@@ -71,6 +71,13 @@ function search_api_federated_solr_proxy() {
     $results = $connection->search(urldecode($params['search']), $params);
   }
 
+  /* Test formatting.
+  $response = (object) [
+    'response' => $results->response,
+    'facet_counts' => $results->facet_counts,
+    'highlighting' => $results->highlighting,
+  ];*/
+
   return drupal_json_output($results);
 }
 

@@ -193,7 +193,7 @@
                     counter = 1;
 
                     // Bind click event for close button
-                    $closeButton.on("click", function (event) {
+                    $closeButton.bind("click", function (event) {
                       event.preventDefault();
                       event.stopPropagation();
                       $input.removeAttr("aria-activedescendant");
@@ -228,7 +228,7 @@
                     });
 
                     // On link click, emit an event whose data can be used to write to analytics, etc.
-                    $('.js-autocomplete-suggestion__link').on('click', function (e) {
+                    $('.js-autocomplete-suggestion__link').bind('click', function (e) {
                       $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection", [{
                         referrer: $(location).attr('href'),
                         target: $(this).attr('href'),
