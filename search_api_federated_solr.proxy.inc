@@ -68,7 +68,9 @@ function search_api_federated_solr_proxy() {
   $results = [];
 
   if (isset($params['search'])) {
-    $results = $connection->search(urldecode($params['search']), $params);
+    $query = $params['search'];
+    unset($params['search']);
+    $results = $connection->search(urldecode($query), $params);
   }
 
   /* Test formatting.
