@@ -18,7 +18,8 @@ class SearchController extends ControllerBase {
   public function content() {
     $renderer = \Drupal::service('renderer');
 
-    $config = \Drupal::configFactory()->getEditable('search_api_federated_solr.search_app.settings');
+    $config = \Drupal::configFactory()->get('search_api_federated_solr.search_app.settings');
+    $config_editable = \Drupal::configFactory()->getEditable('search_api_federated_solr.search_app.settings');
     $index_config = \Drupal::config('search_api.index.' . $config->get('index.id'));
 
     // Define the federated search app configuration array.
@@ -50,7 +51,7 @@ class SearchController extends ControllerBase {
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
     $use_system_site_name = $index_config->get('field_settings.site_name.configuration.use_system_site_name');
     $is_site_name_property = ($site_name_property || $use_system_site_name) ? 'true': '';
-    $config->set('index.has_site_name_property', $is_site_name_property ? TRUE : FALSE);
+    $config_editable->set('index.has_site_name_property', $is_site_name_property ? TRUE : FALSE);
 
     // Determine if config option to set default site name is set.
     $set_default_site = $config->get('facet.site_name.set_default');
@@ -61,7 +62,7 @@ class SearchController extends ControllerBase {
      * in initial get request.
      */
     if ($set_default_site && !$is_site_name_property) {
-      $config->set('facet.site_name.set_default', 0);
+      $config_editable->set('facet.site_name.set_default', 0);
     }
 
     // Create an index property field map array to determine which fields
