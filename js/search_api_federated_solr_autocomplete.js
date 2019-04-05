@@ -216,11 +216,13 @@
                       var highlighted = item.ss_federated_title.replace(pattern, function(string) {
                         return "<strong>" + string + "</strong>"
                       });
-
+                      // @TODO: Why does ss_url not work here?
+                      // console.log(item.ss_url);
+                      // console.log(item.sm_urls[0]);
                       //Add results to the list
                       var $suggestionTemplate = `
                       <div role='option' tabindex='-1' class='js-autocomplete-suggestion autocomplete-suggestion' id='suggestion-${counter}'>
-                        <a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='${item.ss_url}'>${highlighted}</a>
+                        <a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='${item.sm_urls[0]}'>${highlighted}</a>
                         <span class='visually-hidden'>(${counter} of ${limitedResults.length})</span>
                       </div>`;
                       $results.append($suggestionTemplate);
@@ -241,10 +243,11 @@
                     }]);
 
                     // Announce the number of suggestions.
-                    var number = $results.children('[role="option"]').length;
-                    if (number >= 1) {
-                      Drupal.announce(Drupal.t(number + " suggestions displayed. To navigate use up and down arrow keys."));
-                    }
+                    // @TODO: Drupal.announce does not exist in D7.
+                    //var number = $results.children('[role="option"]').length;
+                    //if (number >= 1) {
+                    //  Drupal.announce(Drupal.t(number + " suggestions displayed. To navigate use up and down arrow keys."));
+                    //}
                   } else {
                     // No results, remove suggestions and hide container
                     $('.js-autocomplete-suggestion').remove();
