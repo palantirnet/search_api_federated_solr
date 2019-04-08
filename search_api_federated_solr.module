@@ -710,6 +710,9 @@ function search_api_federated_solr_variables() {
 function search_api_federated_solr_map_variables($variables) {
   $mode = $variables['search_api_federated_solr_autocomplete_block_mode'];
   $proxy_disabled = $variables['search_api_federated_solr_autocomplete_block_disable_query_proxy'];
+  $direct_url = $variables['search_api_federated_solr_autocomplete_block_url'];
+  // Do not append params to directly supplied urls (i.e. views endpoints)
+  $params = '';
 
   if ($proxy_disabled) {
     // @TODO -- get the right vars here.
@@ -717,14 +720,18 @@ function search_api_federated_solr_map_variables($variables) {
     // Get creds.
     $autocomplete['userpass'] = base64_encode($variables['search_api_federated_solr_autocomplete_block_username']
       . ':' . $variables['search_api_federated_solr_autocomplete_block_password']);
-    $url = $variables['search_api_federated_solr_autocomplete_block_url'];
+    // Supply the necessary search term + format params for the solr server endpoint.
+    $params = '?q=[val]&wt=json';
   }
   else {
     // @TODO: Do we need contextual params?
-    $params = search_api_federated_solr_proxy_params();
-
-    $url = search_api_federated_solr_get_server_url();
+//    $params = search_api_federated_solr_proxy_params();
+    // Supply the necessary search term + format params for the proxy endpoint.
+    $params = '?search=[val]&wt=json';
   }
+
+  // Determine the autocomplete endpoint based on block config.
+  $url = search_api_federated_solr_get_endpoint_url($proxy_disabled, $direct_url, $params);
 
   $autocomplete['url'] = $url;
   $autocomplete['isEnabled'] = $variables['search_api_federated_solr_autocomplete_block_is_enabled'];
@@ -755,5 +762,51 @@ function search_api_federated_solr_proxy_params() {
     }
   }
   return $params;
+}
+
+/**
+ * Determines url to use for app search + autocomplete queries based on config:
+ *  - defaults to absolute url to proxy route, appends qs params
+ *  - if proxy disabled
+ *    - compute and fallback to the server url
+ *    - if direct url endpoint passed, use it
+ *
+ * @param integer $proxy_is_disabled
+ *   Flag indicating whether or not the autocomplete proxy is disabled (0 || 1)
+ * @param string $direct_url
+ *   Value of the direct url ("" || <absolute-url-with-qs-params>)
+ * @param string $qs
+ *   Querystring params to append to proxy url
+ *
+ * @return string
+ *   URL for the endpoint to be used for query requests.
+ */
+function search_api_federated_solr_get_endpoint_url($proxy_is_disabled, $direct_url, $qs = '') {
+  global $base_url;
+  // Create proxy URL.
+  $proxy_url_options = [
+    'absolute' => TRUE,
+  ];
+  // Default to proxy url.
+  $endpoint_url = $base_url . '/search-api-federated-solr/search';
+
+  if ($proxy_is_disabled) {
+    // Override with direct URL if provided.
+    if ($direct_url) {
+      $endpoint_url = $direct_url;
+    }
+    else {
+      // Fallback to solr backend select handler URL.
+      $endpoint_url = search_api_federated_solr_get_server_url();
+    }
+  }
+
+  // Append qs params for block form autocomplete js unless configured
+  // with a direct url (like a view rest export endpoint).
+  if ($qs && !$direct_url) {
+    $endpoint_url .= $qs;
+  }
+
+  return $endpoint_url;
 }
 

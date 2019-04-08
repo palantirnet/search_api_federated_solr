@@ -102,7 +102,6 @@
           });
 
           // Set the text default query.
-          options.url += '?q=[val]&wt=json';
           var urlWithDefaultParams = options.url + defaultParams;
 
           // Bind events to input.
