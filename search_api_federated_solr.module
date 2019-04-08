@@ -785,11 +785,8 @@ function search_api_federated_solr_proxy_params() {
  */
 function search_api_federated_solr_get_endpoint_url($proxy_is_disabled, $direct_url, $qs = '') {
   global $base_url;
-  // Create proxy URL.
-  $proxy_url_options = [
-    'absolute' => TRUE,
-  ];
   // Default to proxy url.
+  // @TODO is there a way to generate this from the menu?
   $endpoint_url = $base_url . '/search-api-federated-solr/search';
 
   if ($proxy_is_disabled) {
