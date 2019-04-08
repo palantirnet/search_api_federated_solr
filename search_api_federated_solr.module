@@ -711,8 +711,6 @@ function search_api_federated_solr_map_variables($variables) {
   $mode = $variables['search_api_federated_solr_autocomplete_block_mode'];
   $proxy_disabled = $variables['search_api_federated_solr_autocomplete_block_disable_query_proxy'];
   $direct_url = $variables['search_api_federated_solr_autocomplete_block_url'];
-  // Do not append params to directly supplied urls (i.e. views endpoints)
-  $params = '';
 
   if ($proxy_disabled) {
     // @TODO -- get the right vars here.
@@ -730,6 +728,11 @@ function search_api_federated_solr_map_variables($variables) {
     $params = '?search=[val]&wt=json';
     // Remove direct url value if the proxy is enabled.
     $direct_url = '';
+  }
+
+  // Do not append params to directly supplied urls (i.e. views endpoints)
+  if ($direct_url) {
+    $params = '';
   }
 
   // Determine the autocomplete endpoint based on block config.
