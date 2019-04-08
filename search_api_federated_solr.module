@@ -368,6 +368,7 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
     '#attributes' => array(
       'title' => t('Enter the terms you wish to search for.'),
       'placeholder' => '',
+      'autocomplete' => 'off'
     ),
     '#prefix' => '<div class="container-inline">',
   );
