@@ -729,8 +729,12 @@ function search_api_federated_solr_map_variables($variables) {
   $autocomplete['url'] = $url;
   $autocomplete['isEnabled'] = $variables['search_api_federated_solr_autocomplete_block_is_enabled'];
   $autocomplete['appendWildcard'] = $variables['search_api_federated_solr_autocomplete_block_is_append_wildcard'];
-  $autocomplete['numChars'] = $variables['search_api_federated_solr_autocomplete_block_num_chars'];
-  $autocomplete['suggestionRows'] = $variables['search_api_federated_solr_autocomplete_block_suggestion_rows'];
+  if ($variables['search_api_federated_solr_autocomplete_block_num_chars']) {
+    $autocomplete['numChars'] = $variables['search_api_federated_solr_autocomplete_block_num_chars'];
+  }
+  if ($variables['search_api_federated_solr_autocomplete_block_suggestion_rows']) {
+    $autocomplete['suggestionRows'] = $variables['search_api_federated_solr_autocomplete_block_suggestion_rows'];
+  }
   $autocomplete['mode'] = $mode;
   $autocomplete['result'] = [
     'titleText' => $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'],
