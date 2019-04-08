@@ -728,6 +728,8 @@ function search_api_federated_solr_map_variables($variables) {
 //    $params = search_api_federated_solr_proxy_params();
     // Supply the necessary search term + format params for the proxy endpoint.
     $params = '?search=[val]&wt=json';
+    // Remove direct url value if the proxy is enabled.
+    $direct_url = '';
   }
 
   // Determine the autocomplete endpoint based on block config.
