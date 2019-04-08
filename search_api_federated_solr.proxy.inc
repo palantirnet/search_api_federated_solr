@@ -30,26 +30,40 @@ function search_api_federated_solr_proxy() {
   // Create the select query.
   // Note: this proxy will only execute select queries.
   $search_index = variable_get('search_api_federated_solr_search_index');
-  // Get the index configuration object.
+  // Get the index entity.
+  /** @var \SearchApiIndex $index */
   $index = search_api_index_load($search_index);
-
-  $connection = $index->server()->getSolrConnection();
+  // Get server entity.
+  /** @var \SearchApiServer $server */
+  try {
+    $server = $index->server();
+  }
+  catch (SearchApiException $e) {
+    watchdog_exception('search_api_federated_solr', $e, '%type while getting server for @index: @message in %function (line %line of %file).', array('@index' => $index->label()));
+  }
+  // Get the solr service proxy class.
+  /** @var \SearchApiSolrService $solr */
+  $solr = new SearchApiSolrService($server);
+  /** @var \SearchApiSolrConnection $connection */
+  $connection = $solr->getSolrConnection();
 
   // Set the base query.
   $options['parse mode'] = 'direct';
 
   $query = search_api_query($search_index, $options);
 
+  // Get index field names mapped to their solr field name counterparts
+  $backend_field_names_map = $solr->getFieldNames($index);
   // Get the eligible text fields for the query.
   $config_fields = variable_get('search_api_federated_solr_query_fields', ['rendered_item']);
-  $index_fields = $index->options['fields'];
-  foreach ($index_fields as $field => $value) {
-    if ($value['type'] == 'text' && in_array($field, $config_fields, TRUE)) {
-      $params['fields'][] = $field;
-    }
-  }
-  // Get fields from Solr?
-  $cf = $connection->getFields();
+  // Get all full text fields from the index.
+  $full_text_index_fields = $index->getFullTextFields();
+  // We can only search full text fields, so validate supplied field names.
+  $full_text_query_fields = array_intersect($config_fields, $full_text_index_fields);
+  // Filter the field names map by our query fields.
+  $query_fields_map = array_intersect_key($backend_field_names_map, array_flip($full_text_query_fields));
+  // Get the solr field name for our supplied full text query fields.
+  $query_fields = array_values($query_fields_map);
 
   // @TODO EDismax fields?
 
@@ -65,7 +79,7 @@ function search_api_federated_solr_proxy() {
     'hl.usePhraseHighlighter' => 'true',
     'facet.limit' => -1,
     'facet.sort' => 'index',
-    'queryfields' => $params['fields'], // EDmisMax? We don't have Solarium here.
+    'df' => implode(' ', $query_fields),
   ];
 
   $results = [];
