@@ -58,8 +58,11 @@ function search_api_federated_solr_proxy() {
     'start' => 0,
     'rows' => 20,
     'sort' => 'score desc',
+    'hl' => 'true',
+    'hl.simple.pre' => urldecode('<strong>'),
+    'hl.simple.post' => urldecode('</strong>'),
     'hl.fl' => 'tm_rendered_item',
-    'hl.usePhraseHighlighter' => TRUE,
+    'hl.usePhraseHighlighter' => 'true',
     'facet.limit' => -1,
     'facet.sort' => 'index',
     'queryfields' => $params['fields'], // EDmisMax? We don't have Solarium here.
