@@ -14,13 +14,14 @@
  * a select query on the index based on request qs params passed from the app.
  */
 function search_api_federated_solr_proxy() {
-  $data = [];
-
+  $results = [];
+  
   // @TODO: Get server config.
   // Test URL:
   // http://d7.fs-demo.local/search-api-federated-solr/search?search=soup&sm_site_name[]=Federated%20Search%20Demo%20(D8%2C%20single)&ss_federated_type=Recipe
 
-  $params = search_api_federated_solr_proxy_params();
+  $qs = str_replace('/' . request_path() . '?', '', request_uri());
+  $params = parse_str_multiple($qs);
 
   // Parse the querystring, with support for multiple values for a key,
   // not using array[] syntax.
@@ -66,8 +67,17 @@ function search_api_federated_solr_proxy() {
   $query_fields = array_values($query_fields_map);
 
   // @TODO EDismax fields?
+  // Set facet params
+  if (is_array($params['facet.field']) && count($params['facet.field'])) {
+    // Set defaults for facet params if they don't already exist.
+    $params += [
+      'facet' => 'on',
+      'facet.limit' => -1,
+      'facet.sort' => 'index',
+    ];
+  }
 
-  // Merge in defaults.
+  // Merge in the default params.
   $params += [
     'start' => 0,
     'rows' => 20,
@@ -77,17 +87,44 @@ function search_api_federated_solr_proxy() {
     'hl.simple.post' => urldecode('</strong>'),
     'hl.fl' => 'tm_rendered_item',
     'hl.usePhraseHighlighter' => 'true',
-    'facet.limit' => -1,
-    'facet.sort' => 'index',
     'df' => implode(' ', $query_fields),
   ];
 
-  $results = [];
-
+  // @TODO: support empty searches if config is set.
   if (isset($params['search'])) {
     $query = $params['search'];
     unset($params['search']);
-    $results = $connection->search(urldecode($query), $params);
+    try {
+      $results = $connection->search(urldecode($query), $params);
+    }
+    catch (SearchApiException $e) {
+      watchdog_exception('search_api_federated_solr', $e, '%type while executing query on @server: @message in %function (line %line of %file).', array('@server' => $server->label()));
+    }
+  }
+
+  if (isset($results)) {
+    // Convert each facet_fields->item into an array, i.e.:
+    // FROM object:
+    // sm_site_name: {
+    //   Federated SOLR D7 = 0,
+    //   Federated Search Demo (D8, Single) = 0
+    // }
+    // TO ARRAY:
+    // sm_site_name: [
+    //   "Federated SOLR D7",
+    //   0,
+    //   "Federated Search Demo (D8, single)",
+    //   0
+    // ]
+    $facet_fields = $results->facet_counts->facet_fields;
+    foreach ($facet_fields as $field => $value) {
+      $facet_fields_array = [];
+      foreach ($value as $facet_key => $facet_value) {
+        array_push($facet_fields_array, $facet_key);
+        array_push($facet_fields_array, $facet_value);
+      }
+      $facet_fields->$field = $facet_fields_array;
+    }
   }
 
   /* Test formatting.
