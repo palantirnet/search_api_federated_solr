@@ -91,6 +91,11 @@ function search_api_federated_solr_proxy() {
     }
   }
 
+  // Set sort param.
+  if (array_key_exists('sort', $params)) {
+    $params['sort'] = urldecode($params['sort']);
+  }
+
   // Support empty search result set (i.e. show all results)
   if (variable_get('search_api_federated_solr_show_empty_search_results', 0)) {
     // Set the default search param to '*' if it doesn't already exist.
