@@ -587,14 +587,16 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.0/js/main.41ba8df2.js' => array(
-        'type' => 'external',
+      drupal_get_path('module', 'search_api_federated_solr') . '/js/main.81d8859b.js' => array(
         'scope' => 'footer',
+//      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.0/js/main.41ba8df2.js' => array(
+//        'type' => 'external',
       ),
     ),
     'css' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.0/css/main.ec684809.css' => array(
-        'type' => 'external',
+      drupal_get_path('module', 'search_api_federated_solr') . '/css/main.ec684809.css' => array(
+//      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.0/css/main.ec684809.css' => array(
+//        'type' => 'external',
       ),
     ),
   );
