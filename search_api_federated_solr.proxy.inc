@@ -15,7 +15,7 @@
  */
 function search_api_federated_solr_proxy() {
   $results = [];
-  
+
   // @TODO: Get server config.
   // Test URL:
   // http://d7.fs-demo.local/search-api-federated-solr/search?search=soup&sm_site_name[]=Federated%20Search%20Demo%20(D8%2C%20single)&ss_federated_type=Recipe
@@ -49,9 +49,15 @@ function search_api_federated_solr_proxy() {
   $connection = $solr->getSolrConnection();
 
   // Set the base query.
-  $options['parse mode'] = 'direct';
+//  $options['parse mode'] = 'direct';
 
-  $query = search_api_query($search_index, $options);
+//  /** @var \SearchApiQuery $query */
+//  try {
+//    $query = search_api_query($search_index, $options);
+//  }
+//  catch (SearchApiException $e) {
+//    watchdog_exception('search_api_federated_solr', $e, '%type while creating query: @message in %function (line %line of %file).');
+//  }
 
   // Get index field names mapped to their solr field name counterparts
   $backend_field_names_map = $solr->getFieldNames($index);
