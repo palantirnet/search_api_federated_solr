@@ -112,14 +112,15 @@ function search_api_federated_solr_proxy() {
     //   "Federated Search Demo (D8, single)",
     //   0
     // ]
-    $facet_fields = $results->facet_counts->facet_fields;
-    foreach ($facet_fields as $field => $value) {
-      $facet_fields_array = [];
-      foreach ($value as $facet_key => $facet_value) {
-        array_push($facet_fields_array, $facet_key);
-        array_push($facet_fields_array, $facet_value);
+    if ($facet_fields = $results->facet_counts->facet_fields) {
+      foreach ($facet_fields as $field => $value) {
+        $facet_fields_array = [];
+        foreach ($value as $facet_key => $facet_value) {
+          array_push($facet_fields_array, $facet_key);
+          array_push($facet_fields_array, $facet_value);
+        }
+        $facet_fields->$field = $facet_fields_array;
       }
-      $facet_fields->$field = $facet_fields_array;
     }
   }
 
