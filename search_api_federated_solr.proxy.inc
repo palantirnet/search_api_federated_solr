@@ -21,15 +21,8 @@ function search_api_federated_solr_proxy() {
   // http://d7.fs-demo.local/search-api-federated-solr/search?search=soup&sm_site_name[]=Federated%20Search%20Demo%20(D8%2C%20single)&ss_federated_type=Recipe
 
   $qs = str_replace('/' . request_path() . '?', '', request_uri());
-  $params = parse_str_multiple($qs);
+  $params = search_api_federated_solr_parse_str_multiple($qs);
 
-  // Parse the querystring, with support for multiple values for a key,
-  // not using array[] syntax.
-  // We may not need this function.
-  // $params = search_api_federated_solr_parse_multiple($qs);
-
-  // Create the select query.
-  // Note: this proxy will only execute select queries.
   $search_index = variable_get('search_api_federated_solr_search_index');
   // Get the index entity.
   /** @var \SearchApiIndex $index */
@@ -48,6 +41,8 @@ function search_api_federated_solr_proxy() {
   /** @var \SearchApiSolrConnection $connection */
   $connection = $solr->getSolrConnection();
 
+  // Create the select query.
+  // Note: this proxy will only execute select queries.
   // Set the base query.
 //  $options['parse mode'] = 'direct';
 

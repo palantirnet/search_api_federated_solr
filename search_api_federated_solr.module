@@ -781,7 +781,7 @@ function search_api_federated_solr_proxy_params() {
  * @return array
  *  Array of querystring params and their values.
  */
-function parse_str_multiple($str) {
+function search_api_federated_solr_parse_str_multiple($str) {
   # result array
   $arr = [];
 
