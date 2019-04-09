@@ -99,17 +99,3 @@ function search_api_federated_solr_proxy() {
 
   return drupal_json_output($results);
 }
-
-/**
- * Parses a querystring with support for multiple keys not using array[] syntax.
- * @see: http://php.net/manual/en/function.parse-str.php#76792
- *
- * @param $str
- *  The querystring from the request object.
- *
- * @return array
- *  Array of querystring params and their values.
-
-function search_api_federated_solr_parse_multiple($qs) {
-
-} */
