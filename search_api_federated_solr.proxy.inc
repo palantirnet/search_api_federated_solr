@@ -20,6 +20,7 @@ function search_api_federated_solr_proxy() {
   // Test URL:
   // http://d7.fs-demo.local/search-api-federated-solr/search?search=soup&sm_site_name[]=Federated%20Search%20Demo%20(D8%2C%20single)&ss_federated_type=Recipe
 
+  // Parse the querystring into an array, supporting multiples.
   $qs = str_replace('/' . request_path() . '?', '', request_uri());
   $params = search_api_federated_solr_parse_str_multiple($qs);
 
@@ -76,6 +77,18 @@ function search_api_federated_solr_proxy() {
       'facet.limit' => -1,
       'facet.sort' => 'index',
     ];
+  }
+
+  // Set query filter params
+  if (array_key_exists('fq', $params)) {
+    if (is_string($params['fq'])) {
+      $params['fq'] = urldecode($params['fq']);
+    }
+    if (is_array($params['fq'])) {
+      foreach ($params['fq'] as $key => $value) {
+        $params['fq'][$key] = urldecode($value);
+      }
+    }
   }
 
   // Merge in the default params.
