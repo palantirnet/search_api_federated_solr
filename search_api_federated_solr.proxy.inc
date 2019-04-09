@@ -91,6 +91,14 @@ function search_api_federated_solr_proxy() {
     }
   }
 
+  // Support empty search result set (i.e. show all results)
+  if (variable_get('search_api_federated_solr_show_empty_search_results', 0)) {
+    // Set the default search param to '*' if it doesn't already exist.
+    $params += [
+      'search' => '*',
+    ];
+  }
+
   // Merge in the default params.
   $params += [
     'start' => 0,
@@ -104,7 +112,6 @@ function search_api_federated_solr_proxy() {
     'df' => implode(' ', $query_fields),
   ];
 
-  // @TODO: support empty searches if config is set.
   if (isset($params['search'])) {
     $query = $params['search'];
     unset($params['search']);
@@ -116,6 +123,7 @@ function search_api_federated_solr_proxy() {
     }
   }
 
+  // Post process results.
   if (isset($results)) {
     // Convert each facet_fields->item into an array, i.e.:
     // FROM object:
