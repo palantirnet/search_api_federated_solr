@@ -22,7 +22,8 @@ function search_api_federated_solr_proxy() {
 
   // Parse the querystring into an array, supporting multiples.
   $qs = str_replace('/' . request_path() . '?', '', request_uri());
-  $params = search_api_federated_solr_parse_str_multiple($qs);
+  $qs_urldecoded = urldecode($qs);
+  $params = search_api_federated_solr_parse_str_multiple($qs_urldecoded);
 
   $search_index = variable_get('search_api_federated_solr_search_index');
   // Get the index entity.
@@ -79,23 +80,6 @@ function search_api_federated_solr_proxy() {
     ];
   }
 
-  // Set query filter params
-  if (array_key_exists('fq', $params)) {
-    if (is_string($params['fq'])) {
-      $params['fq'] = urldecode($params['fq']);
-    }
-    if (is_array($params['fq'])) {
-      foreach ($params['fq'] as $key => $value) {
-        $params['fq'][$key] = urldecode($value);
-      }
-    }
-  }
-
-  // Set sort param.
-  if (array_key_exists('sort', $params)) {
-    $params['sort'] = urldecode($params['sort']);
-  }
-
   // Support empty search result set (i.e. show all results)
   if (variable_get('search_api_federated_solr_show_empty_search_results', 0)) {
     // Set the default search param to '*' if it doesn't already exist.
@@ -110,8 +94,8 @@ function search_api_federated_solr_proxy() {
     'rows' => 20,
     'sort' => 'score desc',
     'hl' => 'true',
-    'hl.simple.pre' => urldecode('<strong>'),
-    'hl.simple.post' => urldecode('</strong>'),
+    'hl.simple.pre' => '<strong>',
+    'hl.simple.post' => '</strong>',
     'hl.fl' => 'tm_rendered_item',
     'hl.usePhraseHighlighter' => 'true',
     'df' => implode(' ', $query_fields),
