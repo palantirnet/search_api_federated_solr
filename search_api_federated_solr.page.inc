@@ -37,7 +37,10 @@ function search_api_federated_solr_config_json() {
   $federated_search_app_config['proxyIsDisabled'] = $proxy_is_disabled;
 
   // Default is the proxy URL.
-  $federated_search_app_config['url'] = url('search-api-federated-solr/search');
+  $options = [
+    'absolute' => TRUE,
+  ];
+  $federated_search_app_config['url'] = url('search-api-federated-solr/search', $options);
 
   // Fall back to Solr server select handler if proxy is disabled.
   if ($proxy_is_disabled) {
@@ -124,14 +127,14 @@ function search_api_federated_solr_config_json() {
 
   $federated_search_app_config['autocomplete'] = FALSE;
   if ($autocomplete_is_enabled = variable_get('search_api_federated_solr_autocomplete_is_enabled')) {
-    // REQUIRED: Autocomplete endpoint, defaults to main search url
-    $autocomplete_proxy = variable_get('search_api_federated_solr_autocomplete_disable_query_proxy');
-    if (empty($autocomplete_proxy)) {
-      $federated_search_app_config['autocomplete']['url'] = $federated_search_app_config['url'];
-    }
-    elseif ($autocomplete_url = variable_get('search_api_federated_solr_autocomplete_url')) {
-      $federated_search_app_config['autocomplete']['url'] = $autocomplete_url;
-    }
+    $proxy_disabled = variable_get('search_api_federated_solr_autocomplete_disable_query_proxy');
+    $federated_search_app_config['autocomplete']['proxyIsDisabled'] = $proxy_disabled;
+    // REQUIRED: Autocomplete endpoint
+    $direct_url = variable_get('search_api_federated_solr_autocomplete_url');
+    // Determine the autocomplete endpoint based on block config.
+    $url = search_api_federated_solr_get_endpoint_url($proxy_disabled, $direct_url);
+    $federated_search_app_config['autocomplete']['url'] = $url;
+
     // OPTIONAL: defaults to false, whether or not to append wildcard to query term
     if ($autocomplete_append_wildcard = variable_get('search_api_federated_solr_autocomplete_is_append_wildcard')) {
       $federated_search_app_config['autocomplete']['appendWildcard'] = $autocomplete_append_wildcard;
