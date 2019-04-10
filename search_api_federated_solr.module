@@ -669,6 +669,8 @@ function search_api_federated_solr_variables() {
     'search_api_federated_solr_search_index',
     'search_api_federated_solr_disable_query_proxy',
     'search_api_federated_solr_search_index_basic_auth',
+    'search_api_federated_solr_search_index_basic_auth_username',
+    'search_api_federated_solr_search_index_basic_auth_password',
     'search_api_federated_solr_show_empty_search_results',
     'search_api_federated_solr_no_results_text',
     'search_api_federated_solr_search_prompt_text',
@@ -715,17 +717,25 @@ function search_api_federated_solr_map_variables($variables) {
   $direct_url = $variables['search_api_federated_solr_autocomplete_block_url'];
 
   if ($proxy_disabled) {
-    // @TODO -- get the right vars here.
+    // Default to provided username and password.
+    $username = $variables['search_api_federated_solr_autocomplete_block_username'];
+    $password = $variables['search_api_federated_solr_autocomplete_block_password'];
+    // If we should use search app credentials, get them.
     $use_search_app_creds = $variables['search_api_federated_solr_autocomplete_block_use_search_app_creds'];
-    // Get creds.
-    $autocomplete['userpass'] = base64_encode($variables['search_api_federated_solr_autocomplete_block_username']
-      . ':' . $variables['search_api_federated_solr_autocomplete_block_password']);
+    if ($use_search_app_creds) {
+      $username = variable_get('search_api_federated_solr_search_index_basic_auth_username');
+      $password = variable_get('search_api_federated_solr_search_index_basic_auth_password');
+    }
+    // Set encoded credentials if provided.
+    if ($username && $password) {
+      // Set creds.
+      $autocomplete['userpass'] = base64_encode($username . ':' . $password);
+    }
     // Supply the necessary search term + format params for the solr server endpoint.
     $params = '?q=[val]&wt=json';
   }
+  // Proxy is enabled.
   else {
-    // @TODO: Do we need contextual params?
-//    $params = search_api_federated_solr_proxy_params();
     // Supply the necessary search term + format params for the proxy endpoint.
     $params = '?search=[val]&wt=json';
     // Remove direct url value if the proxy is enabled.
@@ -740,6 +750,7 @@ function search_api_federated_solr_map_variables($variables) {
   // Determine the autocomplete endpoint based on block config.
   $url = search_api_federated_solr_get_endpoint_url($proxy_disabled, $direct_url, $params);
 
+  // Set autocomplete variables.
   $autocomplete['url'] = $url;
   $autocomplete['isEnabled'] = $variables['search_api_federated_solr_autocomplete_block_is_enabled'];
   $autocomplete['appendWildcard'] = $variables['search_api_federated_solr_autocomplete_block_is_append_wildcard'];
