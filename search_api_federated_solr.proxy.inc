@@ -42,6 +42,18 @@ function search_api_federated_solr_proxy() {
   /** @var \SearchApiSolrConnection $connection */
   $connection = $solr->getSolrConnection();
 
+  // If this is an acquia environment and if it is using Acquia Search
+  // Get the Acquia Search Service + Connection instead.
+  if (isset($_ENV['AH_SITE_ENVIRONMENT']) && module_exists('search_api_acquia')) {
+    watchdog('search_api_federated_solr', 'acquia + module exists', NULL, WATCHDOG_DEBUG);
+    drupal_load('module', 'search_api_acquia');
+    /** @var \SearchApiAcquiaSearchService $solr */
+    $solr = new SearchApiAcquiaSearchService($server);
+    /** @var \SearchApiAcquiaSearchConnection $connection */
+    $connection = $solr->getSolrConnection();
+    watchdog('search_api_federated_solr', $solr->viewSettings(), NULL, WATCHDOG_DEBUG);
+  }
+
   // Get index field names mapped to their solr field name counterparts
   $backend_field_names_map = $solr->getFieldNames($index);
   // Get the eligible text fields for the query.
