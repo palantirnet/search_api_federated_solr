@@ -25,7 +25,7 @@ class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback 
       'canonical_url' => [
         'label' => t('Canonical URL'),
         'description' => t('Preferred URL for this content'),
-        'type' => 'list<uri>',
+        'type' => 'uri',
         'cardinality' => -1,
       ],
     ];
@@ -37,7 +37,7 @@ class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback 
   public function alterItems(array &$items) {
 
     if ($this->useDomainAccess()) {
-      $this->addDomainUrls($items);
+      $this->addDomainUrl($items);
     }
     else {
       $this->addUrl($items);
@@ -49,14 +49,14 @@ class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback 
     foreach ($items as &$item) {
       $url = $this->index->datasource()->getItemUrl($item);
       if (!$url) {
-        $item->urls = NULL;
+        $item->canonical_url = NULL;
         continue;
       }
-      $item->canonical_url = [url($url['path'], array('absolute' => TRUE) + $url['options'])];
+      $item->canonical_url = url($url['path'], array('absolute' => TRUE) + $url['options']);
     }
   }
 
-  protected function addDomainUrls(array &$items) {
+  protected function addDomainUrl(array &$items) {
     $entity_type = $this->index->getEntityType();
     $entity_info = entity_get_info($entity_type);
 
@@ -82,7 +82,7 @@ class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback 
    * @return bool
    */
   protected function useDomainAccess() {
-    return function_exists('domain_get_content_urls');
+    return function_exists('domain_get_canonical_url');
   }
 
 }
