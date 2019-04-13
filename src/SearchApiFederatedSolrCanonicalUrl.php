@@ -69,7 +69,15 @@ class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback 
         return;
       }
 
-      $url = domain_get_canonical_url($entity);
+      // Determine if there is a canonical URL for the content.
+      // This only comes into play if domain source is used.
+      if (isset($node->domain_source) && $node->domain_source == DOMAIN_SOURCE_USE_ACTIVE) {
+        $url = NULL;
+      }
+      else {
+        $options['absolute'] = TRUE;
+        $url = url('node/' . $node->id, $options);
+      }
 
       $item->canonical_url = $url;
     }
@@ -82,7 +90,7 @@ class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback 
    * @return bool
    */
   protected function useDomainAccess() {
-    return function_exists('domain_get_canonical_url');
+    return defined('DOMAIN_SOURCE_USE_ACTIVE');
   }
 
 }
