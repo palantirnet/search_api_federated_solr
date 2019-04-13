@@ -85,7 +85,7 @@ class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback 
   }
 
   /**
-   * Whether to use the site name from Domain Access.
+   * Whether to use the canonical value from Domain Source.
    *
    * @return bool
    */
