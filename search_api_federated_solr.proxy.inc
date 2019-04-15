@@ -52,12 +52,12 @@ function search_api_federated_solr_proxy() {
   }
 
   // Get the configured default query fields.
-  $config_fields = variable_get('search_api_federated_solr_query_fields', ['rendered_item']);
+  $config_fields = variable_get('search_api_federated_solr_proxy_query_fields', ['rendered_item']);
   $query_fields = $config_fields;
 
   // Validate default query fields against index schema, unless flagged not to.
-  $is_query_fields_validation_disabled = variable_get('search_api_federated_solr_search_server_disable_query_fields_schema_validation', false);
-  if (!$is_query_fields_validation_disabled) {
+  $is_validate_query_fields = variable_get('search_api_federated_solr_proxy_validate_query_fields_against_schema', TRUE);
+  if ($is_validate_query_fields) {
     // Get index field names mapped to their solr field name counterparts
     $backend_field_names_map = $solr->getFieldNames($index);
     // Get all full text fields from the index.
