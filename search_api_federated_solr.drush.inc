@@ -24,7 +24,7 @@ function search_api_federated_solr_drush_command() {
 
 
 /**
- * List all search indexes.
+ * List all fields, as they map to solr machine names, for a given index.
  */
 function drush_search_api_federated_solr_fields() {
   if (search_api_federated_solr_drush_static(__FUNCTION__)) {
