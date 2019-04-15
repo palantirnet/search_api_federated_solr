@@ -69,6 +69,11 @@ function search_api_federated_solr_search_api_alter_callback_info() {
     'description' => t('The links to the node on all available sites. This can be useful if indexing multiple sites with a single search index.'),
     'class' => 'SearchApiFederatedSolrUrls',
   );
+  $callbacks['canonical_url'] = array(
+    'name' => t('Canonical URL'),
+    'description' => t('Preferred URL for this content.'),
+    'class' => 'SearchApiFederatedSolrCanonicalUrl',
+  );
   $callbacks['federated_field'] = array(
     'name' => t('Federated Field'),
     'description' => t('A token or free text field that can be customized per-bundle.'),
