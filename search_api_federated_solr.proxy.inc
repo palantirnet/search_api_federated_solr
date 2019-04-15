@@ -51,18 +51,24 @@ function search_api_federated_solr_proxy() {
     $connection = $solr->getSolrConnection();
   }
 
-  // Get index field names mapped to their solr field name counterparts
-  $backend_field_names_map = $solr->getFieldNames($index);
-  // Get the eligible text fields for the query.
+  // Get the configured default query fields.
   $config_fields = variable_get('search_api_federated_solr_query_fields', ['rendered_item']);
-  // Get all full text fields from the index.
-  $full_text_index_fields = $index->getFullTextFields();
-  // We can only search full text fields, so validate supplied field names.
-  $full_text_query_fields = array_intersect($config_fields, $full_text_index_fields);
-  // Filter the field names map by our query fields.
-  $query_fields_map = array_intersect_key($backend_field_names_map, array_flip($full_text_query_fields));
-  // Get the solr field name for our supplied full text query fields.
-  $query_fields = array_values($query_fields_map);
+  $query_fields = $config_fields;
+
+  // Validate default query fields against index schema, unless flagged not to.
+  $is_query_fields_validation_disabled = variable_get('search_api_federated_solr_search_server_disable_query_fields_schema_validation', false);
+  if (!$is_query_fields_validation_disabled) {
+    // Get index field names mapped to their solr field name counterparts
+    $backend_field_names_map = $solr->getFieldNames($index);
+    // Get all full text fields from the index.
+    $full_text_index_fields = $index->getFullTextFields();
+    // We can only search full text fields, so validate supplied field names.
+    $full_text_query_fields = array_intersect($config_fields, $full_text_index_fields);
+    // Filter the field names map by our query fields.
+    $query_fields_map = array_intersect_key($backend_field_names_map, array_flip($full_text_query_fields));
+    // Get the solr field name for our supplied full text query fields.
+    $query_fields = array_values($query_fields_map);
+  }
 
   // Set facet params
   if (is_array($params['facet.field']) && count($params['facet.field'])) {

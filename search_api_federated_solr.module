@@ -873,37 +873,3 @@ function search_api_federated_solr_get_endpoint_url($proxy_is_disabled, $direct_
 
   return $endpoint_url;
 }
-
-/**
- * Implements hook_form_[form_id]_alter().
- *
- * Adds extra information to some Search API edit forms.
- * @param array $form
- * @param $form_state
- */
-function search_api_federated_solr_form_search_api_admin_server_edit_alter(&$form, &$form_state) {
-  // Add the config field to disable query fields validation against index schema.
-  $form['options']['form']['advanced']['disable_query_fields_schema_validation'] = array(
-    '#type' => 'checkbox',
-    '#default_value' => variable_get('search_api_federated_solr_search_server_disable_query_fields_schema_validation'),
-    '#title' => t("Disable validation of the proxy default query fields against the index for this server"),
-    '#description' => t("Check this box if you set default query fields that do not exist on the index for this server.")
-  );
-  // Add a submit handler to save the form value to config.
-  if (isset($form['actions']['submit'])) {
-    $form['#submit'][] = 'search_api_federated_solr_admin_server_edit_submit';
-  }
-}
-
-/**
- * Saves custom form input value on search api server edit form submission.
- *
- * @param $form
- * @param $form_state
- */
-function search_api_federated_solr_admin_server_edit_submit(&$form, &$form_state)
-{
-  if (array_key_exists('disable_query_fields_schema_validation', $form_state['values']['options']['form']['advanced'])) {
-    variable_set('search_api_federated_solr_search_server_disable_query_fields_schema_validation', $form_state['values']['options']['form']['advanced']['disable_query_fields_schema_validation']);
-  }
-}
