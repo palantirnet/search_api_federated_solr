@@ -98,7 +98,7 @@ function search_api_federated_solr_proxy() {
     'hl.simple.post' => '</strong>',
     'hl.fl' => 'tm_rendered_item',
     'hl.usePhraseHighlighter' => 'true',
-    'df' => implode(' ', $query_fields),
+    'qf' => implode(' ', $query_fields),
   ];
 
   if (isset($params['search'])) {
