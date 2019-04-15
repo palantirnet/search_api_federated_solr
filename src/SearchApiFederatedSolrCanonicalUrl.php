@@ -71,15 +71,13 @@ class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback 
 
       // Determine if there is a canonical URL for the content.
       // This only comes into play if domain source is used.
-      if (isset($node->domain_source) && $node->domain_source == DOMAIN_SOURCE_USE_ACTIVE) {
-        $url = NULL;
+      if (isset($entity->domain_source) && $entity->domain_source == DOMAIN_SOURCE_USE_ACTIVE) {
+        $this->canonical_url = '';
       }
       else {
-        $options['absolute'] = TRUE;
-        $url = url('node/' . $node->id, $options);
+        $list = [$item];
+        $this->addUrl($list);
       }
-
-      $item->canonical_url = $url;
     }
 
   }

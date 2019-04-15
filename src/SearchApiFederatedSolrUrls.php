@@ -70,8 +70,13 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
       }
 
       $urls = domain_get_content_urls($entity);
-
-      $item->urls = $urls;
+      if (!empty($urls)) {
+        $item->urls = $urls;
+      }
+      else {
+        $list = [$item];
+        $this->addUrl($list);
+      }
     }
 
   }
