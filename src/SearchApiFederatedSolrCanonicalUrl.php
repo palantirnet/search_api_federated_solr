@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Class SearchApiFederatedSolrUrls
- * Provides a Search API index data alteration that adds the sites that the
- * content is available on to each indexed item.
+ * Class SearchApiFederatedSolrCanonicalUrl
+ * Provides a Search API index data alteration that indicates the preferred
+ * URL content is available on to each indexed item.
  */
-class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
+class SearchApiFederatedSolrCanonicalUrl extends SearchApiAbstractAlterCallback {
 
   /**
    * @var SearchApiIndex
@@ -22,10 +22,10 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
    */
   public function propertyInfo() {
     return [
-      'urls' => [
-        'label' => t('URLs'),
-        'description' => t('URLs pointing to this node on all sites containing'),
-        'type' => 'list<uri>',
+      'canonical_url' => [
+        'label' => t('Canonical URL'),
+        'description' => t('Preferred URL for this content'),
+        'type' => 'uri',
         'cardinality' => -1,
       ],
     ];
@@ -37,7 +37,7 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
   public function alterItems(array &$items) {
 
     if ($this->useDomainAccess()) {
-      $this->addDomainUrls($items);
+      $this->addDomainUrl($items);
     }
     else {
       $this->addUrl($items);
@@ -49,14 +49,14 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
     foreach ($items as &$item) {
       $url = $this->index->datasource()->getItemUrl($item);
       if (!$url) {
-        $item->urls = NULL;
+        $item->canonical_url = NULL;
         continue;
       }
-      $item->urls = [url($url['path'], array('absolute' => TRUE) + $url['options'])];
+      $item->canonical_url = url($url['path'], array('absolute' => TRUE) + $url['options']);
     }
   }
 
-  protected function addDomainUrls(array &$items) {
+  protected function addDomainUrl(array &$items) {
     $entity_type = $this->index->getEntityType();
     $entity_info = entity_get_info($entity_type);
 
@@ -69,9 +69,10 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
         return;
       }
 
-      $urls = domain_get_content_urls($entity);
-      if (!empty($urls)) {
-        $item->urls = $urls;
+      // Determine if there is a canonical URL for the content.
+      // This only comes into play if domain source is used.
+      if (isset($entity->domain_source) && $entity->domain_source == DOMAIN_SOURCE_USE_ACTIVE) {
+        $this->canonical_url = '';
       }
       else {
         $list = [$item];
@@ -82,12 +83,12 @@ class SearchApiFederatedSolrUrls extends SearchApiAbstractAlterCallback {
   }
 
   /**
-   * Whether to use the site name from Domain Access.
+   * Whether to use the canonical value from Domain Source.
    *
    * @return bool
    */
   protected function useDomainAccess() {
-    return function_exists('domain_get_content_urls');
+    return defined('DOMAIN_SOURCE_USE_ACTIVE');
   }
 
 }

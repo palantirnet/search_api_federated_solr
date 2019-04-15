@@ -35,6 +35,11 @@ function search_api_federated_solr_search_api_alter_callback_info() {
     'description' => t('The links to the node on all available sites. This can be useful if indexing multiple sites with a single search index.'),
     'class' => 'SearchApiFederatedSolrUrls',
   );
+  $callbacks['canonical_url'] = array(
+    'name' => t('Canonical URL'),
+    'description' => t('Preferred URL for this content.'),
+    'class' => 'SearchApiFederatedSolrCanonicalUrl',
+  );
   $callbacks['federated_field'] = array(
     'name' => t('Federated Field'),
     'description' => t('A token or free text field that can be customized per-bundle.'),
@@ -496,13 +501,13 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/js/main.d41fc3fe.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.12/js/main.b76ad392.js' => array(
         'type' => 'external',
         'scope' => 'footer',
       ),
     ),
     'css' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/css/main.cf6a58ce.css' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.12/css/main.cf6a58ce.css' => array(
         'type' => 'external',
       ),
     ),
