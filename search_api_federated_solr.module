@@ -342,6 +342,15 @@ function search_api_federated_solr_block_configure($delta = '') {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function search_api_federated_solr_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
+  if ($form['module']['#value'] === 'search_api_federated_solr') {
+    $form['#validate'][] = 'search_api_federated_solr_block_validate';
+  }
+}
+
+/**
  * Implements hook_block_save().
  */
 function search_api_federated_solr_block_save($delta = '', $edit) {
@@ -466,10 +475,37 @@ function search_api_federated_solr_search_block_form_submit($form, &$form_state)
 
 function search_api_federated_solr_form_search_api_federated_solr_admin_alter(&$form, &$form_state, $form_id) {
   $form['#validate'][] = '_path_form_validate';
+  $form['#validate'][] = '_direct_url_form_validate';
 }
 
 function _path_form_validate($form, &$form_state) {
      $form_state['values']['search_api_federated_solr_path'] = trim($form_state['values']['search_api_federated_solr_path'], '/');
+}
+
+/**
+ * Ensure that valid URL is passed to autocomplete endpoint setting.
+ */
+function _direct_url_form_validate($form, &$form_state) {
+  // Check if URL is valid if proxy is disabled and url field is populated.
+  if (array_key_exists('search_api_federated_solr_autocomplete_url', $form_state['values']) && $form_state['values']['search_api_federated_solr_autocomplete_url'] && $form_state['values']['search_api_federated_solr_autocomplete_disable_query_proxy']) {
+    $is_external = url_is_external($form_state['values']['search_api_federated_solr_autocomplete_url']);
+    if (!valid_url($form_state['values']['search_api_federated_solr_autocomplete_url'], $is_external)) {
+      form_set_error('search_api_federated_solr_autocomplete_url', t('Please enter a valid external or internal URL for the autocomplete endpoint.'));
+    }
+  }
+}
+
+/**
+ * Ensure that valid URL is passed to block autocomplete endpoint setting.
+ */
+function search_api_federated_solr_block_validate($form, &$form_state) {
+  // Check if URL is valid if proxy is disabled and url field is populated.
+  if (array_key_exists('search_api_federated_solr_autocomplete_block_url', $form_state['values']) && $form_state['values']['search_api_federated_solr_autocomplete_block_url'] && $form_state['values']['search_api_federated_solr_autocomplete_block_disable_query_proxy']) {
+    $is_external = url_is_external($form_state['values']['search_api_federated_solr_autocomplete_block_url']);
+    if (!valid_url($form_state['values']['search_api_federated_solr_autocomplete_block_url'], $is_external)) {
+      form_set_error('search_api_federated_solr_autocomplete_block_url', t('Please enter a valid external or internal URL for the autocomplete endpoint.'));
+    }
+  }
 }
 
 /**
