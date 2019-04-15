@@ -88,6 +88,14 @@ function search_api_federated_solr_proxy() {
     ];
   }
 
+  // Add flag to debug the query if flag exists in settings.
+  if (variable_get('search_api_federated_solr_proxy_debug_query', FALSE)) {
+    // Set the default search param to '*' if it doesn't already exist.
+    $params += [
+      'debug' => 'true',
+    ];
+  }
+
   // Merge in the default params.
   $params += [
     'start' => 0,

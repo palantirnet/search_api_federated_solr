@@ -708,6 +708,7 @@ function search_api_federated_solr_variables() {
     'search_api_federated_solr_search_index_basic_auth_username',
     'search_api_federated_solr_search_index_basic_auth_password',
     'search_api_federated_solr_proxy_validate_query_fields_against_schema',
+    'search_api_federated_solr_proxy_debug_query',
     'search_api_federated_solr_proxy_query_fields',
     'search_api_federated_solr_show_empty_search_results',
     'search_api_federated_solr_no_results_text',
