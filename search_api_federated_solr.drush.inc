@@ -26,7 +26,7 @@ function search_api_federated_solr_drush_command() {
 }
 
 /**
- * List all search indexes.
+ * List all fields, as they map to solr machine names, for the search api index used by the federated search app.
  */
 function drush_search_api_federated_solr_fields() {
   // Get index id from search app config.
