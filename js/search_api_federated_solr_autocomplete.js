@@ -2,12 +2,44 @@
  * @file
  * Adds autocomplete functionality to search_api_solr_federated block form.
  */
-
-(function ($, Drupal, drupalSettings) {
-
-  'use strict';
+(function($, Drupal, drupalSettings) {
+  "use strict";
 
   var autocomplete = {};
+
+  /**
+   * Polyfill for Object.assign
+   * @see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill
+   */
+  if (typeof Object.assign != 'function') {
+    // Must be writable: true, enumerable: false, configurable: true
+    Object.defineProperty(Object, "assign", {
+      value: function assign(target, varArgs) { // .length of function is 2
+        'use strict';
+        if (target == null) { // TypeError if undefined or null
+          throw new TypeError('Cannot convert undefined or null to object');
+        }
+
+        var to = Object(target);
+
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+
+          if (nextSource != null) { // Skip over if undefined or null
+            for (var nextKey in nextSource) {
+              // Avoid bugs when hasOwnProperty is shadowed
+              if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+        }
+        return to;
+      },
+      writable: true,
+      configurable: true
+    });
+  }
 
   /**
    * Attaches our custom autocomplete settings to the search_api_federated_solr block search form field.
@@ -18,28 +50,41 @@
    *   Attaches the autocomplete behaviors.
    */
   Drupal.behaviors.searchApiFederatedSolrAutocomplete = {
-    attach: function (context, settings) {
+    attach: function attach(context, settings) {
       // Find our fields with autocomplete settings
       $(context)
-        .find('.js-search-api-federated-solr-block-form-autocomplete #edit-search')
-        .once('search-api-federated-solr-autocomplete-search')
-        .each(function () {
+        .find(".js-search-api-federated-solr-block-form-autocomplete #edit-search")
+        .once("search-api-federated-solr-autocomplete-search")
+        .each(function() {
           // Halt execution if we don't have the required config.
-          if (!Object.hasOwnProperty.call(drupalSettings, 'searchApiFederatedSolr')
-              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr, 'block')
-              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block, 'autocomplete')
-              || !Object.hasOwnProperty.call(drupalSettings.searchApiFederatedSolr.block.autocomplete, 'url')) {
+          if (
+            !Object.hasOwnProperty.call(
+                drupalSettings,
+                "searchApiFederatedSolr"
+            ) ||
+            !Object.hasOwnProperty.call(
+                drupalSettings.searchApiFederatedSolr,
+                "block"
+            ) ||
+            !Object.hasOwnProperty.call(
+                drupalSettings.searchApiFederatedSolr.block,
+                "autocomplete"
+            ) ||
+            !Object.hasOwnProperty.call(
+                drupalSettings.searchApiFederatedSolr.block.autocomplete,
+                "url"
+            )
+          ) {
             return;
           }
-
           // Set default settings.
           var defaultSettings = {
             isEnabled: false,
             appendWildcard: false,
-            userpass: '',
+            userpass: "",
             numChars: 2,
             suggestionRows: 5,
-            mode: 'result',
+            mode: "result",
             result: {
               titleText: "What are you looking for?",
               hideDirectionsText: 0
@@ -49,41 +94,35 @@
           var config = drupalSettings.searchApiFederatedSolr.block.autocomplete;
           // Merge defaults with passed in config.
           var options = Object.assign({}, defaultSettings, config);
-
           // Set scaffolding markup for suggestions container
-          var suggestionsContainerScaffoldingMarkup = `
-            <div class="js-search-autocomplete-container search-autocomplete-container visually-hidden">
-              <div class="search-autocomplete-container__title">
-                 ${options[options.mode].titleText}
-                 <button class="js-search-autocomplete-container__close-button search-autocomplete-container__close-button">x</button>
-               </div>
-               <div id="js-search-autocomplete search-autocomplete">
-                <div id="res" role="listbox" tabindex="-1"></div>
-            </div>`;
+          var suggestionsContainerScaffoldingMarkup = '<div class="js-search-autocomplete-container search-autocomplete-container visually-hidden"><div class="search-autocomplete-container__title">'.concat(
+                options[options.mode].titleText,
+                '<button class="js-search-autocomplete-container__close-button search-autocomplete-container__close-button">x</button></div><div id="js-search-autocomplete search-autocomplete"><div id="res" role="listbox" tabindex="-1"></div></div>'
+          );
 
           if (!options[options.mode].hideDirectionsText) {
-            suggestionsContainerScaffoldingMarkup += `
-            <div class="search-autocomplete-container__directions">
-              <span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span>
-              <span class="search-autocomplete-container__directions-item">Press ↑ and ↓ to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span>
-            </div>`;
+            suggestionsContainerScaffoldingMarkup +=
+                '<div class="search-autocomplete-container__directions"><span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span><span class="search-autocomplete-container__directions-item">Press \u2191 and \u2193 to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span></div>';
           }
 
-          suggestionsContainerScaffoldingMarkup +=  '</div>';
+          suggestionsContainerScaffoldingMarkup += "</div>";
 
           // Cache selectors.
           var $input = $(this);
-          var $form = $('#federated-search-page-block-form');
+          var $form = $("#federated-search-page-block-form");
           // Set up input with attributes, suggestions scaffolding.
-          $input.attr("role","combobox")
-              .attr("aria-owns","res")
-              .attr("aria-autocomplete","list")
-              .attr("aria-expanded","false");
+          $input
+              .attr("role", "combobox")
+              .attr("aria-owns", "res")
+              .attr("aria-autocomplete", "list")
+              .attr("aria-expanded", "false");
           $(suggestionsContainerScaffoldingMarkup).insertAfter($input);
           // Cache inserted selectors.
-          var $results = $('#res');
-          var $autocompleteContainer = $('.js-search-autocomplete-container');
-          var $closeButton = $('.js-search-autocomplete-container__close-button');
+          var $results = $("#res");
+          var $autocompleteContainer = $(".js-search-autocomplete-container");
+          var $closeButton = $(
+              ".js-search-autocomplete-container__close-button"
+          );
 
           // Initiate helper vars.
           var current;
@@ -97,13 +136,12 @@
           };
 
           // Determine param values for any set default filters/facets.
-          var defaultParams = '';
+          var defaultParams = "";
           $('input[type="hidden"]', $form).each(function(index, input) {
-            var fq = $(input).attr('name') + ':("' + $(input).val() + '")';
-            defaultParams += '&fq=' + encodeURI(fq);
+            var fq = $(input).attr("name") + ':("' + $(input).val() + '")';
+            defaultParams += "&fq=" + encodeURI(fq);
           });
           var urlWithDefaultParams = options.url + defaultParams;
-
 
           // Bind events to input.
           $input.on("input", function(event) {
@@ -133,169 +171,173 @@
                   // @see: https://lucene.apache.org/solr/guide/6_6/the-standard-query-parser.html#TheStandardQueryParser-WildcardSearches
                   // @see: https://opensourceconnections.com/blog/2013/06/07/search-as-you-type-with-solr/
                   // Split into word chunks.
-                  const words = trimmed.split(" ");
+                  var words = trimmed.split(" ");
                   // If there are multiple chunks, join them with "+", repeat the last word + append "*".
                   if (words.length > 1) {
-                    query = words.join("+") + words.pop() + '*';
-                  } else {
+                    query = words.join("+") + words.pop() + "*";
+                  }
+                  else {
                     // If there is only 1 word, repeat it an append "*".
-                    query = words + '+' + words + '*';
+                    query = words + "+" + words + "*";
                   }
                 }
                 else {
-                  query = trimmed + '*';
+                  query = trimmed + "*";
                 }
               }
-
               // Replace the placeholder with the query value.
-              var pattern = new RegExp(/(\[val\])/, "gi");
-              var url = urlWithDefaultParams.replace(pattern, query);
+              var url = urlWithDefaultParams.replace(/(\[val\])/gi, query);
 
               // Set up basic auth if we need  it.
               var xhrFields = {};
               var headers = {};
+
               if (options.userpass) {
                 xhrFields = {
                   withCredentials: true
                 };
                 headers = {
-                  'Authorization': 'Basic ' + options.userpass
+                  Authorization: "Basic " + options.userpass
                 };
               }
-
               // Make the ajax request
               $.ajax({
-                xhrFields: xhrFields,
-                headers: headers,
-                url: url,
-                dataType: 'json',
-              })
-                  // Currently we only support the response structure from Solr:
-                  // {
-                  //    response: {
-                  //      docs: [
-                  //        {
-                  //        ss_federated_title: <result title as link text>,
-                  //        ss_url: <result url as link href>,
-                  //        }
-                  //      ]
-                  //    }
-                  // }
-
-                  // @todo provide hook for transform function to be passed in
-                  //   via Drupal.settings then all it here.
-                .done(function( results ) {
+                  xhrFields: xhrFields,
+                  headers: headers,
+                  url: url,
+                  dataType: "json"
+                })
+                // Currently we only support the response structure from Solr:
+                // {
+                //    response: {
+                //      docs: [
+                //        {
+                //        ss_federated_title: <result title as link text>,
+                //        ss_url: <result url as link href>,
+                //        }
+                //      ]
+                //    }
+                // }
+                // @todo provide hook for transform function to be passed in
+                //   via Drupal.settings then all it here.
+                .done(function(results) {
                   if (results.response.docs.length >= 1) {
                     // Remove all suggestions
-                    $('.js-autocomplete-suggestion').remove();
-                    $autocompleteContainer.removeClass('visually-hidden');
-                    $("#search-autocomplete").append('');
+                    $(".js-autocomplete-suggestion").remove();
+                    $autocompleteContainer.removeClass("visually-hidden");
+                    $("#search-autocomplete").append("");
                     $input.attr("aria-expanded", "true");
                     counter = 1;
 
                     // Bind click event for close button
-                    $closeButton.on("click", function (event) {
+                    $closeButton.on("click", function(event) {
                       event.preventDefault();
                       event.stopPropagation();
                       $input.removeAttr("aria-activedescendant");
+
                       // Remove all suggestions
-                      $('.js-autocomplete-suggestion').remove();
-                      $autocompleteContainer.addClass('visually-hidden');
+                      $(".js-autocomplete-suggestion").remove();
+                      $autocompleteContainer.addClass("visually-hidden");
                       $input.attr("aria-expanded", "false");
                       $input.focus();
 
                       // Emit a custom events for removing.
-                      $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{
-                      }]);
+                      $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{}]);
                     });
-
                     // Get first [suggestionRows] results
                     var limitedResults = results.response.docs.slice(0, suggestionRows);
                     limitedResults.forEach(function(item) {
                       // Highlight query chars in returned title
                       var pattern = new RegExp(trimmed, "gi");
-                      var highlighted = item.ss_federated_title.replace(pattern, function(string) {
-                        return "<strong>" + string + "</strong>"
-                      });
-
+                      var highlighted = item.ss_federated_title.replace(
+                          pattern,
+                          function(string) {
+                            return "<strong>" + string + "</strong>";
+                          }
+                      );
                       // Default the URL to the passed ss_url.
-                      let href = item.ss_url;
-
+                      var href = item.ss_url;
                       // Ensure that the result returned for the item from solr
                       // (via proxy or directly) is assigned an absolute URL.
                       if (!options.directUrl) {
                         // Initialize url to compute from solr sm_urls array.
-                        let sm_url;
+                        var sm_url;
                         // Use the canonical url.
                         if (Array.isArray(item.sm_urls)) {
                           sm_url = item.sm_urls[0];
                         }
-
                         // If no valid urls are passed from solr, skip this item.
                         if (!sm_url) {
                           return;
                         }
-
                         // Override the current href value.
                         href = sm_url;
                       }
 
                       //Add results to the list
-                      var $suggestionTemplate = `
-                      <div role='option' tabindex='-1' class='js-autocomplete-suggestion autocomplete-suggestion' id='suggestion-${counter}'>
-                        <a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='${href}'>${highlighted}</a>
-                        <span class='visually-hidden'>(${counter} of ${limitedResults.length})</span>
-                      </div>`;
+                      var $suggestionTemplate = "<div role='option' tabindex='-1' class='js-autocomplete-suggestion autocomplete-suggestion' id='suggestion-"
+                          .concat(counter, "'><a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='")
+                          .concat(href, "'>")
+                          .concat(highlighted, "</a><span class='visually-hidden'>(")
+                          .concat(counter, " of ")
+                          .concat(limitedResults.length, ")</span></div>");
                       $results.append($suggestionTemplate);
                       counter = counter + 1;
                     });
 
                     // On link click, emit an event whose data can be used to write to analytics, etc.
-                    $('.js-autocomplete-suggestion__link').on('click', function (e) {
-                      $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection", [{
-                        referrer: $(location).attr('href'),
-                        target: $(this).attr('href'),
-                        term: $input.val()
-                      }]);
+                    $(".js-autocomplete-suggestion__link").on("click", function(e) {
+                      $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection",
+                        [
+                          {
+                            referrer: $(location).attr("href"),
+                            target: $(this).attr("href"),
+                            term: $input.val()
+                          }
+                        ]
+                      );
                     });
 
                     // Emit a custom events for results.
-                    $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsLoaded", [{
-                    }]);
+                    $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsLoaded", [{}]);
 
                     // Announce the number of suggestions.
                     var number = $results.children('[role="option"]').length;
-                    if (number >= 1) {
-                      Drupal.announce(Drupal.t(number + " suggestions displayed. To navigate use up and down arrow keys."));
-                    }
-                  } else {
-                    // No results, remove suggestions and hide container
-                    $('.js-autocomplete-suggestion').remove();
-                    $autocompleteContainer.addClass('visually-hidden');
-                    $input.attr("aria-expanded","false");
 
-                    // Emit a custom events for removing.
-                    $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{
-                    }]);
+                    if (number >= 1) {
+                      Drupal.announce(
+                          Drupal.t(
+                              number +
+                              " suggestions displayed. To navigate use up and down arrow keys."
+                          )
+                      );
+                    }
+                  }
+                  else {
+                    // No results, remove suggestions and hide container
+                    $(".js-autocomplete-suggestion").remove();
+                    $autocompleteContainer.addClass("visually-hidden");
+                    $input.attr("aria-expanded", "false"); // Emit a custom events for removing.
+
+                    $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{}]);
                   }
                 });
             }
             else {
               // Remove suggestions and hide container
-              $('.js-autocomplete-suggestion').remove();
-              $autocompleteContainer.addClass('visually-hidden');
-              $input.attr("aria-expanded","false");
+              $(".js-autocomplete-suggestion").remove();
+              $autocompleteContainer.addClass("visually-hidden");
+              $input.attr("aria-expanded", "false");
 
               // Emit a custom events for removing.
-              $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{
-              }]);
+              $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{}]);
             }
           }
 
           function doKeypress(keys, event) {
-            var $suggestions = $('.js-autocomplete-suggestion');
+            var $suggestions = $(".js-autocomplete-suggestion");
             var highlighted = false;
-            highlighted = $results.children('div').hasClass('highlight');
+            highlighted = $results.children("div").hasClass("highlight");
 
             switch (event.which) {
               case keys.ESC:
@@ -303,27 +345,33 @@
                 event.stopPropagation();
                 $input.removeAttr("aria-activedescendant");
                 $suggestions.remove();
-                $autocompleteContainer.addClass('visually-hidden');
-                $input.attr("aria-expanded","false");
+                $autocompleteContainer.addClass("visually-hidden");
+                $input.attr("aria-expanded", "false");
                 break;
 
               case keys.TAB:
                 $input.removeAttr("aria-activedescendant");
                 $suggestions.remove();
-                $autocompleteContainer.addClass('visually-hidden');
-                $input.attr("aria-expanded","false");
+                $autocompleteContainer.addClass("visually-hidden");
+                $input.attr("aria-expanded", "false");
                 break;
 
               case keys.RETURN:
                 if (highlighted) {
                   event.preventDefault();
                   event.stopPropagation();
-                  return selectOption(highlighted, $('.highlight').find('a').attr('href'));
+                  return selectOption(
+                      highlighted,
+                      $(".highlight")
+                          .find("a")
+                          .attr("href")
+                  );
                 }
                 else {
                   $form.submit();
                   return false;
                 }
+
                 break;
 
               case keys.UP:
@@ -347,17 +395,17 @@
             $input.removeAttr("aria-activedescendant");
 
             // if highlighted exists and if the highlighted item is not the first option
-            if (highlighted && !$results.children().first('div').hasClass('highlight')) {
+            if (highlighted && !$results.children().first("div").hasClass("highlight")) {
               removeCurrent();
-              current.prev('div').addClass('highlight').attr('aria-selected', true);
-              $input.attr("aria-activedescendant", current.prev('div').attr('id'));
+              current.prev("div").addClass("highlight").attr("aria-selected", true);
+              $input.attr("aria-activedescendant", current.prev("div").attr("id"));
             }
             else {
               // Go to bottom of list
               removeCurrent();
-              current = $results.children().last('div');
-              current.addClass('highlight').attr('aria-selected', true);
-              $input.attr("aria-activedescendant", current.attr('id'));
+              current = $results.children().last("div");
+              current.addClass("highlight").attr("aria-selected", true);
+              $input.attr("aria-activedescendant", current.attr("id"));
             }
           }
 
@@ -365,34 +413,40 @@
             $input.removeAttr("aria-activedescendant");
 
             // if highlighted exists and if the highlighted item is not the last option
-            if (highlighted && !$results.children().last('div').hasClass('highlight')) {
+            if (highlighted && !$results.children().last("div").hasClass("highlight")) {
               removeCurrent();
-              current.next('div').addClass('highlight').attr('aria-selected', true);
-              $input.attr("aria-activedescendant", current.next('div').attr('id'));
+              current.next("div").addClass("highlight").attr("aria-selected", true);
+              $input.attr("aria-activedescendant", current.next("div").attr("id"));
             }
             else {
               // Go to top of list
               removeCurrent();
-              current = $results.children().first('div');
-              current.addClass('highlight').attr('aria-selected', true);
-              $input.attr("aria-activedescendant", current.attr('id'));
+              current = $results.children().first("div");
+              current.addClass("highlight").attr("aria-selected", true);
+              $input.attr("aria-activedescendant", current.attr("id"));
             }
           }
 
           function removeCurrent() {
-            current = $results.find('.highlight');
-            current.attr('aria-selected', false);
-            current.removeClass('highlight');
+            current = $results.find(".highlight");
+            current.attr("aria-selected", false);
+            current.removeClass("highlight");
           }
 
           function selectOption(highlighted, href) {
-            if (highlighted && href) { // @todo add logic for non-link suggestions
+            if (highlighted && href) {
+              // @todo add logic for non-link suggestions
               // Emit an event whose data can be used to write to analytics, etc.
-              $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection", [{
-                referrer: $(location).attr('href'),
-                target: href,
-                term: $input.val()
-              }]);
+              $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection",
+                [
+                  {
+                    referrer: $(location).attr("href"),
+                    target: href,
+                    term: $input.val()
+                  }
+                ]
+              );
+
               // Redirect to the selected link.
               $(location).attr("href", href);
             }
@@ -403,7 +457,5 @@
         });
     }
   };
-
   Drupal.SearchApiFederatedSolrAutocomplete = autocomplete;
-
 })(jQuery, Drupal, drupalSettings);
