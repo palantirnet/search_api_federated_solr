@@ -798,10 +798,10 @@ function search_api_federated_solr_map_variables($variables) {
     $autocomplete['suggestionRows'] = $variables['search_api_federated_solr_autocomplete_block_suggestion_rows'];
   }
   $autocomplete['mode'] = $mode;
-  $autocomplete['result'] = [
-    'titleText' => $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'],
-    'hideDirectionsText' => $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_hide_directions_text'],
-  ];
+  $autocomplete['result'] = [];
+  $title_text = $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'] ? $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'] : "What are you looking for?";
+  $autocomplete['result']['titleText'] = $title_text;
+  $autocomplete['result']['hideDirectionsText'] = $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_hide_directions_text'];
 
   return $autocomplete;
 }
