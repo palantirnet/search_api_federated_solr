@@ -60,14 +60,13 @@
           var options = Object.assign({}, defaultSettings, config);
 
           // Set scaffolding markup for suggestions container
-          var suggestionsContainerScaffoldingMarkup = '\n            <div class="js-search-autocomplete-container search-autocomplete-container visually-hidden">\n              <div class="search-autocomplete-container__title">\n                 '.concat(
+          var suggestionsContainerScaffoldingMarkup = '<div class="js-search-autocomplete-container search-autocomplete-container visually-hidden"><div class="search-autocomplete-container__title">'.concat(
               options[options.mode].titleText,
-              '\n                 <button class="js-search-autocomplete-container__close-button search-autocomplete-container__close-button">x</button>\n               </div>\n               <div id="js-search-autocomplete search-autocomplete">\n                <div id="res" role="listbox" tabindex="-1"></div>\n            </div>'
-          );
+              '<button class="js-search-autocomplete-container__close-button search-autocomplete-container__close-button">x</button></div><div id="js-search-autocomplete search-autocomplete"><div id="res" role="listbox" tabindex="-1"></div><div id="search-api-federated-solr-autocomplete-aria-live" class="visually-hidden" aria-live="polite"></div></div>');
 
           if (!options[options.mode].hideDirectionsText) {
             suggestionsContainerScaffoldingMarkup +=
-                '\n            <div class="search-autocomplete-container__directions">\n              <span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span>\n              <span class="search-autocomplete-container__directions-item">Press \u2191 and \u2193 to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span>\n            </div>';
+                '<div class="search-autocomplete-container__directions"><span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span><span class="search-autocomplete-container__directions-item">Press \u2191 and \u2193 to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span></div>';
           }
 
           suggestionsContainerScaffoldingMarkup += '</div>';
@@ -225,21 +224,21 @@
                           }
                       );
                       //Add results to the list
-                      var $suggestionTemplate = "\n                      <div role='option' tabindex='-1' class='js-autocomplete-suggestion autocomplete-suggestion' id='suggestion-"
-                          .concat(
-                              counter,
-                              "'>\n                        <a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='"
-                          )
-                          .concat(item.sm_urls[0], "'>")
-                          .concat(
-                              highlighted,
-                              "</a>\n                        <span class='visually-hidden'>("
-                          )
-                          .concat(counter, " of ")
-                          .concat(
-                              limitedResults.length,
-                              ")</span>\n                      </div>"
-                          );
+                      var $suggestionTemplate = "<div role='option' tabindex='-1' class='js-autocomplete-suggestion autocomplete-suggestion' id='suggestion-"
+                        .concat(
+                          counter,
+                          "'><a class='js-autocomplete-suggestion__link autocomplete-suggestion__link' href='"
+                        )
+                        .concat(item.sm_urls[0], "'>")
+                        .concat(
+                          highlighted,
+                          "</a><span class='visually-hidden'>("
+                        )
+                        .concat(counter, " of ")
+                        .concat(
+                          limitedResults.length,
+                          ")</span></div>"
+                        );
                       $results.append($suggestionTemplate);
                       counter = counter + 1;
                     });
@@ -290,7 +289,8 @@
                   );
                 }
               });
-            } else {
+            }
+            else {
               // Remove suggestions and hide container
               $(".js-autocomplete-suggestion").remove();
               $autocompleteContainer.addClass("visually-hidden");
@@ -330,7 +330,8 @@
                   event.preventDefault();
                   event.stopPropagation();
                   return selectOption(highlighted, $(".highlight").find("a").attr("href"));
-                } else {
+                }
+                else {
                   $form.submit();
                   return false;
                 }
@@ -373,7 +374,6 @@
 
           function moveDown(highlighted) {
             $input.removeAttr("aria-activedescendant");
-
             // if highlighted exists and if the highlighted item is not the last option
             if (highlighted && !$results.children().last("div").hasClass("highlight")) {
               removeCurrent();
