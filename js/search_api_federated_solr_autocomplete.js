@@ -317,8 +317,9 @@
                     // No results, remove suggestions and hide container
                     $(".js-autocomplete-suggestion").remove();
                     $autocompleteContainer.addClass("visually-hidden");
-                    $input.attr("aria-expanded", "false"); // Emit a custom events for removing.
+                    $input.attr("aria-expanded", "false");
 
+                    // Emit a custom events for removing.
                     $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsRemoved", [{}]);
                   }
                 });
@@ -434,8 +435,7 @@
           }
 
           function selectOption(highlighted, href) {
-            if (highlighted && href) {
-              // @todo add logic for non-link suggestions
+            if (highlighted && href) {  // @todo add logic for non-link suggestions
               // Emit an event whose data can be used to write to analytics, etc.
               $(document).trigger("SearchApiFederatedSolr::block::autocomplete::selection",
                 [
