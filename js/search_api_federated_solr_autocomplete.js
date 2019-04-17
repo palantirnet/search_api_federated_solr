@@ -74,6 +74,7 @@
           // Cache selectors.
           var $input = $(this);
           var $form = $("#federated-search-page-block-form");
+          var $ariaLive = $("search-api-federated-solr-autocomplete-aria-live");
 
           // Set up input with attributes, suggestions scaffolding.
           $input.attr("role", "combobox").attr("aria-owns", "res").attr("aria-autocomplete", "list").attr("aria-expanded", "false");
@@ -260,12 +261,12 @@
                     // Emit a custom events for results.
                     $(document).trigger("SearchApiFederatedSolr::block::autocomplete::suggestionsLoaded", [{}]);
                     // Announce the number of suggestions.
-                    // @TODO: Drupal.announce does not exist in D7.
-                    //var number = $results.children('[role="option"]').length;
-                    //if (number >= 1) {
-                    //  Drupal.announce(Drupal.t(number + " suggestions displayed. To navigate use up and down arrow keys."));
-                    //}
-                  } else {
+                    var number = $results.children('[role="option"]').length;
+                    if (number >= 1) {
+                     $ariaLive.text(number + " suggestions displayed. To navigate use up and down arrow keys.");
+                    }
+                  }
+                  else {
                     // No results, remove suggestions and hide container
                     $(".js-autocomplete-suggestion").remove();
                     $autocompleteContainer.addClass("visually-hidden");
