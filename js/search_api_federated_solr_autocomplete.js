@@ -96,19 +96,18 @@
           // Set scaffolding markup for suggestions container
           var suggestionsContainerScaffoldingMarkup = '<div class="js-search-autocomplete-container search-autocomplete-container visually-hidden"><div class="search-autocomplete-container__title">'.concat(
               options[options.mode].titleText,
-              '<button class="js-search-autocomplete-container__close-button search-autocomplete-container__close-button">x</button></div><div id="js-search-autocomplete search-autocomplete"><div id="res" role="listbox" tabindex="-1"></div><div id="search-api-federated-solr-autocomplete-aria-live" class="visually-hidden" aria-live="polite"></div></div>');
+              '<button class="js-search-autocomplete-container__close-button search-autocomplete-container__close-button">x</button></div><div id="js-search-autocomplete search-autocomplete"><div id="res" role="listbox" tabindex="-1"></div></div>');
 
           if (!options[options.mode].hideDirectionsText) {
             suggestionsContainerScaffoldingMarkup +=
                 '<div class="search-autocomplete-container__directions"><span class="search-autocomplete-container__directions-item">Press <code>ENTER</code> to search for your current term or <code>ESC</code> to close.</span><span class="search-autocomplete-container__directions-item">Press \u2191 and \u2193 to highlight a suggestion then <code>ENTER</code> to be redirected to that suggestion.</span></div>';
           }
 
-          suggestionsContainerScaffoldingMarkup += '</div>';
+          suggestionsContainerScaffoldingMarkup += '<div id="search-api-federated-solr-autocomplete-aria-live" class="visually-hidden" aria-live="polite"></div></div>';
 
           // Cache selectors.
           var $input = $(this);
           var $form = $("#federated-search-page-block-form");
-          var $ariaLive = $("search-api-federated-solr-autocomplete-aria-live");
 
           // Set up input with attributes, suggestions scaffolding.
           $input.attr("role", "combobox").attr("aria-owns", "res").attr("aria-autocomplete", "list").attr("aria-expanded", "false");
@@ -120,6 +119,7 @@
           var $closeButton = $(
               ".js-search-autocomplete-container__close-button"
           );
+          var $ariaLive = $("#search-api-federated-solr-autocomplete-aria-live");
 
           // Initiate helper vars.
           var current;
@@ -391,11 +391,14 @@
 
           function moveUp(highlighted) {
             $input.removeAttr("aria-activedescendant");
+            var ariaLiveText = '';
             // if highlighted exists and if the highlighted item is not the first option
             if (highlighted && !$results.children().first("div").hasClass("highlight")) {
               removeCurrent();
               current.prev("div").addClass("highlight").attr("aria-selected", true);
               $input.attr("aria-activedescendant", current.prev("div").attr("id"));
+              ariaLiveText = current.prev("div").text();
+              $ariaLive.text(ariaLiveText);
             }
             else {
               // Go to bottom of list
@@ -403,16 +406,21 @@
               current = $results.children().last("div");
               current.addClass("highlight").attr("aria-selected", true);
               $input.attr("aria-activedescendant", current.attr("id"));
+              ariaLiveText = current.text();
+              $ariaLive.text(ariaLiveText);
             }
           }
 
           function moveDown(highlighted) {
             $input.removeAttr("aria-activedescendant");
+            var ariaLiveText = '';
             // if highlighted exists and if the highlighted item is not the last option
             if (highlighted && !$results.children().last("div").hasClass("highlight")) {
               removeCurrent();
               current.next("div").addClass("highlight").attr("aria-selected", true);
               $input.attr("aria-activedescendant", current.next("div").attr("id"));
+              ariaLiveText = current.next("div").text();
+              $ariaLive.text(ariaLiveText);
             }
             else {
               // Go to top of list
@@ -420,6 +428,8 @@
               current = $results.children().first("div");
               current.addClass("highlight").attr("aria-selected", true);
               $input.attr("aria-activedescendant", current.attr("id"));
+              ariaLiveText = current.text();
+              $ariaLive.text(ariaLiveText);
             }
           }
 
