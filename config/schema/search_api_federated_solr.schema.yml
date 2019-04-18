@@ -67,6 +67,9 @@ search_api_federated_solr.search_app.settings:
         query_fields:
           type: sequence
           label: 'Default search fields for queries.'
+        validate_query_fields:
+          type: boolean
+          label: 'Flag to ensure default search fields are validated against schema for this site.'
     content:
       type: mapping
       mapping:
@@ -145,3 +148,6 @@ search_api_federated_solr.search_app.settings:
         isDisabled:
           type: integer
           label: 'Flag to disable use of Drupal as a Solr proxy for search query requests.'
+        debug:
+          type: boolean
+          label: 'Flag to determine whether or not the proxy response should include debug info.'

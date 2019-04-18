@@ -90,3 +90,18 @@ function search_api_federated_solr_update_8002(&$sandbox) {
     $block_config->save(TRUE);
   }
 }
+
+/**
+ * Configures debug (disabled) and query field validation (enabled) for the proxy.
+ */
+function search_api_federated_solr_update_8003(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('search_api_federated_solr.search_app.settings');
+
+  // Enable the proxy by default.
+  $config->set('proxy.debug', FALSE);
+  // Enable validating custom query fields against the schema by default.
+  $config->set('index.validate_query_fields', TRUE);
+
+  $config->save(TRUE);
+}
