@@ -59,7 +59,11 @@ class SolrProxyController extends ControllerBase {
 
       // Use supplied query fields if configured in settings.php.
       $query_fields_config = $config->get('index.query_fields');
-      if (is_array($query_fields_config) && !empty($query_fields_config)) {
+      // Default to passed in query fields, if there are any.
+      $query_fields = is_array($query_fields_config) && !empty($query_fields_config) ? $query_fields_config : [];
+      // Determine if we should validate passed in query fields against the schema.
+      $is_validate_query_fields = $config->get('index.validate_query_fields');
+      if ($is_validate_query_fields && is_array($query_fields_config) && !empty($query_fields_config)) {
         // Load the index.
         $indexes = $server->getIndexes();
         /** @var \Drupal\search_api\IndexInterface $federated_search_index */
@@ -75,17 +79,21 @@ class SolrProxyController extends ControllerBase {
         $query_fields_map = array_intersect_key($backend_field_names_map, array_flip($full_text_query_fields));
         // Get the solr field name for our supplied full text query fields.
         $query_fields = array_values($query_fields_map);
-
-        if (!empty($query_fields)) {
-          // Get edismax query parser (used by the default request handler).
-          $edismax = $query->getEDisMax();
-          // Set default query fields, overriding solr config.
-          $edismax->setQueryFields(implode(' ', $query_fields));
-        }
       }
 
-      // Uncomment to add debug data to response object.
-      //  $debug = $query->getDebug();
+      // If there are any query fields, add them to the query.
+      if (!empty($query_fields)) {
+        // Get edismax query parser (used by the default request handler).
+        $edismax = $query->getEDisMax();
+        // Set default query fields, overriding solr config.
+        $edismax->setQueryFields(implode(' ', $query_fields));
+      }
+
+      // Determine if we should add debug info to the proxy response object.
+      $is_debug = $config->get('proxy.debug');
+      if ($is_debug) {
+        $debug = $query->getDebug();
+      }
 
       // Set main query param.
       $q = is_array($params) && array_key_exists('q', $params) ? urldecode($params['q']) : '*';
