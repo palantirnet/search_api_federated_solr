@@ -94,8 +94,6 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
         '#type' => 'textfield',
         '#title' => t('Site Name'),
         '#description' => t('The name of the site from which this content originated. This can be useful if indexing multiple sites with a single search index.'),
-        '#default_value' => !empty($this->options['site_name']) ? $this->options['site_name'] : variable_get('site_name'),
-        '#required' => TRUE,
       ];
     }
 
