@@ -20,6 +20,14 @@ In order to display results from the Solr index:
 1. Optional: [Theme the ReactJS search app](https://www.drupal.org/docs/7/modules/search-api-federated-solr/search-api-federated-solr-module/theming-the-reactjs-search)
 1. Optional: Add the federated search page form block to your site theme
 
+## Adding Solr query debug information to proxy response
+
+To see debug information when using the proxy for your search queries, set `$conf['search_api_federated_solr_proxy_debug_query']` to `TRUE` in your settings.php.
+
+Then user your browsers developer tools to inspect  network traffic.  When your site makes a search query through the proxy, inspect the response for this request and you should now see a `debug` object added to the response object. 
+
+*Note: we recommend leaving this set to `FALSE` for production environments, as it could have an impact on performance.*
+
 ## Updating the bundled React application
 
 When changes to [federated-search-react](https://github.com/palantirnet/federated-search-react/) are made they'll need to be pulled into this module. To do so:
