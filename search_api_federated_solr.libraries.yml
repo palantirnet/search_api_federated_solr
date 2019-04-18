@@ -2,11 +2,11 @@ search:
   version: 2.x
   css:
     theme:
-      https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.0/css/main.ec684809.css:
+      https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.2/css/main.ec684809.css:
         type: external
         minified: true
   js:
-    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.0/js/main.41ba8df2.js:
+    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.2/js/main.f36175e5.js:
       preprocess: false
       minified: true
 
