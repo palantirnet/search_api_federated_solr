@@ -789,6 +789,7 @@ function search_api_federated_solr_map_variables($variables) {
 
   // Set autocomplete variables.
   $autocomplete['url'] = $url;
+  $autocomplete['directUrl'] = $direct_url;
   $autocomplete['isEnabled'] = $variables['search_api_federated_solr_autocomplete_block_is_enabled'];
   $autocomplete['appendWildcard'] = $variables['search_api_federated_solr_autocomplete_block_is_append_wildcard'];
   if ($variables['search_api_federated_solr_autocomplete_block_num_chars']) {
