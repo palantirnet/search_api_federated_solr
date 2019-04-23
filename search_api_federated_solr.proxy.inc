@@ -42,8 +42,6 @@ function search_api_federated_solr_proxy() {
   /** @var \SearchApiSolrConnection $connection */
   $connection = $solr->getSolrConnection();
 
-dpm($index);
-
   // If this is an acquia environment and if it is an acquia search server
   // get the Acquia Search Service + Connection instead.
   if (isset($_ENV['AH_SITE_ENVIRONMENT']) && module_exists('search_api_acquia') && $server->class === 'acquia_search_service') {
@@ -73,7 +71,8 @@ dpm($index);
   }
 
   // If site search is restricted, enforce it here.
-  $restrict_site = variable_get('search_api_federated_solr_set_search_site', 0);
+  $restrict_site = variable_get('search_api_federated_solr_set_search_site', 0)
+                && variable_get('search_api_federated_solr_hide_site_name', 0);
   if ($restrict_site) {
     if (!empty($params['fq']) && !is_array($params['fq'])) {
       $params['fq'] = array($params['fq']);
