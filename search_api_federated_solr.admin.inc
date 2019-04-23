@@ -182,7 +182,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#type' => 'checkbox',
     '#title' => t('Set the "Site name" facet to this site'),
     '#default_value' => variable_get('search_api_federated_solr_set_search_site'),
-    '#description' => t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
+    '#description' => t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.<br />This feature works best when the <strong>proxy server</strong> is enabled.'),
     '#states' => [
       'visible' => [
         ':input[name="search_api_federated_solr_has_site_name_property"]' => [
