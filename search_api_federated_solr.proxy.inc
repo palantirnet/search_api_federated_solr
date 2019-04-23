@@ -77,6 +77,9 @@ function search_api_federated_solr_proxy() {
     if (!empty($params['fq']) && !is_array($params['fq'])) {
       $params['fq'] = array($params['fq']);
     }
+    elseif(empty($params['fq'])) {
+      $params['fq'] = array();
+    }
     foreach ($params['fq'] as $index => $element) {
       if (substr_count($element, 'sm_site_name:') > 0) {
         unset($params['fq'][$index]);

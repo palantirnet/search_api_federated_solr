@@ -41,6 +41,7 @@ function search_api_federated_solr_menu() {
     'access arguments' => array('administer federated search'),
     'type' => MENU_NORMAL_ITEM,
     'file' => 'search_api_federated_solr.admin.inc',
+    'description' => 'Configure Federated Search application settings',
    );
 
   $items['search-api-federated-solr/search'] = array(
