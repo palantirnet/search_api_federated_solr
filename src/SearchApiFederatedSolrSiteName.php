@@ -65,7 +65,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
         $domain = domain_lookup($domain_id);
         $ds[] = !empty($this->options['domain'][$domain['machine_name']]) ? $this->options['domain'][$domain['machine_name']] : $domain['sitename'];
       }
-      
+
       $item->site_name = $ds;
     }
 

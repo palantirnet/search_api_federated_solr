@@ -42,6 +42,8 @@ function search_api_federated_solr_proxy() {
   /** @var \SearchApiSolrConnection $connection */
   $connection = $solr->getSolrConnection();
 
+dpm($index);
+
   // If this is an acquia environment and if it is an acquia search server
   // get the Acquia Search Service + Connection instead.
   if (isset($_ENV['AH_SITE_ENVIRONMENT']) && module_exists('search_api_acquia') && $server->class === 'acquia_search_service') {
@@ -81,8 +83,25 @@ function search_api_federated_solr_proxy() {
         unset($params['fq'][$index]);
       }
     }
-    // @TODO: This value might be configurable? Get from SearchAPI config.
-    $params['fq'][] = 'sm_site_name:("' . variable_get('site_name') . '")';
+    // The site name can be configured as part of the filter.
+    // Get the proper variable.
+    if (!empty($index->options['data_alter_callbacks']['site_name']['settings']['site_name'])) {
+      $site_name = $index->options['data_alter_callbacks']['site_name']['settings']['site_name'];
+    }
+    // Handle domain access.
+    elseif (function_exists('domain_get_domain') && !empty($index->options['data_alter_callbacks']['site_name']['settings'])) {
+      $domain = domain_get_domain();
+      if (!empty($index->options['data_alter_callbacks']['site_name']['settings']['domain'][$domain['machine_name']])) {
+        $site_name = $index->options['data_alter_callbacks']['site_name']['settings']['domain'][$domain['machine_name']];
+      }
+      else {
+        $site_name = isset($domain['sitename']) ? $domain['sitename'] : variable_get('site_name');
+      }
+    }
+    else {
+      $site_name = variable_get('site_name');
+    }
+    $params['fq'][] = 'sm_site_name:("' . $site_name . '")';
   }
 
   // Set facet params
