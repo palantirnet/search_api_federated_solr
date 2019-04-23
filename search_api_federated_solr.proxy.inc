@@ -70,8 +70,23 @@ function search_api_federated_solr_proxy() {
     $query_fields = array_values($query_fields_map);
   }
 
+  // If site search is restricted, enforce it here.
+  $restrict_site = variable_get('search_api_federated_solr_set_search_site', 0);
+  if ($restrict_site) {
+    if (!empty($params['fq']) && !is_array($params['fq'])) {
+      $params['fq'] = array($params['fq']);
+    }
+    foreach ($params['fq'] as $index => $element) {
+      if (substr_count($element, 'sm_site_name:') > 0) {
+        unset($params['fq'][$index]);
+      }
+    }
+    // @TODO: This value might be configurable? Get from SearchAPI config.
+    $params['fq'][] = 'sm_site_name:("' . variable_get('site_name') . '")';
+  }
+
   // Set facet params
-  if (is_array($params['facet.field']) && count($params['facet.field'])) {
+  if (isset($params['facet.field']) && is_array($params['facet.field']) && count($params['facet.field'])) {
     // Set defaults for facet params if they don't already exist.
     $params += [
       'facet' => 'on',
@@ -90,7 +105,6 @@ function search_api_federated_solr_proxy() {
 
   // Add flag to debug the query if flag exists in settings.
   if (variable_get('search_api_federated_solr_proxy_debug_query', FALSE)) {
-    // Set the default search param to '*' if it doesn't already exist.
     $params += [
       'debug' => 'true',
     ];
@@ -135,7 +149,7 @@ function search_api_federated_solr_proxy() {
     //   "Federated Search Demo (D8, single)",
     //   0
     // ]
-    if ($facet_fields = $results->facet_counts->facet_fields) {
+    if (isset($results->facet_counts->facet_fields) && $facet_fields = $results->facet_counts->facet_fields) {
       foreach ($facet_fields as $field => $value) {
         $facet_fields_array = [];
         foreach ($value as $facet_key => $facet_value) {
