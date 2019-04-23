@@ -721,6 +721,7 @@ function search_api_federated_solr_variables() {
     'search_api_federated_solr_hide_type',
     'search_api_federated_solr_hide_date',
     'search_api_federated_solr_hide_terms',
+    'search_api_federated_solr_set_search_site',
     'search_api_federated_solr_autocomplete_is_enabled',
     'search_api_federated_solr_autocomplete_is_append_wildcard',
     'search_api_federated_solr_autocomplete_disable_query_proxy',
