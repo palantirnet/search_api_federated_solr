@@ -84,6 +84,50 @@ class SolrProxyController extends ControllerBase {
         }
       }
 
+      // If site search is restricted, enforce it here.
+      $restrict_site = $config->get('facet.site_name.set_default')
+                    && $config->get('facet.site_name.is_hidden');
+      if ($restrict_site) {
+        if (!empty($params['fq']) && !is_array($params['fq'])) {
+          $params['fq'] = array($params['fq']);
+        }
+        elseif(empty($params['fq'])) {
+          $params['fq'] = array();
+        }
+        foreach ($params['fq'] as $id => $element) {
+          if (substr_count($element, 'sm_site_name:') > 0) {
+            unset($params['fq'][$id]);
+          }
+        }
+        // Load the index if needed. @TODO: Make this a method.
+        if (!isset($federated_search_index)) {
+          // Load the index.
+          $indexes = $server->getIndexes();
+          /** @var \Drupal\search_api\IndexInterface $federated_search_index */
+          $federated_search_index = $indexes[$index_id];
+        }
+        // Get the configuration.
+        if ($field = $federated_search_index->getField('site_name')) {
+          $site_name_config = $field->getConfiguration();
+        }
+        // @TODO: Handle domain access properly.
+        if (defined('DOMAIN_ACCESS_FIELD')) {
+          $manager = \Drupal::service('domain.negotiator');
+          $active_domain = $manager->getActiveDomain();
+          $site_name = $active_domain->label();
+        }
+        // The site name can be configured as part of the filter.
+        // Get the proper variable.
+        elseif (!empty($site_name_config)) {
+          $site_name = $site_name_config['site_name'];
+        }
+        else {
+          $site_config = $this->config('system.site');
+          $site_name = $site_config->get('name');
+        }
+        $params['fq'][] = 'sm_site_name:("' . $site_name . '")';
+      }
+
       // Uncomment to add debug data to response object.
       //  $debug = $query->getDebug();
 
