@@ -56,14 +56,7 @@ class SearchController extends ControllerBase {
     // Determine if config option to set default site name is set.
     $set_default_site = $config->get('facet.site_name.set_default');
 
-    /* We no longer have a site name property so unset the set default config.
-     * See Drupal\search_api_federated_solr\Form\FederatedSearchPageForm class
-     * The default "Site Name" facet value is passed by search form
-     * in initial get request.
-     */
-    if ($set_default_site && !$is_site_name_property) {
-      $config_editable->set('facet.site_name.set_default', 0);
-    }
+    // @TODO: Add the sitename restriction logic from the proxy controller.
 
     // Create an index property field map array to determine which fields
     // exist on the index and should be hidden in the app UI.
