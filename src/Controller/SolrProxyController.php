@@ -116,12 +116,17 @@ class SolrProxyController extends ControllerBase {
           $active_domain = $manager->getActiveDomain();
           $site_name = $active_domain->label();
         }
-        // The site name can be configured as part of the filter.
-        // Get the proper variable.
-        elseif (!empty($site_name_config)) {
+        // The site name can be configured as part of the property.
+        // Determine the correct value.
+        
+        // Use the site name value from the index site name property.
+        if (is_array($site_name_config) && array_key_exists('site_name', $site_name_config)) {
           $site_name = $site_name_config['site_name'];
         }
-        else {
+
+        // If the index site name property indicates using the system site name
+        // then use that instead.
+        if (is_array($site_name_config) && array_key_exists('use_system_site_name', $site_name_config) && $site_name_config['use_system_site_name']) {
           $site_config = $this->config('system.site');
           $site_name = $site_config->get('name');
         }
