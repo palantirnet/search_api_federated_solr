@@ -81,7 +81,7 @@ function search_api_federated_solr_proxy() {
       $params['fq'] = array();
     }
     foreach ($params['fq'] as $id => $element) {
-      if (substr_count($element, 'sm_site_name:') > 0) {
+      if (substr_count($element, 'sm_site_name') > 0) {
         unset($params['fq'][$id]);
       }
     }
