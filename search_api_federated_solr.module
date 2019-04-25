@@ -779,6 +779,8 @@ function search_api_federated_solr_map_variables($variables) {
     $params = '?search=[val]&wt=json';
     // Remove direct url value if the proxy is enabled.
     $direct_url = '';
+
+    // @TODO: Add the sitename restriction logic from the proxy controller.
   }
 
   // Do not append params to directly supplied urls (i.e. views endpoints)
