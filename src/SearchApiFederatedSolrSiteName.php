@@ -65,7 +65,7 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
         $domain = domain_lookup($domain_id);
         $ds[] = !empty($this->options['domain'][$domain['machine_name']]) ? $this->options['domain'][$domain['machine_name']] : $domain['sitename'];
       }
-      
+
       $item->site_name = $ds;
     }
 
@@ -94,8 +94,6 @@ class SearchApiFederatedSolrSiteName extends SearchApiAbstractAlterCallback {
         '#type' => 'textfield',
         '#title' => t('Site Name'),
         '#description' => t('The name of the site from which this content originated. This can be useful if indexing multiple sites with a single search index.'),
-        '#default_value' => !empty($this->options['site_name']) ? $this->options['site_name'] : variable_get('site_name'),
-        '#required' => TRUE,
       ];
     }
 

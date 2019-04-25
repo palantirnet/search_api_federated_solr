@@ -18,3 +18,26 @@ function search_api_federated_solr_field_schema($field) {
     ),
   );
 }
+
+/**
+ * Sets default values on installation.
+ */
+function search_api_federated_solr_install() {
+  variable_set('search_api_federated_solr_query_fields', ['rendered_item']);
+}
+
+/**
+ * Update hook to install new defaults.
+ */
+function search_api_federated_solr_update_7100(&$sandbox) {
+  variable_set('search_api_federated_solr_query_fields', ['rendered_item']);
+}
+
+/**
+ * Removes variables on uninstall.
+ */
+function search_api_federated_solr_uninstall() {
+  foreach (search_api_federated_solr_variables() as $var) {
+    variable_del($var);
+  }
+}

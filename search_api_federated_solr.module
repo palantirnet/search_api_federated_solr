@@ -4,7 +4,7 @@
  * @file search_api_federated_solr.module
  * Contains hook implementations for the Federated Solr Search API Module.
  *
- * @copyright Copyright (c) 2018 Palantir.net
+ * @copyright Copyright (c) 2018-19 Palantir.net
  */
 
 /**
@@ -19,6 +19,40 @@ function search_api_federated_solr_help($path, $arg) {
     $output .= '<p>' . t('Allows indexing into a single Solr search index.') . '</p>';
     return $output;
   }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function search_api_federated_solr_menu() {
+  $search_path = variable_get('search_api_federated_solr_path', 'search-app');
+
+  $items[$search_path] = array(
+    'title' => 'Search',
+    'page callback' => 'page_search_api_federated_solr',
+    'access arguments' => array('use federated search'),
+    'file' => 'search_api_federated_solr.page.inc',
+  );
+
+  $items['admin/config/search/federated-search-settings'] = array(
+    'title' => 'Federated Search App',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('search_api_federated_solr_admin'),
+    'access arguments' => array('administer federated search'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'search_api_federated_solr.admin.inc',
+    'description' => 'Configure Federated Search application settings',
+   );
+
+  $items['search-api-federated-solr/search'] = array(
+    'title' => 'Federated Search App',
+    'page callback' => 'search_api_federated_solr_proxy',
+    'access arguments' => array('use federated search'),
+    'type' => MENU_CALLBACK,
+    'file' => 'search_api_federated_solr.proxy.inc',
+   );
+
+  return $items;
 }
 
 /**
@@ -55,42 +89,6 @@ function search_api_federated_solr_search_api_alter_callback_info() {
 }
 
 /**
- * Implements hook_menu().
- */
-function search_api_federated_solr_menu() {
-  $search_path = variable_get('search_api_federated_solr_path', 'search-app');
-
-  $items[$search_path] = array(
-    'title' => 'Search',
-    'page callback' => 'page_search_api_federated_solr',
-    'access arguments' => array('use federated search'),
-  );
-
-  $items['admin/config/search/federated-search-settings'] = array(
-    'title' => 'Search API Federated Solr: Search App Settings',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('search_api_federated_solr_admin'),
-    'access arguments' => array('administer federated search'),
-    'type' => MENU_NORMAL_ITEM,
-   );
-
-  return $items;
-}
-
-/**
-* Constructs the search page.
-*/
-function page_search_api_federated_solr() {
-  $data_federated_search_app_config = search_api_federated_solr_config_json();
-  $element = [];
-  $element['#markup'] = '<div id="root" data-federated-search-app-config="'.htmlspecialchars($data_federated_search_app_config).'"><noscript>This search page requires Javascript in order to function.  <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">Learn how to enable Javascript in your browser.</a></noscript><p class="element-invisible" aria-hidden="true">Federated Solr Search App: If you see this message in your DevTools, it likely means there is an issue adding the app javascript library to this page.  Follow the steps in the search_api_federated_solr module README.</p></div>';
-  $element['#attached']['library'][] = ['search_api_federated_solr', 'search-app'];
-
-  return $element;
-}
-
-
-/**
  * Implements hook_block_info().
  */
 function search_api_federated_solr_block_info() {
@@ -116,6 +114,258 @@ function search_api_federated_solr_block_view($delta = '') {
 }
 
 /**
+ * Configuration options for the block.
+ */
+function search_api_federated_solr_block_configure($delta = '') {
+  if ($delta != 'federated_search_page_form_block') {
+    return;
+  }
+  $form = [];
+  /**
+   * Autocomplete settings:
+   *   - endpoint URL
+   *   - use wildcard to support partial terms
+   *   - customize number of autocomplete results
+   *   - number of characters after which autocomplete query should be executed
+   *   - autocomplete results mode (search results, terms)
+   *   - title for autocomplete results
+   *   - show/hide autocomplete keyboard directions
+   */
+
+  $form['autocomplete'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Search Results Page > Search Form > Autocomplete'),
+    '#description' => '<p>' . t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.') . '</p>',
+    '#collapsible' => TRUE,
+    '#collapsed' => !variable_get('search_api_federated_solr_autocomplete_block_is_enabled'),
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_is_enabled'] = [
+    '#type' => 'checkbox',
+    '#title' => '<b>' . t('Enable autocomplete for the search results page search form') . '</b>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_is_enabled'),
+    '#description' => t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
+    '#attributes' => [
+      'id' => ['autocomplete-is-enabled'],
+    ],
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_is_append_wildcard'] = [
+    '#type' => 'checkbox',
+    '#title' => '<b>' . t('Append a wildcard \'*\' to support partial text search') . '</b>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_is_append_wildcard'),
+    '#description' => t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car+car*").  This option is recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your autocomplete <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_disable_query_proxy'] = [
+    '#type' => 'checkbox',
+    '#title' => '<strong>' . t('Do not use the proxy for the search app autocomplete query') . '</strong>',
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_disable_query_proxy', 0),
+    '#description' => t('Check this box to configure the block search form to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the Search API index chosen on the <a href="@url">Federated Search App settings page</a> in Search Results Page > Set Up using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must either leave this box unchecked or check the box and enter the URL for a view REST export endpoint.  Using a url pointing directly to your Solr backend will not work.',
+      ['@url' => url('admin/config/search/federated-search-settings')]
+    ),
+    '#attributes' => [
+      'data-autocomplete-direct-query-enabler' => TRUE,
+    ],
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Autocomplete Direct Query Settings'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['search_api_federated_solr_autocomplete_block_url'] = [
+    '#type' => 'textfield',
+    '#title' => t('Solr Endpoint URL'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_url'),
+    '#maxlength' => 2048,
+    '#size' => 50,
+    '#description' => t('The URL where requests for autocomplete queries should be made. (Default: the url of the  <code>select</code> <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> on the server of the selected Search API index.)<ul><li>Supports an absolute url pattern to any other Request Handler for an index on your solr server</li><li>The value of the main search field will be appended to the url as the main query param (i.e. <code>?q=[value of the search field, wildcard appended if enabled]</code>)</li><li>Any facet/filter default values set for the search app will automatically be appended (i.e. <code>&sm_site_name=[value of the site name for the index]</code>)</li><li>The format param <code>&wt=json</code> will automatically be appended</li><li>Include any other necessary url params corresponding to <a href="https://lucene.apache.org/solr/guide/6_6/common-query-parameters.html" target="_blank">query parameters</a>.</li>'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Search App Autocomplete Endpoint Basic Authentication'),
+    '#description' => '<p>' . t('If your Solr server is protected by basic HTTP authentication (highly recommended), enter the login data here. These credentials will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.') . '</p>',
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-direct-query-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_block_use_search_app_creds'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Use credentials provided for Search Index Basic Authentication in Search Results Page > Set Up above'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_use_search_app_creds'),
+    '#attributes' => [
+      'data-autocomplete-use-search-app-creds' => TRUE,
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_block_username'] = [
+    '#type' => 'textfield',
+    '#title' => t('Username'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_username'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-use-search-app-creds]' => [
+          'checked' => FALSE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['direct']['basic_auth']['search_api_federated_solr_autocomplete_block_password'] = [
+    '#type' => 'textfield',
+    '#title' => t('Password'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_password'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-use-search-app-creds]' => [
+          'checked' => FALSE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_suggestion_rows'] = [
+    '#type' => 'textfield',
+    '#title' => t('Number of results'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_suggestion_rows'),
+    '#description' => t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
+    '#size' => 5,
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_num_chars'] = [
+    '#type' => 'textfield',
+    '#title' => t('Number of characters after which autocomplete query should execute'),
+    '#default_value' => variable_get('search_api_federated_solr_autocomplete_block_num_chars'),
+    '#description' => t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
+    '#size' => 5,
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $autocomplete_mode = variable_get('search_api_federated_solr_autocomplete_block_mode') ?: 'result' ;
+  $title_text_config_key = 'search_api_federated_solr_autocomplete_block_' . $autocomplete_mode . '_title_text';
+  $hide_directions_text_config_key = 'search_api_federated_solr_autocomplete_block_' . $autocomplete_mode . '_hide_directions_text';
+
+  $form['autocomplete']['search_api_federated_solr_autocomplete_block_mode'] = [
+    '#type' => 'select',
+    '#title' => t('Autocomplete mode'),
+    '#description' => t('Type of results the autocomplete response returns: search results (default) or search terms.'),
+    '#options' => [
+      'result' => t('Search results (i.e. search as you type functionality)'),
+      'Search terms (coming soon)' => [],
+    ],
+    '#default_value' => $autocomplete_mode || 'result',
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete'][$title_text_config_key] = [
+    '#type' => 'textfield',
+    '#title' => t('Results title text'),
+    '#size' => 50,
+    '#default_value' => $autocomplete_mode ? variable_get($title_text_config_key) : '',
+    '#description' => t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?")'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+
+  $form['autocomplete'][$hide_directions_text_config_key] = [
+    '#type' => 'checkbox',
+    '#title' => '<b>' . t('Hide keyboard directions') . '</b>',
+    '#default_value' => $autocomplete_mode ? variable_get($hide_directions_text_config_key) : 0,
+    '#description' => t('Check this box to hide the autocomplete keyboard usage directions in the results dropdown. For sites that want to maximize their accessibility UX for sighted keyboard users, we recommend leaving this unchecked. (Default: directions are visible)'),
+    '#states' => [
+      'visible' => [
+        ':input[data-autocomplete-enabler]' => [
+          'checked' => TRUE,
+        ],
+      ],
+    ],
+  ];
+  return $form;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function search_api_federated_solr_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
+  if ($form['module']['#value'] === 'search_api_federated_solr') {
+    $form['#validate'][] = 'search_api_federated_solr_block_validate';
+  }
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function search_api_federated_solr_block_save($delta = '', $edit) {
+  if ($delta != 'federated_search_page_form_block') {
+    return;
+  }
+  foreach ($edit as $key => $value) {
+    if (substr_count($key, 'search_api_federated_solr_autocomplete_block') > 0) {
+      variable_set($key, $value);
+    }
+  }
+}
+
+/**
  * Create custom search form.
  */
 function search_api_federated_solr_search_block_form($form, &$form_state) {
@@ -128,9 +378,28 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
     '#attributes' => array(
       'title' => t('Enter the terms you wish to search for.'),
       'placeholder' => '',
+      'autocomplete' => 'off'
     ),
     '#prefix' => '<div class="container-inline">',
   );
+
+  // @TODO: Block autocomplete.
+  $auto = variable_get('search_api_federated_solr_autocomplete_block_is_enabled');
+  if (!empty($auto)) {
+    drupal_add_js(drupal_get_path('module', 'search_api_federated_solr') . '/js/search_api_federated_solr_autocomplete.js', 'file');
+    $form['q']['#attributes']['class'][] = 'js-search-api-federated-solr-block-form-autocomplete';
+    // Write the block autocomplete config to Drupal settings.
+    $autocomplete = search_api_federated_solr_block_variables();
+    drupal_add_js(
+      ['searchApiFederatedSolr' => [
+        'block' => [
+          'autocomplete' => $autocomplete,
+          ],
+        ],
+      ], 'setting');
+    drupal_add_css(drupal_get_path('module', 'search_api_federated_solr') . '/css/search_api_federated_solr_autocomplete.css', 'file');
+  }
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Search'),
@@ -138,8 +407,23 @@ function search_api_federated_solr_search_block_form($form, &$form_state) {
     '#suffix' => '</div>',
   );
 
-
   return $form;
+}
+
+/**
+ * Gets and transforms D7 variables for use with the JS code.
+ *
+ * @return array.
+ */
+function search_api_federated_solr_block_variables() {
+  $autocomplete = [];
+  $vars = search_api_federated_solr_variables();
+  foreach ($vars as $key => $value) {
+    if (substr_count($value, 'search_api_federated_solr_autocomplete_block') > 0) {
+      $autocomplete[$value] = variable_get($value);
+    }
+  }
+  return search_api_federated_solr_map_variables($autocomplete);
 }
 
 /**
@@ -187,148 +471,42 @@ function search_api_federated_solr_search_block_form_submit($form, &$form_state)
 }
 
 /**
- * Create search_api_federated_solr config form.
- */
-function search_api_federated_solr_admin($form, &$form_state) {
-
-  // Get search indexes.
-  $indexes = [];
-  foreach (search_api_index_load_multiple(FALSE) as $index) {
-    $indexes[$index->machine_name] = $index->name;
-  }
-
-  $form['#prefix'] = '<div id="search-api-federated-solr-config-form">';
-  $form['#suffix'] = '</div>';
-
-  $form['setup'] = [
-    '#type' => 'fieldset',
-    '#title' => 'Search Results Page > Set Up',
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-  ];
-
-  $form['setup']['search_api_federated_solr_path'] = [
-    '#type' => 'textfield',
-    '#title' => t('Search app path'),
-    '#default_value' => variable_get('search_api_federated_solr_path', 'search-app'),
-    '#description' => t('The path for the search app (Default: "search-app").'),
-  ];
-
-  $form['setup']['search_api_federated_solr_search_index'] = [
-    '#type' => 'select',
-    '#title' => t('Search API index'),
-    '#description' => t('Defines <a href="/admin/config/search/search-api">which search_api index and server</a> the search app should use.'),
-    '#options' => $indexes,
-    '#default_value' => variable_get('search_api_federated_solr_search_index'),
-    '#required' => TRUE,
-    '#ajax' => [
-      'callback' => 'get_site_name',
-      'wrapper' => 'search-api-federated-solr-config-form',
-    ],
-  ];
-
-  $form['search_api_federated_solr_has_site_name_property'] = [
-    '#type' => 'hidden',
-    '#default_value' => variable_get('search_api_federated_solr_has_site_name_property') ? 'true' : NULL,
-  ];
-
-  $form['search_api_federated_solr_set_search_site'] = [
-    '#type' => 'checkbox',
-    '#title' => t('Set the "Site name" facet to this site'),
-    '#default_value' => variable_get('search_api_federated_solr_set_search_site'),
-    '#description' => t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
-    '#states' => [
-      'visible' => [
-        ':input[name="search_api_federated_solr_has_site_name_property"]' => [
-          'value' => "true"
-        ],
-      ],
-    ],
-  ];
-
-  $form['setup']['search_api_federated_solr_search_index_basic_auth'] = [
-    '#type' => 'fieldset',
-    '#title' => t('Search Index Basic Authentication'),
-    '#description' => t('If your Solr server is protected by basic HTTP authentication, enter the login data here. This will be accessible to the client in an obscured, but non-secure method. It should, therefore, only provide read access to the index AND be different from that provided when configuring the server in Search API. The Password field is intentionally not obscured to emphasize this distinction.')
-  ];
-
-  $form['setup']['search_api_federated_solr_search_index_basic_auth']['search_api_federated_solr_search_index_basic_auth_username'] = [
-    '#type' => 'textfield',
-    '#title' => t('Username'),
-    '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_username'),
-  ];
-
-  $form['setup']['search_api_federated_solr_search_index_basic_auth']['search_api_federated_solr_search_index_basic_auth_password'] = [
-    '#type' => 'textfield',
-    '#title' => t('Password'),
-    '#default_value' => variable_get('search_api_federated_solr_search_index_basic_auth_password'),
-  ];
-  $form['setup']['search_api_federated_solr_autocomplete_is_enabled'] = [
-    '#type' => 'checkbox',
-    '#title' => '<b>' . t('Enable autocomplete for the search results page search form') . '</b>',
-    '#default_value' => variable_get('search_api_federated_solr_autocomplete_is_enabled'),
-    '#description' => t('Checking this will expose more configuration options for autocomplete behavior for the search form on the Search Results page at the end of this form.'),
-    '#attributes' => [
-      'id' => ['autocomplete-is-enabled'],
-    ],
-  ];
-
-  $form['search_api_federated_solr_show_empty_search_results'] = [
-    '#type' => 'checkbox',
-    '#title' => t('Show results for empty search'),
-    '#default_value' => variable_get('search_api_federated_solr_show_empty_search_results'),
-    '#description' => t('When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
-  ];
-
-  $form['search_api_federated_solr_no_results_text'] = [
-    '#type' => 'textfield',
-    '#title' => t('No results text'),
-    '#default_value' => variable_get('search_api_federated_solr_no_results_text'),
-    '#description' => t('This text is shown when a query returns no results. (Default: "Your search yielded no results.")'),
-  ];
-
-  $form['search_api_federated_solr_search_prompt_text'] = [
-    '#type' => 'textfield',
-    '#title' => t('Search prompt text'),
-    '#default_value' => variable_get('search_api_federated_solr_search_prompt_text'),
-    '#description' => t('This text is shown when no query term has been entered. (Default: "Please enter a search term.")'),
-  ];
-
-  $form['search_api_federated_solr_rows'] = [
-    '#type' => 'textfield',
-    '#attributes' => array(
-      ' type' => 'number',
-    ),
-    '#title' => t('Number of search results per page'),
-    '#default_value' => variable_get('search_api_federated_solr_rows'),
-    '#description' => t('The max number of results to render per search results page. (Default: 20)'),
-  ];
-
-  $form['search_api_federated_solr_page_buttons'] = [
-    '#type' => 'textfield',
-    '#attributes' => array(
-      ' type' => 'number',
-    ),
-    '#title' => t('Number of pagination buttons'),
-    '#default_value' => variable_get('search_api_federated_solr_page_buttons'),
-    '#description' => t('The max number of numbered pagination buttons to show at a given time. (Default: 5)'),
-  ];
-
-  $form['#cache'] = ['max-age' => 0];
-
-  return system_settings_form($form);
-}
-
-/**
  * Create search_api_federated_solr_form_alter to validate the search path format.
  */
 
 function search_api_federated_solr_form_search_api_federated_solr_admin_alter(&$form, &$form_state, $form_id) {
   $form['#validate'][] = '_path_form_validate';
+  $form['#validate'][] = '_direct_url_form_validate';
 }
 
 function _path_form_validate($form, &$form_state) {
      $form_state['values']['search_api_federated_solr_path'] = trim($form_state['values']['search_api_federated_solr_path'], '/');
+}
+
+/**
+ * Ensure that valid URL is passed to autocomplete endpoint setting.
+ */
+function _direct_url_form_validate($form, &$form_state) {
+  // Check if URL is valid if proxy is disabled and url field is populated.
+  if (array_key_exists('search_api_federated_solr_autocomplete_url', $form_state['values']) && $form_state['values']['search_api_federated_solr_autocomplete_url'] && $form_state['values']['search_api_federated_solr_autocomplete_disable_query_proxy']) {
+    $is_external = url_is_external($form_state['values']['search_api_federated_solr_autocomplete_url']);
+    if (!valid_url($form_state['values']['search_api_federated_solr_autocomplete_url'], $is_external)) {
+      form_set_error('search_api_federated_solr_autocomplete_url', t('Please enter a valid external or internal URL for the autocomplete endpoint.'));
+    }
+  }
+}
+
+/**
+ * Ensure that valid URL is passed to block autocomplete endpoint setting.
+ */
+function search_api_federated_solr_block_validate($form, &$form_state) {
+  // Check if URL is valid if proxy is disabled and url field is populated.
+  if (array_key_exists('search_api_federated_solr_autocomplete_block_url', $form_state['values']) && $form_state['values']['search_api_federated_solr_autocomplete_block_url'] && $form_state['values']['search_api_federated_solr_autocomplete_block_disable_query_proxy']) {
+    $is_external = url_is_external($form_state['values']['search_api_federated_solr_autocomplete_block_url']);
+    if (!valid_url($form_state['values']['search_api_federated_solr_autocomplete_block_url'], $is_external)) {
+      form_set_error('search_api_federated_solr_autocomplete_block_url', t('Please enter a valid external or internal URL for the autocomplete endpoint.'));
+    }
+  }
 }
 
 /**
@@ -345,74 +523,6 @@ function get_site_name($form, $form_state) {
   }
 
   return $form;
-}
-
-
-/**
- * Create search_api_federated_solr config json endpoint.
- */
-function search_api_federated_solr_config_json() {
-  $response_data = [];
-
-  $search_index = variable_get('search_api_federated_solr_search_index');
-  // Get the index configuration object.
-  $index = search_api_index_load($search_index);
-  $server = search_api_server_load($index->server);
-  $server_url = $server->options['scheme'] . '://' . $server->options['host'] . ':' . $server->options['port'];
-  // Check for the non-required server config field data before appending.
-  $server_url .= $server->options['path'] ?: '';
-  // Append the request handler.
-  $server_url .= '/select';
-
-  if ($server_url) {
-    $response_data['url'] = $server_url;
-  }
-
-  $basic_auth_username = variable_get('search_api_federated_solr_search_index_basic_auth_username');
-  $basic_auth_password = variable_get('search_api_federated_solr_search_index_basic_auth_password');
-  if ($basic_auth_username || $basic_auth_password) {
-    $response_data['userpass'] = base64_encode($basic_auth_username . ':' . $basic_auth_password);
-  }
-
-  $is_site_name_property = variable_get('search_api_federated_solr_has_site_name_property');
-  $set_default_site = variable_get('search_api_federated_solr_set_search_site');
-  if ($is_site_name_property == 'true' && !$set_default_site) {
-    variable_set('search_api_federated_solr_set_search_site', 0);
-  }
-
-  $no_response = variable_get('search_api_federated_solr_no_results_text');
-  if ($no_response) {
-    $response_data['noResults'] = $no_response;
-  }
-
-  $show_empty_search_results = variable_get('search_api_federated_solr_show_empty_search_results');
-  if ($show_empty_search_results) {
-    $response_data['showEmptySearchResults'] = $show_empty_search_results;
-  }
-
-  $search_prompt = variable_get('search_api_federated_solr_search_prompt_text');
-  if ($search_prompt) {
-    $response_data['searchPrompt'] = $search_prompt;
-  }
-
-  $rows = variable_get('search_api_federated_solr_rows');
-  if ($rows) {
-    $response_data['rows'] = $rows;
-  }
-
-  $pagination_buttons = variable_get('search_api_federated_solr_page_buttons');
-  if ($pagination_buttons) {
-    $response_data['paginationButtons'] = $pagination_buttons;
-  }
-
-  if (function_exists('domain_get_domain')) {
-    $domain = domain_get_domain();
-    if (isset($domain['path'])) {
-      $response_data['hostname'] =  parse_url($domain['path'], PHP_URL_HOST) ;
-    }
-  }
-
-  return json_encode($response_data, JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 }
 
 /**
@@ -514,13 +624,13 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/js/main.d41fc3fe.js' => array(
-        'type' => 'external',
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.2/js/main.f36175e5.js' => array(
         'scope' => 'footer',
+        'type' => 'external',
       ),
     ),
     'css' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v1.0.10/css/main.cf6a58ce.css' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.2/css/main.ec684809.css' => array(
         'type' => 'external',
       ),
     ),
@@ -564,4 +674,243 @@ function search_api_federated_solr_image_default_styles() {
   );
 
   return $styles;
+}
+
+/**
+ * Returns the URL for the active search service.
+ *
+ * @return string URL|NULL if not set.
+ */
+function search_api_federated_solr_get_server_url() {
+  $search_index = variable_get('search_api_federated_solr_search_index');
+  if (empty($search_index)) {
+    return NULL;
+  }
+  // Get the index configuration object.
+  $index = search_api_index_load($search_index);
+  $server = search_api_server_load($index->server);
+  $server_url = trim($server->getSolrConnection()->getBaseUrl(), '/');
+  // Append the request handler.
+  $server_url .= '/select';
+  return $server_url;
+}
+
+/**
+ * Lists our variables.
+ */
+function search_api_federated_solr_variables() {
+  return [
+    'search_api_federated_solr_path',
+    'search_api_federated_solr_search_index',
+    'search_api_federated_solr_disable_query_proxy',
+    'search_api_federated_solr_search_index_basic_auth',
+    'search_api_federated_solr_search_index_basic_auth_username',
+    'search_api_federated_solr_search_index_basic_auth_password',
+    'search_api_federated_solr_proxy_validate_query_fields_against_schema',
+    'search_api_federated_solr_proxy_debug_query',
+    'search_api_federated_solr_proxy_query_fields',
+    'search_api_federated_solr_show_empty_search_results',
+    'search_api_federated_solr_no_results_text',
+    'search_api_federated_solr_search_prompt_text',
+    'search_api_federated_solr_rows',
+    'search_api_federated_solr_page_buttons',
+    'search_api_federated_solr_has_site_name_property',
+    'search_api_federated_solr_has_federated_date_property',
+    'search_api_federated_solr_has_federated_type_property',
+    'search_api_federated_solr_has_federated_terms_property',
+    'search_api_federated_solr_hide_site_name',
+    'search_api_federated_solr_hide_type',
+    'search_api_federated_solr_hide_date',
+    'search_api_federated_solr_hide_terms',
+    'search_api_federated_solr_set_search_site',
+    'search_api_federated_solr_autocomplete_is_enabled',
+    'search_api_federated_solr_autocomplete_is_append_wildcard',
+    'search_api_federated_solr_autocomplete_disable_query_proxy',
+    'search_api_federated_solr_autocomplete_url',
+    'search_api_federated_solr_autocomplete_use_search_app_creds',
+    'search_api_federated_solr_autocomplete_username',
+    'search_api_federated_solr_autocomplete_password',
+    'search_api_federated_solr_autocomplete_suggestion_rows',
+    'search_api_federated_solr_autocomplete_num_chars',
+    'search_api_federated_solr_autocomplete_mode',
+    'search_api_federated_solr_autocomplete_result_title_text',
+    'search_api_federated_solr_autocomplete_result_hide_directions_text',
+    'search_api_federated_solr_autocomplete_block_is_enabled',
+    'search_api_federated_solr_autocomplete_block_is_append_wildcard',
+    'search_api_federated_solr_autocomplete_block_disable_query_proxy',
+    'search_api_federated_solr_autocomplete_block_suggestion_rows',
+    'search_api_federated_solr_autocomplete_block_num_chars',
+    'search_api_federated_solr_autocomplete_block_mode',
+    'search_api_federated_solr_autocomplete_block_result_title_text',
+    'search_api_federated_solr_autocomplete_block_result_hide_directions_text',
+    'search_api_federated_solr_autocomplete_block_url',
+    'search_api_federated_solr_autocomplete_block_use_search_app_creds',
+    'search_api_federated_solr_autocomplete_block_username',
+    'search_api_federated_solr_autocomplete_block_password',
+  ];
+}
+
+function search_api_federated_solr_map_variables($variables) {
+  $mode = $variables['search_api_federated_solr_autocomplete_block_mode'];
+  $proxy_disabled = $variables['search_api_federated_solr_autocomplete_block_disable_query_proxy'];
+  $direct_url = $variables['search_api_federated_solr_autocomplete_block_url'];
+
+  if ($proxy_disabled) {
+    // Default to provided username and password.
+    $username = $variables['search_api_federated_solr_autocomplete_block_username'];
+    $password = $variables['search_api_federated_solr_autocomplete_block_password'];
+    // If we should use search app credentials, get them.
+    $use_search_app_creds = $variables['search_api_federated_solr_autocomplete_block_use_search_app_creds'];
+    if ($use_search_app_creds) {
+      $username = variable_get('search_api_federated_solr_search_index_basic_auth_username');
+      $password = variable_get('search_api_federated_solr_search_index_basic_auth_password');
+    }
+    // Set encoded credentials if provided.
+    if ($username && $password) {
+      // Set creds.
+      $autocomplete['userpass'] = base64_encode($username . ':' . $password);
+    }
+    // Supply the necessary search term + format params for the solr server endpoint.
+    $params = '?q=[val]&wt=json';
+  }
+  // Proxy is enabled.
+  else {
+    // Supply the necessary search term + format params for the proxy endpoint.
+    $params = '?search=[val]&wt=json';
+    // Remove direct url value if the proxy is enabled.
+    $direct_url = '';
+
+    // @TODO: Add the sitename restriction logic from the proxy controller.
+  }
+
+  // Do not append params to directly supplied urls (i.e. views endpoints)
+  if ($direct_url) {
+    $params = '';
+  }
+
+  // Determine the autocomplete endpoint based on block config.
+  $url = search_api_federated_solr_get_endpoint_url($proxy_disabled, $direct_url, $params);
+
+  // Set autocomplete variables.
+  $autocomplete['url'] = $url;
+  $autocomplete['directUrl'] = $direct_url;
+  $autocomplete['isEnabled'] = $variables['search_api_federated_solr_autocomplete_block_is_enabled'];
+  $autocomplete['appendWildcard'] = $variables['search_api_federated_solr_autocomplete_block_is_append_wildcard'];
+  if ($variables['search_api_federated_solr_autocomplete_block_num_chars']) {
+    $autocomplete['numChars'] = $variables['search_api_federated_solr_autocomplete_block_num_chars'];
+  }
+  if ($variables['search_api_federated_solr_autocomplete_block_suggestion_rows']) {
+    $autocomplete['suggestionRows'] = $variables['search_api_federated_solr_autocomplete_block_suggestion_rows'];
+  }
+  $autocomplete['mode'] = $mode;
+  $autocomplete['result'] = [];
+  $title_text = $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'] ? $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'] : "What are you looking for?";
+  $autocomplete['result']['titleText'] = $title_text;
+  $autocomplete['result']['hideDirectionsText'] = $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_hide_directions_text'];
+
+  return $autocomplete;
+}
+
+function search_api_federated_solr_proxy_params() {
+  $params = [];
+  $request = str_replace(request_path() . '?', '', request_uri());
+  $query = explode('&', trim($request, '/'));
+  foreach ($query as $string) {
+    $parts = explode('=', $string);
+    if (isset($parts[1])) {
+      $params[$parts[0]] = $parts[1];
+    }
+  }
+  return $params;
+}
+
+/**
+ * Parses a querystring with support for multiple keys not using array[] syntax.
+ * @see: http://php.net/manual/en/function.parse-str.php#76792
+ *
+ * @param $str
+ *  The querystring from the request object.
+ *
+ * @return array
+ *  Array of querystring params and their values.
+ */
+function search_api_federated_solr_parse_str_multiple($str) {
+  # result array
+  $arr = [];
+
+  # split on outer delimiter
+  $pairs = explode('&', $str);
+
+  # loop through each pair
+  foreach ($pairs as $i) {
+    # split into name and value
+    if (strpos($i, '=') !== FALSE) {
+      list($name,$value) = explode('=', $i, 2);
+    }
+    else {
+      continue;
+    }
+
+    # if name already exists
+    if (isset($arr[$name])) {
+      # stick multiple values into an array
+      if (is_array($arr[$name])) {
+        $arr[$name][] = $value;
+      }
+      else {
+        $arr[$name] = array($arr[$name], $value);
+      }
+    }
+    # otherwise, simply stick it in a scalar
+    else {
+      $arr[$name] = $value;
+    }
+  }
+
+  # return result array
+  return $arr;
+}
+
+/**
+ * Determines url to use for app search + autocomplete queries based on config:
+ *  - defaults to absolute url to proxy route, appends qs params
+ *  - if proxy disabled
+ *    - compute and fallback to the server url
+ *    - if direct url endpoint passed, use it
+ *
+ * @param integer $proxy_is_disabled
+ *   Flag indicating whether or not the autocomplete proxy is disabled (0 || 1)
+ * @param string $direct_url
+ *   Value of the direct url ("" || <absolute-url-with-qs-params>)
+ * @param string $qs
+ *   Querystring params to append to proxy url
+ *
+ * @return string
+ *   URL for the endpoint to be used for query requests.
+ */
+function search_api_federated_solr_get_endpoint_url($proxy_is_disabled, $direct_url, $qs = '') {
+  // Default to proxy url.
+  $options = [
+    'absolute' => TRUE,
+  ];
+  $endpoint_url = url('search-api-federated-solr/search', $options);
+
+  if ($proxy_is_disabled) {
+    // Override with direct URL if provided.
+    if ($direct_url) {
+      $endpoint_url = $direct_url;
+    }
+    else {
+      // Fallback to solr backend select handler URL.
+      $endpoint_url = search_api_federated_solr_get_server_url();
+    }
+  }
+
+  // Append qs params for block form autocomplete js unless configured
+  // with a direct url (like a view rest export endpoint).
+  if ($qs && !$direct_url) {
+    $endpoint_url .= $qs;
+  }
+
+  return $endpoint_url;
 }
