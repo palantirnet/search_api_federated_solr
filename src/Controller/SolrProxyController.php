@@ -105,8 +105,9 @@ class SolrProxyController extends ControllerBase {
         elseif(empty($params['fq'])) {
           $params['fq'] = array();
         }
+
         foreach ($params['fq'] as $id => $element) {
-          if (substr_count($element, 'sm_site_name:') > 0) {
+          if (substr_count($element, 'sm_site_name') > 0) {
             unset($params['fq'][$id]);
           }
         }
@@ -129,7 +130,7 @@ class SolrProxyController extends ControllerBase {
         }
         // The site name can be configured as part of the property.
         // Determine the correct value.
-        
+
         // Use the site name value from the index site name property.
         if (is_array($site_name_config) && array_key_exists('site_name', $site_name_config)) {
           $site_name = $site_name_config['site_name'];
