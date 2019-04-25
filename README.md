@@ -67,8 +67,10 @@ On each site included in the federated search, you will need to:
     1. Optional: To help facilitate autocomplete term partial queries, consider adding a Fulltext [Edge Ngram](https://lucene.apache.org/solr/guide/6_6/tokenizers.html) version of your title field to the index (See [example](https://github.com/palantirnet/federated-search-demo/blob/master/config/sites/d8/search_api.index.federated_search_index.yml#L86) in the Federated Search Demo site Solr index config).  Also consider adding that field as a default query field for your Solr server's default Request Handler.
     1. Optional: If your site uses a "search terms" or similar field to trigger a boost for items based on given search terms, consider adding a Fulltext [Edge Ngram](https://lucene.apache.org/solr/guide/6_6/tokenizers.html) version of that field to the index.  Also consider adding that field as a default query field for your Solr server's default Request Handler.
 1. Optional: Configure default fields for queries.  The default query field for search queries made through the proxy provided by this module is the `rendered_item` field.  To set a different value for the default query fields there are two options: 
-    - Set `$config['search_api_federated_solr.search_app.settings']['index']['query_fields']` to an array of _Fulltext_ field machine names (i.e. `['rendered_item', 'full_text_title']`) from your search index in `settings.php`.  Note: this method will not work if you disable the proxy that this module provides for querying your solr backend in the search app or block autocomplete settings.
-    - Configure that Search API server to set default query fields for your default [Request Handler](https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-SearchHandlers). (See [example](https://github.com/palantirnet/federated-search-demo/blob/master/conf/solr/drupal8/custom/solr-conf/4.x/solrconfig_extra.xml#L94) in Federated Search Demo site Solr server config)
+    1. Set `$config['search_api_federated_solr.search_app.settings']['index']['query_fields']` to an array of _Fulltext_ field machine names (i.e. `['rendered_item', 'full_text_title']`) from your search index in `settings.php`.
+        - This method will not work if you disable the proxy that this module provides for querying your solr backend in the search app or block autocomplete settings
+        - By default, the proxy will validate the field names to ensure that they are full text and that they exist on the index for this site.  Then it will translate the index field name into its solr field name counterpart.  If you need to disable this validation + transformation (for example to search fields on a D7 site index whose machine names are different than the D8 site counterpart), set `$config['search_api_federated_solr.search_app.settings']['index']['validate_query_fields']` to `FALSE`.  Then you must supply the _solr field names_.  To determine what these field names are on your D8 site, use the drush command `drush sapifs-f`, which will output a table with index field names and their solr field name counterparts.
+    1. Configure that Search API server to set default query fields for your default [Request Handler](https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-SearchHandlers). (See [example](https://github.com/palantirnet/federated-search-demo/blob/master/conf/solr/drupal8/custom/solr-conf/4.x/solrconfig_extra.xml#L94) in Federated Search Demo site Solr server config)
 1. Index the content for the site using Search API
 
 Once each site is configured, you may begin to index content.
@@ -84,6 +86,14 @@ In order to display results from the Solr index:
     1. Under format, choose fields.  Add the title (for Search views, we recommend adding a full text version of your title to the index and adding that instead) and link to content (for Search views, url) fields.
     1. Under format, configure settings for the fields.  Use the alias `ss_federated_title` for your title field and `ss_url` for your url field.
     1. Under Filter Criteria, add those fields you would like to query for the search term as an exposed filter with the "contains any word" operator (for Search views use full text field searches).  For each filter, assign a filter identifier.  These will be used in your autocomplete url as querystring params: `&filter1_identifier_value=[val]&filter2_identifier_value=[val]`.
+
+### Adding Solr query debug information to proxy response
+
+To see debug information when using the proxy for your search queries, set `$config['search_api_federated_solr.search_app.settings']['proxy']['debug']` to `TRUE` in your settings.php.
+
+Then user your browsers developer tools to inspect  network traffic.  When your site makes a search query through the proxy, inspect the response for this request and you should now see a `debug` object added to the response object. 
+
+*Note: we recommend leaving this set to `FALSE` for production environments, as it could have an impact on performance.*
 
 ### Updating the bundled React application
 
