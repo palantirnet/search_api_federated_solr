@@ -48,7 +48,7 @@ When changes to [federated-search-react](https://github.com/palantirnet/federate
 
 ## More information
 
-Full documentation for this module is in the [handbook on Drupal.org](https://www.drupal.org/docs/7/modules/search-api-federated-solr/search-api-federated-solr-module)
+Full documentation for this module is available in the [handbook on Drupal.org](https://www.drupal.org/docs/7/modules/search-api-federated-solr/search-api-federated-solr-module)
 
 * [How to use this module](https://www.drupal.org/docs/7/modules/search-api-federated-solr/search-api-federated-solr-module/intro-install-configure)
 * [How to configure a Search API Index for federated search](https://www.drupal.org/docs/8/modules/search-api-federated-solr/federated-search-schema)
