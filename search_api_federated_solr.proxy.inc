@@ -20,7 +20,7 @@ function search_api_federated_solr_proxy() {
   // http://d7.fs-demo.local/search-api-federated-solr/search?search=soup&sm_site_name[]=Federated%20Search%20Demo%20(D8%2C%20single)&ss_federated_type=Recipe
 
   // Parse the querystring into an array, supporting multiples.
-  $qs = str_replace('/' . request_path() . '?', '', request_uri());
+  $qs = str_replace(base_path() . request_path() . '?', '', request_uri());
   $qs_urldecoded = urldecode($qs);
   $params = search_api_federated_solr_parse_str_multiple($qs_urldecoded);
 
