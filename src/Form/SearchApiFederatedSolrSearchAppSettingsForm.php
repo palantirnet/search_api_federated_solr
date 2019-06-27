@@ -307,7 +307,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Set the "Site name" facet to this site'),
       '#default_value' => $configuration->get('facet.site_name.set_default'),
-      '#description' => $this->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
+      '#description' => $this->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet. <br><strong>This setting will override the <em>Sites that may be searched from this instance</em> setting below</strong>.'),
       '#states' => [
         'visible' => [
           ':input[name="site_name_property"]' => [
@@ -319,9 +319,14 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
     // Here's where we have to use `global $config`.
     global $config;
+    $site_list = $config['search_api_federated_solr.search_app.settings']['facet']['site_name']['site_list'];
+    $sites = [];
+    foreach ($site_list as $site) {
+      $sites[$site] = $site;
+    }
     $form['search_form_values']['defaults']['set_allowed_sites'] = [
       '#type' => 'checkboxes',
-      '#options' => $config['search_api_federated_solr.search_app.settings']['facet']['site_name']['site_list'],
+      '#options' => $sites,
       '#title' => $this->t('Sites that may be searched from this instance'),
       '#default_value' => $configuration->get('facet.site_name.allowed_sites'),
       '#description' => $this->t('When at least one option is checked, only search results from these sites will be shown as options in the search app\'s "Site name" facet. Default searches will only query the selected sites. If no options are checked, all sites in the network will be available. If no options are visible, you will need to configure your site list in settings.php. See <a href=":url">the help page for information</a>',
@@ -688,6 +693,13 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Set the search app configuration setting for the default search site flag.
     $show_empty_search_results = $form_state->getValue('show_empty_search_results');
     $config->set('content.show_empty_search_results', $show_empty_search_results);
+
+    // Set the allowed sites list.
+    $set_allowed_sites = $form_state->getValue('set_allowed_sites');
+    if ($set_search_site) {
+      $set_allowed_sites = [];
+    }
+    $config->set('facet.site_name.allowed_sites', $set_allowed_sites);
 
     // Determine whether or not we should be using the proxy.
     $proxy_is_disabled = $form_state->getValue('disable_query_proxy');
