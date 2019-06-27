@@ -15,6 +15,7 @@ facet:
   site_name:
     set_default: false
     is_hidden: false
+    allowed_sites: ''
   federated_type:
     is_hidden: false
   federated_terms:
@@ -41,6 +42,7 @@ results:
 pagination:
   buttons: null
 path: /search-app
+page_title: Search
 proxy:
   isDisabled: 0
   debug: false

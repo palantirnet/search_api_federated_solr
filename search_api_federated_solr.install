@@ -105,3 +105,17 @@ function search_api_federated_solr_update_8003(&$sandbox) {
 
   $config->save(TRUE);
 }
+
+/**
+ * Configures the restricted site list..
+ */
+function search_api_federated_solr_update_8004(&$sandbox) {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('search_api_federated_solr.search_app.settings');
+
+  // Enable the proxy by default.
+  $config->set('facet.site_name.allowed_sites', []);
+
+  $config->save(TRUE);
+}
+

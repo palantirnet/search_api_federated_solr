@@ -7,6 +7,9 @@ search_api_federated_solr.search_app.settings:
     path:
       type: string
       label: 'The path for the search app.'
+    page_title:
+      type: string
+      label: 'Search results page title.'
     facet:
       type: mapping
       mapping:
@@ -19,6 +22,11 @@ search_api_federated_solr.search_app.settings:
             is_hidden:
               type: boolean
               label: 'When true, this facet option is hidden in the UI.'
+            allowed_sites:
+              type: sequence
+              label: 'Sites that may be searched from this instance.'
+              sequence:
+                type: string
         federated_type:
           type: mapping
           mapping:
@@ -67,6 +75,8 @@ search_api_federated_solr.search_app.settings:
         query_fields:
           type: sequence
           label: 'Default search fields for queries.'
+          sequence:
+            type: string
         validate_query_fields:
           type: boolean
           label: 'Flag to ensure default search fields are validated against schema for this site.'
