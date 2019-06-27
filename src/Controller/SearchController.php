@@ -118,6 +118,16 @@ class SearchController extends ControllerBase {
       $federated_search_app_config['pageTitle'] = $page_title;
     }
 
+    // OPTIONAL: Pre-select this site.
+    if ($site_seach = $config->get('facet.site_name.set_default')) {
+      // @TODO: How to derive the proper site name here?
+    }
+
+    // OPTIONAL: The allowed list of sites for the search.
+    if ($allowed_sites = $config->get('facet.site_name.allowed_sites')) {
+      $federated_search_app_config['sm_site_name'] = array_keys(array_filter($allowed_sites));
+    }
+
     $federated_search_app_config['autocomplete'] = FALSE;
     if ($autocomplete_is_enabled = $config->get('autocomplete.isEnabled')) {
 

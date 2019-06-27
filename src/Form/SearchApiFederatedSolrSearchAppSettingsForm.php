@@ -307,7 +307,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Set the "Site name" facet to this site'),
       '#default_value' => $configuration->get('facet.site_name.set_default'),
-      '#description' => $this->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet. <br><strong>This setting will override the <em>Sites that may be searched from this instance</em> setting below</strong>.'),
+      '#description' => $this->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
       '#states' => [
         'visible' => [
           ':input[name="site_name_property"]' => [
@@ -696,9 +696,6 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
 
     // Set the allowed sites list.
     $set_allowed_sites = $form_state->getValue('set_allowed_sites');
-    if ($set_search_site) {
-      $set_allowed_sites = [];
-    }
     $config->set('facet.site_name.allowed_sites', $set_allowed_sites);
 
     // Determine whether or not we should be using the proxy.
