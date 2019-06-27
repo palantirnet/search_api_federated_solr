@@ -302,8 +302,23 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Set the "Site name" facet to this site'),
       '#default_value' => $config->get('facet.site_name.set_default'),
-      '#description' => $this
-        ->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
+      '#description' => $this->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="site_name_property"]' => [
+            'value' => "true",
+          ],
+        ],
+      ],
+    ];
+
+    $form['search_form_values']['defaults']['set_allowed_sites'] = [
+      '#type' => 'checkboxes',
+      '#options' => $config->get('facet.site_name.site_list'),
+      '#title' => $this->t('Sites that may be searched from this instance'),
+      '#default_value' => $config->get('facet.site_name.allowed_sites'),
+      '#description' => $this->t('When at least one option is checked, only search results from these sites will be shown as options in the search app\'s "Site name" facet. Default searches will only query the selected sites. If no options are checked, all sites in the network will be available. If no options are visible, you will need to configure your site list in settings.php. See <a href=":url">the help page for information</a>',
+        [':url' => '/admin/help/search_api_federated_solr']),
       '#states' => [
         'visible' => [
           ':input[name="site_name_property"]' => [

@@ -16,6 +16,7 @@ facet:
     set_default: false
     is_hidden: false
     allowed_sites: ''
+    site_list: ''
   federated_type:
     is_hidden: false
   federated_terms:

@@ -27,6 +27,11 @@ search_api_federated_solr.search_app.settings:
               label: 'Sites that may be searched from this instance.'
               sequence:
                 type: string
+            site_list:
+              type: sequence
+              label: 'Sites within the current network.'
+              sequence:
+                type: string
         federated_type:
           type: mapping
           mapping:
