@@ -192,6 +192,27 @@ function search_api_federated_solr_admin($form, &$form_state) {
     ],
   ];
 
+    $site_list = variable_get('search_api_federated_solr_site_list');
+    $sites = [];
+    foreach ($site_list as $site) {
+      $sites[$site] = $site;
+    }
+    $form['search_form_values']['defaults']['search_api_federated_solr_allowed_sites'] = [
+      '#type' => 'checkboxes',
+      '#options' => $sites,
+      '#title' => t('Sites that may be searched from this instance'),
+      '#default_value' => variable_get('search_api_federated_solr_allowed_sites', []),
+      '#description' => t('When at least one option is checked, only search results from these sites will be shown as options in the search app\'s "Site name" facet. Default searches will only query the selected sites. If no options are checked, all sites in the network will be available. If no options are visible, you will need to configure your site list in settings.php. See <a href=":url">the help page for information</a>',
+        [':url' => '/admin/help/search_api_federated_solr']),
+      '#states' => [
+        'visible' => [
+          ':input[name="site_name_property"]' => [
+            'value' => "true",
+          ],
+        ],
+      ],
+    ];
+
   if (!empty(variable_get('search_api_federated_solr_search_index'))) {
     $index = variable_get('search_api_federated_solr_search_index');
     if (isset($settings[$index])) {
