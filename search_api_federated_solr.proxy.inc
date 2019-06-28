@@ -71,9 +71,7 @@ function search_api_federated_solr_proxy() {
   }
 
   // If site search is restricted, enforce it here.
-  $restrict_site = variable_get('search_api_federated_solr_set_search_site', 0)
-                && variable_get('search_api_federated_solr_hide_site_name', 0);
-  if ($restrict_site) {
+  if (variable_get('search_api_federated_solr_set_search_site', 0)) {
     if (!empty($params['fq']) && !is_array($params['fq'])) {
       $params['fq'] = array($params['fq']);
     }
@@ -85,24 +83,7 @@ function search_api_federated_solr_proxy() {
         unset($params['fq'][$id]);
       }
     }
-    // The site name can be configured as part of the filter.
-    // Get the proper variable.
-    if (!empty($index->options['data_alter_callbacks']['site_name']['settings']['site_name'])) {
-      $site_name = $index->options['data_alter_callbacks']['site_name']['settings']['site_name'];
-    }
-    // Handle domain access.
-    elseif (function_exists('domain_get_domain') && !empty($index->options['data_alter_callbacks']['site_name']['settings'])) {
-      $domain = domain_get_domain();
-      if (!empty($index->options['data_alter_callbacks']['site_name']['settings']['domain'][$domain['machine_name']])) {
-        $site_name = $index->options['data_alter_callbacks']['site_name']['settings']['domain'][$domain['machine_name']];
-      }
-      else {
-        $site_name = isset($domain['sitename']) ? $domain['sitename'] : variable_get('site_name');
-      }
-    }
-    else {
-      $site_name = variable_get('site_name');
-    }
+    $site_name = search_api_federated_solr_get_site_name();
     $params['fq'][] = 'sm_site_name:("' . $site_name . '")';
   }
 

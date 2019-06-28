@@ -36,6 +36,13 @@ function search_api_federated_solr_admin($form, &$form_state) {
     '#description' => t('The path for the search app (Default: "search-app").'),
   ];
 
+  $form['setup']['search_api_federated_solr_page_title'] = [
+    '#type' => 'textfield',
+    '#title' => t('Search results page title'),
+    '#default_value' => variable_get('search_api_federated_solr_page_title', ''),
+    '#description' => t('The title that will live in the header tag of the search results page (leave empty to hide completely).'),
+  ];
+
   $form['setup']['search_api_federated_solr_search_index'] = [
     '#type' => 'select',
     '#title' => t('Search API index'),

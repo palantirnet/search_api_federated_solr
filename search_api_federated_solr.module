@@ -921,3 +921,33 @@ function search_api_federated_solr_get_endpoint_url($proxy_is_disabled, $direct_
 
   return $endpoint_url;
 }
+
+/**
+ * Returns the active site name value.
+ *
+ * @return string
+ */
+function search_api_federated_solr_get_site_name() {
+  $site_name = variable_get('site_name');
+  $search_index = variable_get('search_api_federated_solr_search_index');
+  // Get the index entity.
+  /** @var \SearchApiIndex $index */
+  $index = search_api_index_load($search_index);
+  // The site name can be configured as part of the filter.
+  // Get the proper variable.
+  if (!empty($index->options['data_alter_callbacks']['site_name']['settings']['site_name'])) {
+    $site_name = $index->options['data_alter_callbacks']['site_name']['settings']['site_name'];
+  }
+  // Handle domain access.
+  elseif (function_exists('domain_get_domain') && !empty($index->options['data_alter_callbacks']['site_name']['settings'])) {
+    $domain = domain_get_domain();
+    if (!empty($index->options['data_alter_callbacks']['site_name']['settings']['domain'][$domain['machine_name']])) {
+      $site_name = $index->options['data_alter_callbacks']['site_name']['settings']['domain'][$domain['machine_name']];
+    }
+    else {
+      $site_name = isset($domain['sitename']) ? $domain['sitename'] : variable_get('site_name');
+    }
+  }
+
+  return $site_name;
+}
