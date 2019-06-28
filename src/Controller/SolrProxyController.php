@@ -96,53 +96,22 @@ class SolrProxyController extends ControllerBase {
       }
 
       // If site search is restricted, enforce it here.
-      $restrict_site = $config->get('facet.site_name.set_default')
-                    && $config->get('facet.site_name.is_hidden');
-      if ($restrict_site) {
+      // @TODO: Check that we need to do this, since we changed logic in the
+      // handling of query creation. See SearchController::content().
+      // Note that this IF logic is changed to match that in the block form.
+      if ($config->get('facet.site_name.set_default')) {
         if (!empty($params['fq']) && !is_array($params['fq'])) {
-          $params['fq'] = array($params['fq']);
+          $params['fq'] = [$params['fq']];
         }
-        elseif(empty($params['fq'])) {
-          $params['fq'] = array();
+        elseif (empty($params['fq'])) {
+          $params['fq'] = [];
         }
-
         foreach ($params['fq'] as $id => $element) {
           if (substr_count($element, 'sm_site_name') > 0) {
             unset($params['fq'][$id]);
           }
         }
-        // Load the index if needed. @TODO: Make this a method.
-        if (!isset($federated_search_index)) {
-          // Load the index.
-          $indexes = $server->getIndexes();
-          /** @var \Drupal\search_api\IndexInterface $federated_search_index */
-          $federated_search_index = $indexes[$index_id];
-        }
-        // Get the configuration.
-        if ($field = $federated_search_index->getField('site_name')) {
-          $site_name_config = $field->getConfiguration();
-        }
-        // @TODO: Handle domain access properly.
-        if (defined('DOMAIN_ACCESS_FIELD')) {
-          $manager = \Drupal::service('domain.negotiator');
-          $active_domain = $manager->getActiveDomain();
-          $site_name = $active_domain->label();
-        }
-        // The site name can be configured as part of the property.
-        // Determine the correct value.
-
-        // Use the site name value from the index site name property.
-        if (is_array($site_name_config) && array_key_exists('site_name', $site_name_config)) {
-          $site_name = $site_name_config['site_name'];
-        }
-
-        // If the index site name property indicates using the system site name
-        // then use that instead.
-        if (is_array($site_name_config) && array_key_exists('use_system_site_name', $site_name_config) && $site_name_config['use_system_site_name']) {
-          $site_config = $this->config('system.site');
-          $site_name = $site_config->get('name');
-        }
-        $params['fq'][] = 'sm_site_name:("' . $site_name . '")';
+        $params['fq'][] = 'sm_site_name:("' . Helpers::getSiteName() . '")';
       }
 
       // Set main query param.
