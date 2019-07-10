@@ -6,7 +6,7 @@ search:
         type: external
         minified: true
   js:
-    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v2.1.2/js/main.f36175e5.js:
+    js/main.73e51e4e.js:
       preprocess: false
       minified: true
 

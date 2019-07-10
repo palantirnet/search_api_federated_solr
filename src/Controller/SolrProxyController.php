@@ -95,19 +95,13 @@ class SolrProxyController extends ControllerBase {
         $debug = $query->getDebug();
       }
 
-      // Get the list of allowed sites.
-      if ($allowed_sites = $config->get('facet.site_name.allowed_sites')) {
-        $site_list = array_keys(array_filter($allowed_sites));
-      }
-
       // Determine if we have issued a site_name query, and filter it as
-      // required by the site list settings.
+      // required by the site list settings. Note that if we set a default
+      // site name value, it will be passed to the proxy as an 'fq' value.
       $ignore_default = FALSE;
-      $no_fq = TRUE;
       if (!empty($params) && is_array($params)) {
         // Account for strings passed by the query.
         if (isset($params['fq'])) {
-          $no_fq = FALSE;
           if (is_string($params['fq'])) {
             $params['fq'] = [$params['fq']];
           }
@@ -120,51 +114,22 @@ class SolrProxyController extends ControllerBase {
             $ignore_default = TRUE;
           }
         }
-        // Account for an array passed to the URL.
-        if ($no_fq) {
-          foreach ($params as $key => $value) {
-            $val = urldecode($value);
-            if (substr_count($key, 'sm_site_name') > 0) {
-              if (empty($allowed_sites) || in_array($val, $allowed_sites, TRUE)) {
-                $params['fq'][] = 'sm_site_name:("' . $val . '")';
-                $ignore_default = TRUE;
-              }
-              unset($params[$key]);
-            }
-          }
-        }
       }
 
       // If site search is restricted, enforce it here.
       if (!$ignore_default) {
-        if ($config->get('facet.site_name.set_default')) {
-          // Set $params properly.
-          if (!empty($params['fq']) && !is_array($params['fq'])) {
-            $params['fq'] = [$params['fq']];
-          }
-          elseif (empty($params['fq'])) {
-            $params['fq'] = [];
-          }
-          // If we have hidden the site name, only one value is passed.
-          if ($config->get('facet.site_name.is_hidden')) {
-            foreach ($params['fq'] as $id => $element) {
-              if (substr_count($element, 'sm_site_name') > 0) {
-                unset($params['fq'][$id]);
-              }
-            }
-          }
-          if (empty($params['fq'])) {
-            $params['fq'][] = 'sm_site_name:("' . Helpers::getSiteName() . '")';
-          }
+        // Get the list of allowed sites.
+        if ($allowed_sites = $config->get('facet.site_name.allowed_sites')) {
+          $site_list = array_keys(array_filter($allowed_sites));
         }
-        elseif (!empty($site_list)) {
+        if (!empty($site_list)) {
           foreach ($site_list as $name) {
             $values[] = '"'. $name .'"';
           }
           $params['fq'][] = 'sm_site_name:(' . implode(' OR ', $values) . ')';
         }
       }
-#kint($params);
+
       // Set main query param.
       $q = is_array($params) && array_key_exists('q', $params) ? urldecode($params['q']) : '*';
       $query->setQuery($q);
