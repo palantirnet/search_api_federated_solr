@@ -26,6 +26,7 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
    */
   public function build() {
     $config = $this->getConfiguration();
+    $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
 
     $build = [
       '#theme' => 'search_api_federated_solr_block',
@@ -46,6 +47,16 @@ class FederatedSearchPageFormBlock extends BlockBase implements BlockPluginInter
 
       // Determine the url that should be used for autocomplete.
       $autocomplete['url'] = Helpers::getEndpointUrl($proxy_is_disabled, $direct_url, '?q=[val]&wt=json');
+
+      // Set the connstraints for allowed sites.
+      if ($allowed_sites = $app_config->get('facet.site_name.allowed_sites')) {
+        $list = [];
+        $sites = array_keys(array_filter($allowed_sites));
+        foreach ($sites as $site) {
+          $list[] = '"' . $site . '"';
+        }
+        $autocomplete['sm_site_name'] = '(' . implode(' OR ', $list) . ')';
+      }
 
       // Write the block autocomplete config to Drupal settings.
       $build['#attached']['drupalSettings']['searchApiFederatedSolr'] = [
