@@ -440,6 +440,7 @@ function search_api_federated_solr_block_variables() {
       $autocomplete[$value] = variable_get($value);
     }
   }
+
   return search_api_federated_solr_map_variables($autocomplete);
 }
 
@@ -826,6 +827,16 @@ function search_api_federated_solr_map_variables($variables) {
   $title_text = $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'] ? $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_title_text'] : "What are you looking for?";
   $autocomplete['result']['titleText'] = $title_text;
   $autocomplete['result']['hideDirectionsText'] = $variables['search_api_federated_solr_autocomplete_block_' . $mode . '_hide_directions_text'];
+
+  // Set the constraints for allowed sites.
+  if ($allowed_sites = variable_get('search_api_federated_solr_allowed_sites')) {
+    $list = [];
+    $sites = array_keys(array_filter($allowed_sites));
+    foreach ($sites as $site) {
+      $list[] = '"' . $site . '"';
+    }
+    $autocomplete['sm_site_name'] = '(' . implode(' OR ', $list) . ')';
+  }
 
   return $autocomplete;
 }

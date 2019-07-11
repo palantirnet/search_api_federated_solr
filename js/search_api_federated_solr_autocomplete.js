@@ -138,7 +138,10 @@
             var fq = $(input).attr("name") + ':("' + $(input).val() + '")';
             defaultParams += "&fq=" + encodeURI(fq);
           });
-
+          // Set defaultParams from configuration.
+          if (options.sm_site_name) {
+            defaultParams += "&fq=sm_site_name:" + options.sm_site_name;
+          }
           // Set the text default query.
           var urlWithDefaultParams = options.url + defaultParams;
 
