@@ -106,6 +106,9 @@ class SolrProxyController extends ControllerBase {
             $params['fq'] = [$params['fq']];
           }
         }
+        else {
+          $params['fq'] = [];
+        }
         foreach ($params['fq'] as $key => $value) {
           if (substr_count($value, 'sm_site_name') > 0) {
             $fq = urldecode($value);
