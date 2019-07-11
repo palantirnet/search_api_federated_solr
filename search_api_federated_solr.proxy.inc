@@ -70,6 +70,41 @@ function search_api_federated_solr_proxy() {
     $query_fields = array_values($query_fields_map);
   }
 
+  // Determine if we have issued a site_name query, and filter it as
+  // required by the site list settings. Note that if we set a default
+  // site name value, it will be passed to the proxy as an 'fq' value.
+  $ignore_default = FALSE;
+  if (!empty($params) && is_array($params)) {
+    // Account for strings passed by the query.
+    if (isset($params['fq'])) {
+      if (is_string($params['fq'])) {
+        $params['fq'] = [$params['fq']];
+      }
+    }
+    foreach ($params['fq'] as $key => $value) {
+      if (substr_count($value, 'sm_site_name') > 0) {
+        $fq = urldecode($value);
+        unset($params['fq'][$key]);
+        $params['fq'][] = $fq;
+        $ignore_default = TRUE;
+      }
+    }
+  }
+
+  // If site search is restricted, enforce it here.
+  if (!$ignore_default) {
+    // Get the list of allowed sites.
+    if ($allowed_sites = variable_get('search_api_federated_solr_allowed_sites')) {
+      $site_list = array_keys(array_filter($allowed_sites));
+    }
+    if (!empty($site_list)) {
+      foreach ($site_list as $name) {
+        $values[] = '"'. $name .'"';
+      }
+      $params['fq'][] = 'sm_site_name:(' . implode(' OR ', $values) . ')';
+    }
+  }
+
   // If site search is restricted, enforce it here.
   if (variable_get('search_api_federated_solr_set_search_site', 0)) {
     if (!empty($params['fq']) && !is_array($params['fq'])) {
