@@ -133,10 +133,11 @@ MAINTAINERS
 -----------
 
 Current maintainers:
- * Avi Schwab (froboy) - https://www.drupal.org/u/froboy
- * Ken Rickard (agentrickard) - https://www.drupal.org/u/agentrickard
- * Malak Desai (MalakDesai) - https://www.drupal.org/u/malakdesai
  * Matthew Carmichael (mcarmichael21) - https://www.drupal.org/u/mcarmichael21
+ * Jes Constantine (jesconstantine) - https://www.drupal.org/u/jesconstantine
+ * Malak Desai (MalakDesai) - https://www.drupal.org/u/malakdesai
+ * Byron Duval (byrond) -- https://www.drupal.org/u/byrond
+ * Ken Rickard (agentrickard) - https://www.drupal.org/u/agentrickard
 
 This project has been sponsored by:
  * Palantir.net - https://palantir.net
