@@ -329,8 +329,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#options' => $sites,
       '#title' => $this->t('Sites that may be searched from this instance'),
       '#default_value' => $configuration->get('facet.site_name.allowed_sites'),
-      '#description' => $this->t('When at least one option is checked, only search results from these sites will be shown as options in the search app\'s "Site name" facet. Default searches will only query the selected sites. If no options are checked, all sites in the network will be available. If no options are visible, you will need to configure your site list in settings.php. See <a href=":url">the help page for information</a>',
-        [':url' => '/admin/help/search_api_federated_solr']),
+      '#description' => $this->t('When at least one option is checked, only search results from these sites will be shown as options in the search app\'s "Site name" facet. Default searches will only query the selected sites. If no options are checked, all sites in the network will be available. If no options are visible, you will need to configure your site list in settings.php.'),
       '#states' => [
         'visible' => [
           ':input[name="site_name_property"]' => [
@@ -339,6 +338,11 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ],
       ],
     ];
+    if (\Drupal::moduleHandler()->moduleExists('help')) {
+      $form['search_form_values']['defaults']['set_allowed_sites']['#description'] .= $this->t(' See <a href=":url">the help page for information</a>.',
+        [':url' => Url::fromRoute('help.page', ['name' => 'search_api_federated_solr'])->toString()]
+      );
+    }
 
     /**
      * Enable hiding available facets / filters.
