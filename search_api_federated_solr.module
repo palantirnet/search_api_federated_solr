@@ -14,10 +14,13 @@ function search_api_federated_solr_help($path, $arg) {
   switch ($path) {
     // Main module help for the search_api_federated_solr module.
     case 'admin/help#search_api_federated_solr':
-    $output = '';
-    $output .= '<h3>' . t('About') . '</h3>';
-    $output .= '<p>' . t('Allows indexing into a single Solr search index.') . '</p>';
-    return $output;
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Allows indexing into a single Solr search index.') . '</p>';
+      $output .= '<p>' . t('This help text uses Markdown. Install the <a href="@markdown">Markdown module</a> or <a href="@readme">view it online</a> for easier reading', ['@markdown' => 'https://www.drupal.org/project/markdown', '@readme' => 'https://git.drupalcode.org/project/search_api_federated_solr/tree/7.x-2.x']) . '</p>';
+      $text = file_get_contents(dirname(__FILE__) . '/README.md');
+      $output .= search_api_federated_solr_parse_help($text);
+      return $output;
   }
 }
 
@@ -973,4 +976,25 @@ function search_api_federated_solr_get_site_name() {
   }
 
   return $site_name;
+}
+
+/**
+ * Simplified display of help text without markdown module.
+ *
+ * @param $text
+ *   The help text markdown.
+ *
+ * @return HTML
+ */
+function search_api_federated_solr_parse_help($text) {
+  $find = "```\n\n";
+  $replace = '</pre>';
+  $text = str_replace($find, $replace, $text);
+  $find = "```";
+  $replace = '<pre>';
+  $text = str_replace($find, $replace, $text);
+  $find = ["\n"];
+  $replace = ['<br />'];
+  $text = str_replace($find, $replace, $text);
+  return $text;
 }

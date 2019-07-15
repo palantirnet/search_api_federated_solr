@@ -27,6 +27,7 @@ In order to display results from the Solr index:
          'Site name 4',
        ];
        ```
+
     1. Configure the list of `Sites that may be searched from this instance` through the module configuration page. You may optionally set this in `settings.php` as well, by setting the `$config['search_api_federated_solr_allowed_sites']` variable:
       ```
        $conf['search_api_federated_solr_allowed_sites'] = [
@@ -34,6 +35,7 @@ In order to display results from the Solr index:
          'Site name 2',
        ];
        ```
+
        This example would only allow two of the four sites to be searched from this site. This configuration must be added to every site individually.
 1. Optional: [Theme the ReactJS search app](https://www.drupal.org/docs/7/modules/search-api-federated-solr/search-api-federated-solr-module/theming-the-reactjs-search)
 1. Optional: Add the federated search page form block to your site theme
@@ -55,14 +57,7 @@ Search API Federated Solr requires the following modules:
 
 The module also relies on the [Federated Search React](https://github.com/palantirnet/federated-search-react) application, which is referenced as an external Drupal library.
 
-Apache Solr versions `4.5.1` and `5.x` have been used with this module and it is likely that newer versions will also work.
-
-## Updating the bundled React application
-
-When changes to [federated-search-react](https://github.com/palantirnet/federated-search-react/) are made they'll need to be pulled into this module. To do so:
-
-1. [Publish a release](https://github.com/palantirnet/federated-search-react#publishing-releases) of Federated Search React.
-2. Update `search_api_federated_solr_library()` in `search_api_federated_solr.module` to reference the new release. Note: You'll need to edit the version number and the hash of both the CSS and JS files.
+Apache Solr versions `4.5.1`, `5.x`, and `6.x` have been used with this module and it is likely that newer versions will also work.
 
 ## More information
 
@@ -72,3 +67,16 @@ Full documentation for this module is available in the [handbook on Drupal.org](
 * [How to configure a Search API Index for federated search](https://www.drupal.org/docs/8/modules/search-api-federated-solr/federated-search-schema)
 * [How to theme the ReactJS search app](https://www.drupal.org/docs/7/modules/search-api-federated-solr/search-api-federated-solr-module/theming-the-reactjs-search)
 * [Setting up the search page and block](https://www.drupal.org/docs/7/modules/search-api-federated-solr/search-api-federated-solr-module/setting-up-the-search-page)
+
+MAINTAINERS
+-----------
+
+Current maintainers:
+ * Matthew Carmichael (mcarmichael21) - https://www.drupal.org/u/mcarmichael21
+ * Jes Constantine (jesconstantine) - https://www.drupal.org/u/jesconstantine
+ * Malak Desai (MalakDesai) - https://www.drupal.org/u/malakdesai
+ * Byron Duval (byrond) -- https://www.drupal.org/u/byrond
+ * Ken Rickard (agentrickard) - https://www.drupal.org/u/agentrickard
+
+This project has been sponsored by:
+ * Palantir.net - https://palantir.net
