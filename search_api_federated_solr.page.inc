@@ -119,11 +119,20 @@ function search_api_federated_solr_config_json() {
     $federated_search_app_config['paginationButtons'] = $pagination_buttons;
   }
 
-  /** Not implemented yet in D7.
   // OPTIONAL: The rendered title of the search page.
-  if ($page_title = $config->get('page_title')) {
+  if ($page_title = variable_get('search_api_federated_solr_page_title')) {
     $federated_search_app_config['pageTitle'] = $page_title;
-  }*/
+  }
+
+  // OPTIONAL: Pre-select this site.
+  if ($site_seach = variable_get('search_api_federated_solr_set_search_site')) {
+    $federated_search_app_config['siteSearch'] = search_api_federated_solr_get_site_name();
+  }
+
+  // OPTIONAL: The allowed list of sites for the search.
+  if ($allowed_sites = variable_get('search_api_federated_solr_allowed_sites')) {
+    $federated_search_app_config['sm_site_name'] = array_keys(array_filter($allowed_sites));
+  }
 
   $federated_search_app_config['autocomplete'] = FALSE;
   if ($autocomplete_is_enabled = variable_get('search_api_federated_solr_autocomplete_is_enabled')) {
