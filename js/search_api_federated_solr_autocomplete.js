@@ -141,6 +141,10 @@
             var fq = $(input).attr("name") + ':("' + $(input).val() + '")';
             defaultParams += "&fq=" + encodeURI(fq);
           });
+          // Set defaultParams from configuration.
+          if (options.sm_site_name) {
+            defaultParams += "&fq=sm_site_name:" + options.sm_site_name;
+          }
           var urlWithDefaultParams = options.url + defaultParams;
 
           // Bind events to input.
@@ -185,6 +189,7 @@
                   query = trimmed + "*";
                 }
               }
+
               // Replace the placeholder with the query value.
               var url = urlWithDefaultParams.replace(/(\[val\])/gi, query);
 

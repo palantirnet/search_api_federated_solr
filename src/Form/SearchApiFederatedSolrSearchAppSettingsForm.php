@@ -40,7 +40,12 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['#validate'][] = [$this, 'formValidationPathValidate'];
 
-    $config = $this->config('search_api_federated_solr.search_app.settings');
+    // Note that we _must_ not use $config here because we need to read some
+    // values from settings.php which requires use of `global $config`.
+    // See https://www.drupal.org/docs/8/api/configuration-api/configuration-override-system.
+    // $configuration is the stored configuration object, and $config is the
+    // overridden value set.
+    $configuration = $this->config('search_api_federated_solr.search_app.settings');
 
     $index_options = [];
     $search_api_indexes = \Drupal::entityTypeManager()->getStorage('search_api_index')->loadMultiple();
@@ -57,7 +62,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Validates whether or not the search app's chosen index has a site_name,
     // federated_date, federated_type, and federated_terms properties
     // and alters the search app settings form accordingly.
-    if ($search_index_id = $config->get('index.id')) {
+    if ($search_index_id = $configuration->get('index.id')) {
       $index_config = \Drupal::config('search_api.index.' . $search_index_id);
       // Determine if the index has a site name property, which could have been
       // added / removed since last form load.
@@ -65,7 +70,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       $use_system_site_name = $index_config->get('field_settings.site_name.configuration.use_system_site_name');
 
       $is_site_name_property = ($site_name_property || $use_system_site_name) ? 'true': '';
-      $config->set('index.has_site_name_property', $is_site_name_property ? TRUE : FALSE);
+      $configuration->set('index.has_site_name_property', $is_site_name_property ? TRUE : FALSE);
 
       // If the index does have a site name property, ensure the hidden form field reflects that.
       if ($is_site_name_property) {
@@ -76,21 +81,21 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         // Assume properties are not present, set defaults.
         $site_name_property_value = '';
         $site_name_property_default_value = FALSE;
-        $config->set('facet.site_name.set_default', FALSE);
+        $configuration->set('facet.site_name.set_default', FALSE);
       }
 
       // Save config indicating which index field properties that
       // correspond to facets and filters are present on the index.
       $type_property = $index_config->get('field_settings.federated_type');
-      $config->set('index.has_federated_type_property', $type_property ? TRUE : FALSE);
+      $configuration->set('index.has_federated_type_property', $type_property ? TRUE : FALSE);
 
       $date_property = $index_config->get('field_settings.federated_date');
-      $config->set('index.has_federated_date_property', $date_property ? TRUE : FALSE);
+      $configuration->set('index.has_federated_date_property', $date_property ? TRUE : FALSE);
 
       $terms_property = $index_config->get('field_settings.federated_terms');
-      $config->set('index.has_federated_terms_property', $terms_property ? TRUE : FALSE);
+      $configuration->set('index.has_federated_terms_property', $terms_property ? TRUE : FALSE);
 
-      $config->save();
+      $configuration->save();
     }
 
     /**
@@ -112,7 +117,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['setup']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Search results page path'),
-      '#default_value' => $config->get('path'),
+      '#default_value' => $configuration->get('path'),
       '#description' => $this
         ->t('The path for the search app (Default: "/search-app").'),
     ];
@@ -120,7 +125,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['setup']['page_title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Search results page title'),
-      '#default_value' => $config->get('page_title'),
+      '#default_value' => $configuration->get('page_title'),
       '#description' => $this
         ->t('The title that will live in the header tag of the search results page (leave empty to hide completely).'),
     ];
@@ -130,7 +135,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Search API index'),
       '#description' => $this->t('Defines <a href="/admin/config/search/search-api">which search_api index and server</a> the search app should use as a datasource.'),
       '#options' => $index_options,
-      '#default_value' => $config->get('index.id'),
+      '#default_value' => $configuration->get('index.id'),
       '#required' => TRUE,
       '#ajax' => [
         'callback' => [$this, 'getSiteName'],
@@ -142,7 +147,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['setup']['disable_query_proxy'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Do not use the proxy for the search query') . '</b>',
-      '#default_value' => $config->get('proxy.isDisabled'),
+      '#default_value' => $configuration->get('proxy.isDisabled'),
       '#description' => $this
         ->t('Check this box to configure the search app to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the chosen Search API index using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must leave this box unchecked.'),
       '#attributes' => [
@@ -166,13 +171,13 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['setup']['search_index_basic_auth']['username'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
-      '#default_value' => $config->get('index.username'),
+      '#default_value' => $configuration->get('index.username'),
     ];
 
     $form['setup']['search_index_basic_auth']['password'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Password'),
-      '#default_value' => $config->get('index.password'),
+      '#default_value' => $configuration->get('index.password'),
     ];
 
     /**
@@ -194,7 +199,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_page_options']['show_empty_search_results'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Show results for empty search') . '</b>',
-      '#default_value' => $config->get('content.show_empty_search_results'),
+      '#default_value' => $configuration->get('content.show_empty_search_results'),
       '#description' => $this
         ->t(' When checked, this option allows users to see all results when no search term is entered. By default, empty searches are disabled and yield no results.'),
     ];
@@ -202,7 +207,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_page_options']['no_results_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('No results text'),
-      '#default_value' => $config->get('content.no_results'),
+      '#default_value' => $configuration->get('content.no_results'),
       '#description' => $this
         ->t('This text is shown when a query returns no results. (Default: "Your search yielded no results.")'),
     ];
@@ -210,7 +215,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_page_options']['search_prompt_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Search prompt text'),
-      '#default_value' => $config->get('content.search_prompt'),
+      '#default_value' => $configuration->get('content.search_prompt'),
       '#description' => $this
         ->t('This text is shown when no query term has been entered. (Default: "Please enter a search term.")'),
     ];
@@ -218,7 +223,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_page_options']['rows'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of search results per page'),
-      '#default_value' => $config->get('results.rows'),
+      '#default_value' => $configuration->get('results.rows'),
       '#description' => $this
         ->t('The max number of results to render per search results page. (Default: 20)'),
     ];
@@ -226,7 +231,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_page_options']['page_buttons'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of pagination buttons'),
-      '#default_value' => $config->get('pagination.buttons'),
+      '#default_value' => $configuration->get('pagination.buttons'),
       '#description' => $this
         ->t('The max number of numbered pagination buttons to show at a given time. (Default: 5)'),
     ];
@@ -262,7 +267,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#attributes' => [
         'id' => ['date-property'],
       ],
-      '#value' => $config->get('index.has_federated_date_property') ? 'true' : '',
+      '#value' => $configuration->get('index.has_federated_date_property') ? 'true' : '',
     ];
 
     $form['search_form_values']['type_property'] = [
@@ -270,7 +275,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#attributes' => [
         'id' => ['type-property'],
       ],
-      '#value' => $config->get('index.has_federated_type_property') ? 'true' : '',
+      '#value' => $configuration->get('index.has_federated_type_property') ? 'true' : '',
     ];
 
     $form['search_form_values']['terms_property'] = [
@@ -278,7 +283,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#attributes' => [
         'id' => ['terms-property'],
       ],
-      '#value' => $config->get('index.has_federated_terms_property') ? 'true' : '',
+      '#value' => $configuration->get('index.has_federated_terms_property') ? 'true' : '',
     ];
 
     /**
@@ -301,9 +306,8 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_form_values']['defaults']['set_search_site'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Set the "Site name" facet to this site'),
-      '#default_value' => $config->get('facet.site_name.set_default'),
-      '#description' => $this
-        ->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
+      '#default_value' => $configuration->get('facet.site_name.set_default'),
+      '#description' => $this->t('When checked, only search results from this site will be shown, by default, until this site\'s checkbox is unchecked in the search app\'s "Site name" facet.'),
       '#states' => [
         'visible' => [
           ':input[name="site_name_property"]' => [
@@ -312,6 +316,33 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
         ],
       ],
     ];
+
+    // Here's where we have to use `global $config`.
+    global $config;
+    $site_list = $config['search_api_federated_solr.search_app.settings']['facet']['site_name']['site_list'];
+    $sites = [];
+    foreach ($site_list as $site) {
+      $sites[$site] = $site;
+    }
+    $form['search_form_values']['defaults']['set_allowed_sites'] = [
+      '#type' => 'checkboxes',
+      '#options' => $sites,
+      '#title' => $this->t('Sites that may be searched from this instance'),
+      '#default_value' => $configuration->get('facet.site_name.allowed_sites'),
+      '#description' => $this->t('When at least one option is checked, only search results from these sites will be shown as options in the search app\'s "Site name" facet. Default searches will only query the selected sites. If no options are checked, all sites in the network will be available. If no options are visible, you will need to configure your site list in settings.php.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="site_name_property"]' => [
+            'value' => "true",
+          ],
+        ],
+      ],
+    ];
+    if (\Drupal::moduleHandler()->moduleExists('help')) {
+      $form['search_form_values']['defaults']['set_allowed_sites']['#description'] .= $this->t(' See <a href=":url">the help page for information</a>.',
+        [':url' => Url::fromRoute('help.page', ['name' => 'search_api_federated_solr'])->toString()]
+      );
+    }
 
     /**
      * Enable hiding available facets / filters.
@@ -338,7 +369,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_form_values']['hidden']['hide_site_name'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Site name facet'),
-      '#default_value' => $config->get('facet.site_name.is_hidden'),
+      '#default_value' => $configuration->get('facet.site_name.is_hidden'),
       '#description' => $this
         ->t('When checked, the ability to which sites should be included in the results will be hidden.'),
       '#states' => [
@@ -353,7 +384,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_form_values']['hidden']['hide_type'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Type facet'),
-      '#default_value' => $config->get('facet.federated_type.is_hidden'),
+      '#default_value' => $configuration->get('facet.federated_type.is_hidden'),
       '#description' => $this
         ->t('When checked, the ability to select those types (i.e. bundles) which should have results returned will be hidden.'),
       '#states' => [
@@ -368,7 +399,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_form_values']['hidden']['hide_date'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Date filter'),
-      '#default_value' => $config->get('filter.federated_date.is_hidden'),
+      '#default_value' => $configuration->get('filter.federated_date.is_hidden'),
       '#description' => $this
         ->t('When checked, the ability to filter results by date will be hidden.'),
       '#states' => [
@@ -383,7 +414,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['search_form_values']['hidden']['hide_terms'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Terms facet'),
-      '#default_value' => $config->get('facet.federated_terms.is_hidden'),
+      '#default_value' => $configuration->get('facet.federated_terms.is_hidden'),
       '#description' => $this
         ->t('When checked, the ability to select those terms which should have results returned will be hidden.'),
       '#states' => [
@@ -410,13 +441,13 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => $this->t('Search Results Page > Search Form > Autocomplete'),
       '#description' => $this->t('These options apply to the autocomplete functionality on the search for which appears above the search results on the search results page.  Configure your placed Federated Search Page Form block to add autocomplete to that form.'),
-      '#open' => $config->get('autocomplete.isEnabled'),
+      '#open' => $configuration->get('autocomplete.isEnabled'),
     ];
 
     $form['autocomplete']['autocomplete_is_enabled'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Enable autocomplete for the search results page search form') . '</b>',
-      '#default_value' => $config->get('autocomplete.isEnabled'),
+      '#default_value' => $configuration->get('autocomplete.isEnabled'),
       '#description' => $this
         ->t('Check this box to enable autocomplete on the search results page search form and to expose more configuration options below.'),
       '#attributes' => [
@@ -427,7 +458,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['autocomplete_is_append_wildcard'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Append a wildcard \'*\' to support partial text search') . '</b>',
-      '#default_value' => $config->get('autocomplete.appendWildcard'),
+      '#default_value' => $configuration->get('autocomplete.appendWildcard'),
       '#description' => $this
         ->t('Check this box to append a wildcard * to the end of the autocomplete query term (i.e. "car" becomes "car*").  This option is only recommended if your solr config does not add a field(s) with <a href="https://lucene.apache.org/solr/guide/6_6/tokenizers.html" target="_blank">NGram Tokenizers</a> to your index or if your <a href="https://lucene.apache.org/solr/guide/6_6/requesthandlers-and-searchcomponents-in-solrconfig.html#RequestHandlersandSearchComponentsinSolrConfig-RequestHandlers" target="_blank">Request Handler</a> is not configured to search those fields.'),
       '#states' => [
@@ -442,7 +473,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['autocomplete_disable_query_proxy'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Do not use the proxy for the search app autocomplete query') . '</b>',
-      '#default_value' => $config->get('autocomplete.proxy.isDisabled'),
+      '#default_value' => $configuration->get('autocomplete.proxy.isDisabled'),
       '#description' => $this
         ->t('Check this box to configure the search app to query the Solr server directly. When checked, it is highly recommended that you also procure and configure read-only basic auth credentials for the search app. When unchecked, this site will act as a proxy for requests to the Solr server of the Search API index chosen above in Search Results Page > Set Up using the Drupal route defined by this module.<br/><br/>Note: Acquia Search customers must leave this box unchecked.'),
       '#attributes' => [
@@ -475,7 +506,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['direct']['autocomplete_direct_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Solr Endpoint URL'),
-      '#default_value' => $config->get('autocomplete.direct.url'),
+      '#default_value' => $configuration->get('autocomplete.direct.url'),
       '#maxlength' => 2048,
       '#size' => 50,
       '#description' => $this
@@ -505,7 +536,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['direct']['basic_auth']['autocomplete_use_search_app_creds'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use credentials provided for Search Index Basic Authentication in Search Results Page > Set Up above'),
-      '#default_value' => $config->get('autocomplete.use_search_app_creds'),
+      '#default_value' => $configuration->get('autocomplete.use_search_app_creds'),
       '#attributes' => [
         'data-autocomplete-use-search-app-creds' => TRUE,
       ],
@@ -514,7 +545,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['direct']['basic_auth']['autocomplete_username'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
-      '#default_value' => $config->get('autocomplete.username'),
+      '#default_value' => $configuration->get('autocomplete.username'),
       '#states' => [
         'visible' => [
           ':input[data-autocomplete-use-search-app-creds]' => [
@@ -527,7 +558,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['direct']['basic_auth']['autocomplete_password'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Password'),
-      '#default_value' => $config->get('autocomplete.password'),
+      '#default_value' => $configuration->get('autocomplete.password'),
       '#states' => [
         'visible' => [
           ':input[data-autocomplete-use-search-app-creds]' => [
@@ -540,7 +571,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['autocomplete_suggestion_rows'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of results'),
-      '#default_value' => $config->get('autocomplete.suggestionRows'),
+      '#default_value' => $configuration->get('autocomplete.suggestionRows'),
       '#description' => $this
         ->t('The max number of results to render in the autocomplete results dropdown. (Default: 5)'),
       '#states' => [
@@ -555,7 +586,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['autocomplete_num_chars'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of characters after which autocomplete query should execute'),
-      '#default_value' => $config->get('autocomplete.numChars'),
+      '#default_value' => $configuration->get('autocomplete.numChars'),
       '#description' => $this
         ->t('Autocomplete query will be executed <em>after</em> a user types this many characters in the search query field. (Default: 2)'),
       '#states' => [
@@ -567,7 +598,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       ],
     ];
 
-    $autocomplete_mode = $config->get('autocomplete.mode');
+    $autocomplete_mode = $configuration->get('autocomplete.mode');
     $title_text_config_key = 'autocomplete.' . $autocomplete_mode . '.titleText';
     $hide_directions_text_config_key = 'autocomplete.' . $autocomplete_mode . '.hideDirectionsText';
 
@@ -594,7 +625,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Results title text'),
       '#size' => 50,
-      '#default_value' => $autocomplete_mode ? $config->get($title_text_config_key) : '',
+      '#default_value' => $autocomplete_mode ? $configuration->get($title_text_config_key) : '',
       '#description' => $this
         ->t('The title text is shown above the results in the autocomplete drop down.  (Default: "What are you interested in?" for Search Results mode.)'),
       '#states' => [
@@ -609,7 +640,7 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $form['autocomplete']['autocomplete_mode_hide_directions'] = [
       '#type' => 'checkbox',
       '#title' => '<b>' . $this->t('Hide keyboard directions') . '</b>',
-      '#default_value' => $autocomplete_mode ? $config->get($hide_directions_text_config_key) : 0,
+      '#default_value' => $autocomplete_mode ? $configuration->get($hide_directions_text_config_key) : 0,
       '#description' => $this
         ->t('Check this box to make hide the autocomplete keyboard usage directions in the results dropdown. For sites that want to maximize their accessibility UX for sighted keyboard users, we recommend leaving this unchecked. (Default: directions are visible)'),
       '#states' => [
@@ -666,6 +697,10 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     // Set the search app configuration setting for the default search site flag.
     $show_empty_search_results = $form_state->getValue('show_empty_search_results');
     $config->set('content.show_empty_search_results', $show_empty_search_results);
+
+    // Set the allowed sites list.
+    $set_allowed_sites = $form_state->getValue('set_allowed_sites');
+    $config->set('facet.site_name.allowed_sites', $set_allowed_sites);
 
     // Determine whether or not we should be using the proxy.
     $proxy_is_disabled = $form_state->getValue('disable_query_proxy');

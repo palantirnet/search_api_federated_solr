@@ -9,6 +9,7 @@ namespace Drupal\search_api_federated_solr\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\search_api_federated_solr\Utility\Helpers;
 
 /**
  * Class FederatedSearchPageForm.
@@ -57,18 +58,7 @@ class FederatedSearchPageBlockForm extends FormBase {
 
     // Send site name as qs param if app is configured to load w/default site.
     if ($app_config->get('facet.site_name.set_default')) {
-      $search_index = $app_config->get('index.id');
-      $index_config = \Drupal::config('search_api.index.' . $search_index);
-      // Default to custom text site name.
-      $site_name = $index_config->get('field_settings.site_name.configuration.site_name');
-      $use_system_site_name = $index_config->get('field_settings.site_name.configuration.use_system_site_name');
-      if ($use_system_site_name) {
-        $token = \Drupal::token();
-        // If the token replacement produces a value, add to this item.
-        if ($value = $token->replace('[site:name]', [], ['clear' => true])) {
-          $site_name = $value;
-        }
-      }
+      $site_name = Helpers::getSiteName();
 
       if ($site_name) {
         $form['sm_site_name'] = [

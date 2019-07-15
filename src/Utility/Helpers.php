@@ -138,5 +138,53 @@ class Helpers {
     # return result array
     return $arr;
   }
+
+  /**
+   * Returns the active sitename value for this site.
+   *
+   * @return string
+   */
+  public static function getSiteName() {
+    // Default value.
+    $site_config = \Drupal::config('system.site');
+    $default_name = $site_name = $site_config->get('name');
+    // Config options.
+    $config = \Drupal::config('search_api_federated_solr.search_app.settings');
+    // Get index id from search app config.
+    $index_id = $config->get('index.id');
+    // Get the server id from index config.
+    $index_config = \Drupal::config('search_api.index.' . $index_id);
+    $server_id = $index_config->get('server');
+    // Load the server.
+    /** @var \Drupal\search_api\ServerInterface $server */
+    $server = Server::load($server_id);
+    $indexes = $server->getIndexes();
+    if (isset($indexes[$index_id])) {
+      $federated_search_index = $indexes[$index_id];
+      // Get the configuration.
+      if ($field = $federated_search_index->getField('site_name')) {
+        $site_name_config = $field->getConfiguration();
+      }
+      // @TODO: Handle domain access properly.
+      if (defined('DOMAIN_ACCESS_FIELD')) {
+        $manager = \Drupal::service('domain.negotiator');
+        $active_domain = $manager->getActiveDomain();
+        $site_name = $active_domain->label();
+      }
+
+      // Use the site name value from the index site name property.
+      if (is_array($site_name_config) && array_key_exists('site_name', $site_name_config)) {
+        $site_name = $site_name_config['site_name'];
+      }
+
+      // If the index site name property indicates using the system site name
+      // then use that instead.
+      if (is_array($site_name_config) && array_key_exists('use_system_site_name', $site_name_config) && $site_name_config['use_system_site_name']) {
+        $site_name = $default_name;
+      }
+    }
+    return $site_name;
+  }
+
 }
 

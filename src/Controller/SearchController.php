@@ -51,12 +51,9 @@ class SearchController extends ControllerBase {
     $site_name_property = $index_config->get('field_settings.site_name.configuration.site_name');
     $use_system_site_name = $index_config->get('field_settings.site_name.configuration.use_system_site_name');
     $is_site_name_property = ($site_name_property || $use_system_site_name) ? 'true': '';
-    $config_editable->set('index.has_site_name_property', $is_site_name_property ? TRUE : FALSE);
 
     // Determine if config option to set default site name is set.
     $set_default_site = $config->get('facet.site_name.set_default');
-
-    // @TODO: Add the sitename restriction logic from the proxy controller.
 
     // Create an index property field map array to determine which fields
     // exist on the index and should be hidden in the app UI.
@@ -116,6 +113,16 @@ class SearchController extends ControllerBase {
     // OPTIONAL: The rendered title of the search page.
     if ($page_title = $config->get('page_title')) {
       $federated_search_app_config['pageTitle'] = $page_title;
+    }
+
+    // OPTIONAL: Pre-select this site.
+    if ($site_search = $config->get('facet.site_name.set_default')) {
+      $federated_search_app_config['siteSearch'] = Helpers::getSiteName();
+    }
+
+    // OPTIONAL: The allowed list of sites for the search.
+    if ($allowed_sites = $config->get('facet.site_name.allowed_sites')) {
+      $federated_search_app_config['sm_site_name'] = array_keys(array_filter($allowed_sites));
     }
 
     $federated_search_app_config['autocomplete'] = FALSE;
