@@ -125,7 +125,7 @@ function search_api_federated_solr_config_json() {
   }
 
   // OPTIONAL: Pre-select this site.
-  if ($site_seach = variable_get('search_api_federated_solr_set_search_site')) {
+  if ($site_search = variable_get('search_api_federated_solr_set_search_site')) {
     $federated_search_app_config['siteSearch'] = search_api_federated_solr_get_site_name();
   }
 
