@@ -120,9 +120,13 @@ class SearchController extends ControllerBase {
       $federated_search_app_config['siteSearch'] = Helpers::getSiteName();
     }
 
-    // OPTIONAL: The allowed list of sites for the search.
-    if ($allowed_sites = $config->get('facet.site_name.allowed_sites')) {
-      $federated_search_app_config['sm_site_name'] = array_keys(array_filter($allowed_sites));
+    // OPTIONAL: The allowed list of sites for the search. Note that these are
+    // stored as a keyed array with 0 as the default (unchecked) value. So we
+    // must filter the list before setting the variable or our app breaks.
+    $allowed_list = $config->get('facet.site_name.allowed_sites');
+    $allowed_sites = array_keys(array_filter($allowed_list));
+    if (!empty($allowed_sites)) {
+      $federated_search_app_config['sm_site_name'] = $allowed_sites;
     }
 
     $federated_search_app_config['autocomplete'] = FALSE;
