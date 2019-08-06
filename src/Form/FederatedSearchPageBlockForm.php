@@ -67,10 +67,6 @@ class FederatedSearchPageBlockForm extends FormBase {
           '#default_value' => $site_name,
         ];
       }
-
-      // Ensure that this form's render cache is invalidated when search app
-      // config is updated.
-      $renderer->addCacheableDependency($form, $index_config);
     }
 
     $form['#action'] = $this->getUrlGenerator()->generateFromRoute('search_api_federated_solr.search');
