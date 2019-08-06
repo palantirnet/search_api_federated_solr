@@ -74,6 +74,7 @@ function search_api_federated_solr_proxy() {
   // required by the site list settings. Note that if we set a default
   // site name value, it will be passed to the proxy as an 'fq' value.
   $ignore_default = FALSE;
+
   if (!empty($params) && is_array($params)) {
     // Account for strings passed by the query.
     if (isset($params['fq'])) {
@@ -96,9 +97,13 @@ function search_api_federated_solr_proxy() {
 
   // If site search is restricted, enforce it here.
   if (!$ignore_default) {
-    // Get the list of allowed sites.
-    if ($allowed_sites = variable_get('search_api_federated_solr_allowed_sites')) {
-      $site_list = array_keys(array_filter($allowed_sites));
+    // OPTIONAL: The allowed list of sites for the search. Note that these are
+    // stored as a keyed array with 0 as the default (unchecked) value. So we
+    // must filter the list before setting the variable or our app breaks.
+    $allowed_list = variable_get('search_api_federated_solr_allowed_sites', []);
+    $allowed_sites = array_keys(array_filter($allowed_list));
+    if (!empty($allowed_sites)) {
+      $site_list = $allowed_sites;
     }
     if (!empty($site_list)) {
       foreach ($site_list as $name) {
@@ -106,23 +111,6 @@ function search_api_federated_solr_proxy() {
       }
       $params['fq'][] = 'sm_site_name:(' . implode(' OR ', $values) . ')';
     }
-  }
-
-  // If site search is restricted, enforce it here.
-  if (variable_get('search_api_federated_solr_set_search_site', 0)) {
-    if (!empty($params['fq']) && !is_array($params['fq'])) {
-      $params['fq'] = array($params['fq']);
-    }
-    elseif(empty($params['fq'])) {
-      $params['fq'] = array();
-    }
-    foreach ($params['fq'] as $id => $element) {
-      if (substr_count($element, 'sm_site_name:') > 0) {
-        unset($params['fq'][$id]);
-      }
-    }
-    $site_name = search_api_federated_solr_get_site_name();
-    $params['fq'][] = 'sm_site_name:("' . $site_name . '")';
   }
 
   // Set facet params
