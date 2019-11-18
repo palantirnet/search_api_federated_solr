@@ -116,7 +116,7 @@ class SearchController extends ControllerBase {
     }
 
     // OPTIONAL: Pre-select this site.
-    if ($site_search = $config->get('facet.site_name.set_default')) {
+    if ($site_search = $config->get('facet.site_name.set_default') && !$config->get('facet.site_name.is_hidden')) {
       $federated_search_app_config['siteSearch'] = Helpers::getSiteName();
     }
 
