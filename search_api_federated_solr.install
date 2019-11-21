@@ -8,6 +8,16 @@
 use Drupal\Core\Url;
 
 /**
+ * Uninstalls dependencies.
+ */
+function search_api_federated_solr_uninstall() {
+  $entity = \Drupal::entityTypeManager()->getStorage('image_style')->load('search_api_federated_solr_image');
+  if (!empty($entity)) {
+    $entity->delete();
+  }
+}
+
+/**
  * Sets default values for autocomplete-related config.
  */
 function search_api_federated_solr_update_8001(&$sandbox) {
