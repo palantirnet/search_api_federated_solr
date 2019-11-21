@@ -702,6 +702,9 @@ class SearchApiFederatedSolrSearchAppSettingsForm extends ConfigFormBase {
     $set_allowed_sites = $form_state->getValue('set_allowed_sites');
     $config->set('facet.site_name.allowed_sites', $set_allowed_sites);
 
+    $search_api_index = $form_state->getValue('search_index');
+    $config->set('index.id', $search_api_index);
+
     // Determine whether or not we should be using the proxy.
     $proxy_is_disabled = $form_state->getValue('disable_query_proxy');
     $config->set('proxy.isDisabled', $proxy_is_disabled);
