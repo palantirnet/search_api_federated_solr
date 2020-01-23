@@ -82,7 +82,7 @@ class SearchApiFederatedSolrTerms extends SearchApiAbstractAlterCallback {
               $tid = $term_id['tid'];
             }
             // Entity Reference fields.
-            elseif(isset($term_id['target_id'])) {
+            elseif (isset($term_id['target_id'])) {
               $tid = $term_id['target_id'];
             }
             $entity_term = taxonomy_term_load($tid);
