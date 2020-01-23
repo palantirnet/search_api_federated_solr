@@ -65,8 +65,11 @@ class SearchApiFederatedSolrTerms extends SearchApiAbstractAlterCallback {
             $bundle_taxonomy_fields[$bundle_field['field_name']] = $bundle_field['label'];
           }
         }
+        // See https://www.drupal.org/project/search_api_federated_solr/issues/3108325
+        elseif ($bundle_field_info['type'] === "taxonomy_term_reference") {
+          $bundle_taxonomy_fields[$bundle_field['field_name']] = $bundle_field['label'];
+        }
       }
-
       // For each taxonomy field on the entity, get the terms.
       foreach ($bundle_taxonomy_fields as $taxonomy_field_id => $taxonomy_field_name) {
 
@@ -74,7 +77,15 @@ class SearchApiFederatedSolrTerms extends SearchApiAbstractAlterCallback {
         $lang = $entity->language;
         if (isset($entity->$taxonomy_field_id[$lang])) {
           foreach ($entity->$taxonomy_field_id[$lang] as $term_id) {
-            $entity_term = taxonomy_term_load($term_id['target_id']);
+            // Taxonomy term fields.
+            if (isset($term_id['tid'])) {
+              $tid = $term_id['tid'];
+            }
+            // Entity Reference fields.
+            elseif (isset($term_id['target_id'])) {
+              $tid = $term_id['target_id'];
+            }
+            $entity_term = taxonomy_term_load($tid);
             $entity_term_fields = field_info_instances('taxonomy_term', $entity_term->vocabulary_machine_name);
 
             // Iterate through each of the referenced term's fields.
