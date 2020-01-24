@@ -199,7 +199,7 @@ function search_api_federated_solr_admin($form, &$form_state) {
     ],
   ];
 
-    $site_list = variable_get('search_api_federated_solr_site_list');
+    $site_list = variable_get('search_api_federated_solr_site_list', []);
     $sites = [];
     foreach ($site_list as $site) {
       $sites[$site] = $site;
