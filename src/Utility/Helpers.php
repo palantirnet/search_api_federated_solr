@@ -34,12 +34,11 @@ class Helpers {
       $backend = $server->getBackend();
       /** @var \Drupal\search_api_solr\SolrConnectorInterface $connector */
       $connector = $backend->getSolrConnector();
-      $server_link = $connector->getServerLink();
+      /** @var \Drupal\Url */
+      $server_link = $connector->getCoreLink();
       $server_url = $server_link->getUrl()->toUriString();
-      // Get the server's solr core.
-      $core = $connector->getConfiguration()['core'];
-      $server_url .= $core;
-      // Append the request handler, main query and format params.
+      // The core link includes /#/, which we cannot use.
+      $server_url = str_replace('/#/', '/', $server_url);
       $server_url .= '/select';
     }
     catch (SearchApiException $e) {
@@ -187,4 +186,3 @@ class Helpers {
   }
 
 }
-
