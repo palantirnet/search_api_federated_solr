@@ -34,7 +34,7 @@ $c-tertiary: $gray-medium;
 $c-tertiary-dark: $gray-dark;
 $c-tertiary-light: $gray-light;
 
-// Use above sass variables to define defaults for the app.
+// Use above sass variables to define defaults in normalize.scss
 $text-color: $gray-dark;
 $background-color: $white;
 $link-color: $c-primary-light;
@@ -48,10 +48,9 @@ $bp3: 1100px;
 
 /*
  * Begin search override styles
- Apply all styles to be scoped globally within the Federated Search app inside the #fs-root ID.
  */
 
-#fs-root {
+html {
   //font-family: $helvetica-neue;
 }
 
@@ -60,12 +59,12 @@ $bp3: 1100px;
  */
 
 /* The container for the search filters */
-aside.fs-aside {
+aside {
   background-color: $c-bg-gray;
 }
 
 /* Search filters */
-.fs-search-filters {
+.search-filters {
   /* Mobile search button / Desktop sidebar title */
   &__trigger,
   &__title {
@@ -93,7 +92,7 @@ aside.fs-aside {
 }
 
 /* Search filter accordion */
-.fs-search-accordion {
+.search-accordion {
   color: $gray-dark;
 
   /* Top level accordion links */
@@ -123,7 +122,7 @@ aside.fs-aside {
 /**
  * Search form
  */
-.fs-search-form {
+.search-form {
   &__label {
     color: $black;
     font-size: .8em;
@@ -166,7 +165,7 @@ aside.fs-aside {
 /**
  * Applied Filters
  */
-.fs-applied-filters {
+.applied-filters {
   &__filter {
     border-bottom: solid 2px $c-secondary;
     font-size: .8em;
@@ -178,7 +177,7 @@ aside.fs-aside {
 /**
  * Search results list
  */
-.fs-search-results {
+.search-results {
   &__heading a {
     background-color: transparent;
     color: $link-color;
@@ -223,7 +222,7 @@ aside.fs-aside {
 /**
  * Pagination component
  */
-.fs-search-pager {
+.search-pager {
   background-color: transparent;
 
   /** pagination component **/
