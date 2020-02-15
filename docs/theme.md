@@ -43,6 +43,9 @@ function <your-theme>_page_attachments_alter(array &$page) {
 ### Notes
 The Sass/CSS assets that are included in docs/assets are examples only. They will not be regularly maintained or updated.
 
+### Upgrading from 8.x-2.x to 8.x-3.x
+Starting on version 3.x of the module, the CSS has been updated to a new namespacing. All CSS classes are now updated to have a "fs-" prefix and all styled are applied within the main app ID of `#fs-root`, so any previously written CSS or SCSS overrides for version 2.x will need to be updated to reflect this namespace change. .  
+
 ## Theming the Drupal elements
 
 While the React application is separate from Drupal, the provided search block `Federated Search Page Form block` is themable, as is the wrapper around the search results page. There are three theme files.
