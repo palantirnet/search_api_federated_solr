@@ -106,6 +106,7 @@ function search_api_federated_solr_search_api_solr_field_mapping_alter(IndexInte
     if (method_exists($field, 'getPropertyPath') && 'mapped_field' == $field->getPropertyPath()) {
       $fields[$key] = preg_replace("/^(\w)m_/", "$1s_", $fields[$key], 1);
     }
+
   };
 }
 
@@ -145,3 +146,29 @@ function search_api_federated_solr_parse_help($text) {
   $text = str_replace($find, $replace, $text);
   return $text;
 }
+
+/**
+ * Alter Solr documents before they are sent to Solr for indexing.
+ *
+ * @param \Solarium\QueryType\Update\Query\Document[] $documents
+ *   An array of \Solarium\QueryType\Update\Query\Document\Document objects
+ *   ready to be indexed, generated from $items array.
+ * @param \Drupal\search_api\IndexInterface $index
+ *   The search index for which items are being indexed.
+ * @param \Drupal\search_api\Item\ItemInterface[] $items
+ *   An array of items to be indexed, keyed by their item IDs.
+ */
+function search_api_federated_solr_search_api_solr_documents_alter(array &$documents, \Drupal\search_api\IndexInterface $index, array $items) {
+  // Adds a "foo" field with value "bar" to all documents.
+  foreach ($documents as $document) {
+    $fields = $document->getFields();
+    foreach ($fields as $field_id => $field) {
+      if (substr_count($field_id, '_rendered_item') > 0) {
+        $boost = $document->getFieldBoost($field_id);
+        $modifier = $document->getFieldModifier($field_id);
+        $document->addField('tm_rendered_item', $field, $boost, $modifier);
+      }
+    }
+  }
+}
+
