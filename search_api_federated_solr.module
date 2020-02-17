@@ -166,9 +166,11 @@ function search_api_federated_solr_search_api_solr_documents_alter(array &$docum
       if (substr_count($field_id, '_rendered_item') > 0) {
         $boost = $document->getFieldBoost($field_id);
         $modifier = $document->getFieldModifier($field_id);
-        $string = implode(" ", $field);
-        if (!is_null($string)) {
-          $document->addField('content', $string, $boost, $modifier);
+        if (is_array($field)) {
+          $string = implode(" ", $field);
+          if (!is_null($string)) {
+            $document->addField('content', $string, $boost, $modifier);
+          }
         }
         $document->addField('tm_rendered_item', $field, $boost, $modifier);
       }
