@@ -169,10 +169,10 @@ function search_api_federated_solr_search_api_solr_documents_alter(array &$docum
         if (is_array($field)) {
           $string = implode(" ", $field);
           if (!is_null($string)) {
-            $document->addField('content', $string, $boost, $modifier);
+            $document->setField('content', $string, $boost, $modifier);
           }
         }
-        $document->addField('tm_rendered_item', $field, $boost, $modifier);
+        $document->setField('tm_rendered_item', $field, $boost, $modifier);
       }
     }
   }
