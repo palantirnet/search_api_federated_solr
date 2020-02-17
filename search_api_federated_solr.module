@@ -159,7 +159,12 @@ function search_api_federated_solr_parse_help($text) {
  *   An array of items to be indexed, keyed by their item IDs.
  */
 function search_api_federated_solr_search_api_solr_documents_alter(array &$documents, \Drupal\search_api\IndexInterface $index, array $items) {
-  // Adds a "foo" field with value "bar" to all documents.
+  // The 8.x-3.x version of Search API Solr behaves differently from 7.x-1.x.
+  // Notably, it uses Hungarian notation for fulltext fields, such that
+  // "tm_rendered_item" is indexed as "tm_X3b_en_rendered_item". We rely on consistent
+  // field naming, so have to coerce that field and the "content" field, which
+  // are used by the schema from Drupal 7. Using the provided Drupal 8 schema breaks
+  // the Drupal 7 integration.
   foreach ($documents as $document) {
     $fields = $document->getFields();
     foreach ($fields as $field_id => $field) {
