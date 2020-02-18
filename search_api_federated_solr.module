@@ -168,7 +168,9 @@ function search_api_federated_solr_search_api_solr_documents_alter(array &$docum
   foreach ($documents as $document) {
     $fields = $document->getFields();
     foreach ($fields as $field_id => $field) {
-      if (substr_count($field_id, '_rendered_item') > 0) {
+      // The Drupal 8 schema passes 'sort_', so ignore that.
+      // @TODO: language prefix handling.
+      if (substr_count($field_id, 'tm_') > 0 && substr_count($field_id, '_rendered_item') > 0) {
         $boost = $document->getFieldBoost($field_id);
         $modifier = $document->getFieldModifier($field_id);
         if (is_array($field)) {
