@@ -139,6 +139,7 @@ function search_api_federated_solr_proxy() {
   }
 
   // Merge in the default params.
+  $default_query_fields = implode(' ', $query_fields);
   $params += [
     'start' => 0,
     'rows' => 20,
@@ -148,7 +149,8 @@ function search_api_federated_solr_proxy() {
     'hl.simple.post' => '</strong>',
     'hl.fl' => 'tm_rendered_item',
     'hl.usePhraseHighlighter' => 'true',
-    'qf' => implode(' ', $query_fields),
+    'qf' => $default_query_fields, // Solr 4.x - 6.x
+    'df' => $default_query_fields, // Solr 7.x >
   ];
 
   if (isset($params['search'])) {
