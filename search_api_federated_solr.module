@@ -163,8 +163,7 @@ function search_api_federated_solr_search_api_solr_documents_alter(array &$docum
   // Notably, it uses Hungarian notation for fulltext fields, such that
   // "tm_rendered_item" is indexed as "tm_X3b_en_rendered_item". We rely on consistent
   // field naming, so have to coerce that field and the "content" field, which
-  // are used by the schema from Drupal 7. Using the provided Drupal 8 schema breaks
-  // the Drupal 7 integration.
+  // are used by the schema from Drupal 7.
   foreach ($documents as $document) {
     $fields = $document->getFields();
 
@@ -180,8 +179,6 @@ function search_api_federated_solr_search_api_solr_documents_alter(array &$docum
         $modifier = $document->getFieldModifier($field_id);
 
         // The 'content' field is the generic handler for the Drupal 7 schema version.
-        // It is required when using the Drupal 7 schema and currently
-        // unsupported for the Drupal 8 schema.
         if (is_array($field)) {
           $string = implode(" ", $field);
           if (!is_null($string)) {
