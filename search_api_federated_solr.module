@@ -167,18 +167,29 @@ function search_api_federated_solr_search_api_solr_documents_alter(array &$docum
   // the Drupal 7 integration.
   foreach ($documents as $document) {
     $fields = $document->getFields();
+
     foreach ($fields as $field_id => $field) {
-      // The Drupal 8 schema passes 'sort_', so ignore that.
-      // @TODO: language prefix handling.
-      if (substr_count($field_id, 'tm_') > 0 && substr_count($field_id, '_rendered_item') > 0) {
+      // The Drupal 8 schema passes 'sort_', so ignore that. We only index the
+      // default language, and Drupal 8 is language-sensitive. So we find items
+      // that are named 'tm_*_LANGCODE_rendered_item' and use those.
+      $default_language_id = \Drupal::languageManager()->getDefaultLanguage()->getId();
+      $string = $default_language_id . '_rendered_item';
+
+      if (substr_count($field_id, $string) > 0 && substr_count($field_id, $string) > 0) {
         $boost = $document->getFieldBoost($field_id);
         $modifier = $document->getFieldModifier($field_id);
+
+        // The 'content' field is the generic handler for the Drupal 7 schema version.
+        // It is required when using the Drupal 7 schema and currently
+        // unsupported for the Drupal 8 schema.
         if (is_array($field)) {
           $string = implode(" ", $field);
           if (!is_null($string)) {
             $document->setField('content', $string, $boost, $modifier);
           }
         }
+
+        // The 'tm_rendered_item' field is required by the application.
         $document->setField('tm_rendered_item', $field, $boost, $modifier);
       }
     }
