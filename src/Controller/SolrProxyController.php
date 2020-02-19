@@ -60,7 +60,7 @@ class SolrProxyController extends ControllerBase {
       // Use supplied query fields if configured in settings.php.
       $query_fields_config = $config->get('index.query_fields');
       // Default to passed in query fields, if there are any.
-      $query_fields = is_array($query_fields_config) && !empty($query_fields_config) ? $query_fields_config : [];
+      $query_fields = is_array($query_fields_config) && !empty($query_fields_config) ? $query_fields_config : ['tm_rendered_item'];
       // Determine if we should validate passed in query fields against the schema.
       $is_validate_query_fields = $config->get('index.validate_query_fields');
       if ($is_validate_query_fields && is_array($query_fields_config) && !empty($query_fields_config)) {
