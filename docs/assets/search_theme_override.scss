@@ -10,23 +10,20 @@
 $black: #222;
 $lighter-black: #333;
 $white: #fff;
-$white-60: rgba($white, .6);
-$white-30: rgba($white, .3);
+$white-60: rgba($white, 0.6);
+$white-30: rgba($white, 0.3);
 $gray-pale: #eff0f1;
 $gray-light: #e5e5e5;
 $gray-medium: #555;
 $gray-dark: #333;
-
 $c-border-gray: #ccc;
 $c-border-gray-dark: #b5b5b5;
 $c-bg-gray: #f6f6f6;
 $c-bg-gray-dark: #d8d8d8;
-
 $c-primary: #00274c;
 $c-primary-pale: #8dbef6;
 $c-primary-light: #0d57aa;
 $c-primary-dark: #002a5b;
-
 $c-secondary: #ffcb05;
 $c-secondary-light: #fff2c0;
 $c-secondary-dark: #f4bb06;
@@ -76,18 +73,18 @@ aside.fs-aside {
 
   /* Search filters clear button */
   &__reset {
-    background-color: $gray-light;
     border: 1px solid $c-border-gray;
     border-radius: 3px;
-    font-size: .8em;
+    background-color: $gray-light;
+    font-size: 0.8em;
     line-height: 1.83333em;
 
     &:active,
     &:hover,
     &:focus {
-      background-color: $c-bg-gray-dark;
-      border-color: $c-border-gray-dark;
       text-decoration: underline;
+      border-color: $c-border-gray-dark;
+      background-color: $c-bg-gray-dark;
     }
   }
 }
@@ -100,21 +97,21 @@ aside.fs-aside {
   &__title {
     color: $link-color;
     border-bottom: 1px solid $gray-light;
-    font-size: .8em;
+    font-size: 0.8em;
 
     &:active,
     &:hover {
-      color: $link-hover;
-      background-color: $gray-light;
-      border-color: $c-border-gray-dark;
       text-decoration: none;
+      color: $link-hover;
+      border-color: $c-border-gray-dark;
+      background-color: $gray-light;
     }
 
     &:focus,
     &.js-search-accordion-open {
+      text-decoration: none;
       color: $link-color;
       border-color: $c-border-gray-dark;
-      text-decoration: none;
     }
   }
 }
@@ -126,13 +123,13 @@ aside.fs-aside {
 .fs-search-form {
   &__label {
     color: $black;
-    font-size: .8em;
+    font-size: 0.8em;
     line-height: 1.83333em;
   }
 
   &__input {
-    border-radius: 3px 0 0 3px;
     border: 1px solid $gray-light;
+    border-radius: 3px 0 0 3px;
 
     &:focus {
       border: 1px solid $gray-medium;
@@ -141,10 +138,10 @@ aside.fs-aside {
   }
 
   &__submit {
-    background-color: $c-secondary;
-    border-radius: 0 3px 3px 0;
     border: 1px solid $gray-light;
     border-left: 0;
+    border-radius: 0 3px 3px 0;
+    background-color: $c-secondary;
 
     svg {
       fill: $black;
@@ -153,8 +150,8 @@ aside.fs-aside {
     &:active,
     &:hover,
     &:focus {
-      background-color: $c-secondary-dark;
       border-color: $gray-light;
+      background-color: $c-secondary-dark;
 
       svg {
         fill: $black;
@@ -168,10 +165,10 @@ aside.fs-aside {
  */
 .fs-applied-filters {
   &__filter {
+    padding-bottom: 0.29333em;
     border-bottom: solid 2px $c-secondary;
-    font-size: .8em;
+    font-size: 0.8em;
     line-height: 1.46667em;
-    padding-bottom: .29333em;
   }
 }
 
@@ -180,30 +177,30 @@ aside.fs-aside {
  */
 .fs-search-results {
   &__heading a {
-    background-color: transparent;
-    color: $link-color;
     text-decoration: none;
+    color: $link-color;
     border-bottom: 2px dashed $link-color;
+    background-color: transparent;
 
     &:active,
     &:hover {
-      outline-width: 0;
       color: $link-hover;
-      background-color: $gray-light;
       border-bottom: 2px solid $link-hover;
+      outline-width: 0;
+      background-color: $gray-light;
     }
   }
 
   /* Search results eyebrow (i.e. the content type). */
   &__label {
     color: $gray-medium;
-    font-size: .8em;
+    font-size: 0.8em;
   }
 
   /* Search results metadata (i.e. the site + date) */
   &__meta {
     color: $c-tertiary;
-    font-size: .8em;
+    font-size: 0.8em;
     line-height: 1.46667em;
   }
 
@@ -215,8 +212,8 @@ aside.fs-aside {
 
   /* highlighted text in snippet */
   em {
+    background-color: rgba($c-secondary-light, 0.85);
     font-weight: 700;
-    background-color: rgba($c-secondary-light, .85);
   }
 }
 
@@ -238,10 +235,9 @@ aside.fs-aside {
 
   /** inactive page links **/
   &__item a {
-
     @media (min-width: $bp0) {
-      background-color: $c-secondary;
       border-radius: 3px;
+      background-color: $c-secondary;
     }
 
     &:hover,
@@ -263,8 +259,8 @@ aside.fs-aside {
   /** active page link **/
   &__item.is-active a {
     @media (min-width: $bp0) {
-      background-color: $c-primary-light;
       color: $white;
+      background-color: $c-primary-light;
 
       &:hover,
       &:active {
@@ -279,8 +275,8 @@ aside.fs-aside {
  */
 // Override default color values with site colors.
 .PresetDateRangePicker_button {
-  border: 2px solid lighten($c-primary-light, 25%);
   color: lighten($c-primary-light, 25%);
+  border: 2px solid lighten($c-primary-light, 25%);
 }
 .PresetDateRangePicker_button__selected {
   color: $white;
@@ -294,8 +290,8 @@ aside.fs-aside {
   border-right: 33px solid darken($c-primary-light, 15%);
 }
 .DayPickerKeyboardShortcuts_show__topRight {
-  border-bottom: 26px solid transparent;
   border-right: 33px solid $c-primary-light;
+  border-bottom: 26px solid transparent;
 }
 .DayPickerKeyboardShortcuts_show__topRight:hover {
   border-right: 33px solid darken($c-primary-light, 15%);
@@ -308,15 +304,15 @@ aside.fs-aside {
   border-left: 33px solid $c-primary;
 }
 .CalendarDay__selected_span {
-  background: lighten($c-primary-light, 60%);
-  border: 1px solid lighten($c-primary-light, 35%);
   color: $c-primary-light;
+  border: 1px solid lighten($c-primary-light, 35%);
+  background: lighten($c-primary-light, 60%);
 }
 .CalendarDay__selected_span:active,
 .CalendarDay__selected_span:hover {
-  background: $c-bg-gray-dark;
-  border: 1px solid $c-border-gray-dark;
   color: $white;
+  border: 1px solid $c-border-gray-dark;
+  background: $c-bg-gray-dark;
 }
 .CalendarDay__last_in_range {
   border-right: lighten($c-primary-light, 25%);
@@ -324,33 +320,33 @@ aside.fs-aside {
 .CalendarDay__selected,
 .CalendarDay__selected:active,
 .CalendarDay__selected:hover {
-  background: $c-primary-light;
-  border: 1px solid $c-primary-light;
   color: $white;
+  border: 1px solid $c-primary-light;
+  background: $c-primary-light;
 }
 .CalendarDay__hovered_span,
 .CalendarDay__hovered_span:hover {
-  background: lighten($c-primary-light, 60%);
-  border: 1px solid lighten($c-primary-light, 35%);
   color: $c-primary-light;
+  border: 1px solid lighten($c-primary-light, 35%);
+  background: lighten($c-primary-light, 60%);
 }
 .CalendarDay__hovered_span:active {
-  background: lighten($c-primary-light, 60%);
-  border: 1px solid lighten($c-primary-light, 35%);
   color: $c-primary-light;
+  border: 1px solid lighten($c-primary-light, 35%);
+  background: lighten($c-primary-light, 60%);
 }
 .DateInput_input__focused {
   border-bottom: 2px solid $c-primary-light;
 }
 
 .CalendarDay__highlighted_calendar {
-  background: $c-secondary-light;
   color: $gray-medium;
+  background: $c-secondary-light;
 }
 .CalendarDay__highlighted_calendar:active,
 .CalendarDay__highlighted_calendar:hover {
-  background: $c-secondary;
   color: $gray-medium;
+  background: $c-secondary;
 }
 
 .DateInput_input::placeholder {
@@ -367,11 +363,11 @@ aside.fs-aside {
   border-radius: 0;
 }
 
-@media only screen and (max-width: 1350px) and (min-width: 901px)  {
+@media only screen and (max-width: 1350px) and (min-width: 901px) {
   .DateInput_input__small {
+    padding: 8px 4px 6px;
     font-size: 12px;
     line-height: 18px;
-    padding: 8px 4px 6px;
   }
 
   .DateInput__small {
@@ -381,21 +377,21 @@ aside.fs-aside {
 
 .KeyboardShortcutRow_keyContainer {
   display: inline-block;
-  white-space: nowrap;
-  text-align: right;
   margin-right: 6px;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .KeyboardShortcutRow_key {
-  font-family: monospace;
-  font-size: 12px;
+  padding: 2px 6px;
   text-transform: uppercase;
   background: $c-bg-gray;
-  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 12px;
 }
 
 .KeyboardShortcutRow_action {
   display: inline;
-  word-break: break-word;
   margin-left: 8px;
+  word-break: break-word;
 }
