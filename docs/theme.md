@@ -54,7 +54,7 @@ While the React application is separate from Drupal, the provided search block `
 
 This template instantiates the application itself. It is designed to use the full width of the page. If you override this template in your theme, you must retain the root div element:
 
-`<div id="root" data-federated-search-app-config="{{ app_config }}">`
+`<div id="fs-root" data-federated-search-app-config="{{ app_config }}">`
 
 Without this element, the application will not function.
 
