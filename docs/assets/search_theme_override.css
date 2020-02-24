@@ -20,22 +20,25 @@ aside.fs-aside {
   /* Mobile search button / Desktop sidebar title */
   /* Search filters clear button */
 }
-.fs-search-filters__trigger, .fs-search-filters__title {
+.fs-search-filters__trigger,
+.fs-search-filters__title {
   color: #333;
   font-size: 1.1em;
   line-height: 1.46667em;
 }
 .fs-search-filters__reset {
-  background-color: #e5e5e5;
   border: 1px solid #ccc;
   border-radius: 3px;
-  font-size: .8em;
+  background-color: #e5e5e5;
+  font-size: 0.8em;
   line-height: 1.83333em;
 }
-.fs-search-filters__reset:active, .fs-search-filters__reset:hover, .fs-search-filters__reset:focus {
-  background-color: #d8d8d8;
-  border-color: #b5b5b5;
+.fs-search-filters__reset:active,
+.fs-search-filters__reset:hover,
+.fs-search-filters__reset:focus {
   text-decoration: underline;
+  border-color: #b5b5b5;
+  background-color: #d8d8d8;
 }
 /* Search filter accordion */
 .fs-search-accordion {
@@ -45,55 +48,61 @@ aside.fs-aside {
 .fs-search-accordion__title {
   color: #0d57aa;
   border-bottom: 1px solid #e5e5e5;
-  font-size: .8em;
+  font-size: 0.8em;
 }
-.fs-search-accordion__title:active, .fs-search-accordion__title:hover {
-  color: #002a5b;
-  background-color: #e5e5e5;
-  border-color: #b5b5b5;
+.fs-search-accordion__title:active,
+.fs-search-accordion__title:hover {
   text-decoration: none;
+  color: #002a5b;
+  border-color: #b5b5b5;
+  background-color: #e5e5e5;
 }
-.fs-search-accordion__title:focus, .fs-search-accordion__title.js-search-accordion-open {
+.fs-search-accordion__title:focus,
+.fs-search-accordion__title.js-search-accordion-open {
+  text-decoration: none;
   color: #0d57aa;
   border-color: #b5b5b5;
-  text-decoration: none;
 }
 /*** Search form*/
 .fs-search-form__label {
   color: #222;
-  font-size: .8em;
+  font-size: 0.8em;
   line-height: 1.83333em;
 }
 .fs-search-form__input {
-  border-radius: 3px 0 0 3px;
   border: 1px solid #e5e5e5;
+  border-radius: 3px 0 0 3px;
 }
 .fs-search-form__input:focus {
   border: 1px solid #555;
   outline: 0;
 }
 .fs-search-form__submit {
-  background-color: #ffcb05;
-  border-radius: 0 3px 3px 0;
   border: 1px solid #e5e5e5;
   border-left: 0;
+  border-radius: 0 3px 3px 0;
+  background-color: #ffcb05;
 }
 .fs-search-form__submit svg {
   fill: #222;
 }
-.fs-search-form__submit:active, .fs-search-form__submit:hover, .fs-search-form__submit:focus {
-  background-color: #f4bb06;
+.fs-search-form__submit:active,
+.fs-search-form__submit:hover,
+.fs-search-form__submit:focus {
   border-color: #e5e5e5;
+  background-color: #f4bb06;
 }
-.fs-search-form__submit:active svg, .fs-search-form__submit:hover svg, .fs-search-form__submit:focus svg {
+.fs-search-form__submit:active svg,
+.fs-search-form__submit:hover svg,
+.fs-search-form__submit:focus svg {
   fill: #222;
 }
 /*** Applied Filters*/
 .fs-applied-filters__filter {
+  padding-bottom: 0.29333em;
   border-bottom: solid 2px #ffcb05;
-  font-size: .8em;
+  font-size: 0.8em;
   line-height: 1.46667em;
-  padding-bottom: .29333em;
 }
 /*** Search results list*/
 .fs-search-results {
@@ -103,24 +112,25 @@ aside.fs-aside {
   /* highlighted text in snippet */
 }
 .fs-search-results__heading a {
-  background-color: transparent;
-  color: #0d57aa;
   text-decoration: none;
+  color: #0d57aa;
   border-bottom: 2px dashed #0d57aa;
+  background-color: transparent;
 }
-.fs-search-results__heading a:active, .fs-search-results__heading a:hover {
-  outline-width: 0;
+.fs-search-results__heading a:active,
+.fs-search-results__heading a:hover {
   color: #002a5b;
-  background-color: #e5e5e5;
   border-bottom: 2px solid #002a5b;
+  outline-width: 0;
+  background-color: #e5e5e5;
 }
 .fs-search-results__label {
   color: #555;
-  font-size: .8em;
+  font-size: 0.8em;
 }
 .fs-search-results__meta {
   color: #555;
-  font-size: .8em;
+  font-size: 0.8em;
   line-height: 1.46667em;
 }
 .fs-search-results__teaser {
@@ -128,8 +138,8 @@ aside.fs-aside {
   line-height: 1.3;
 }
 .fs-search-results em {
-  font-weight: 700;
   background-color: rgba(255, 242, 192, 0.85);
+  font-weight: 700;
 }
 /*** Pagination component*/
 .fs-search-pager {
@@ -149,36 +159,40 @@ aside.fs-aside {
 }
 @media (min-width: 450px) {
   .fs-search-pager__item a {
-    background-color: #ffcb05;
     border-radius: 3px;
+    background-color: #ffcb05;
   }
 }
-.fs-search-pager__item a:hover, .fs-search-pager__item a:active {
+.fs-search-pager__item a:hover,
+.fs-search-pager__item a:active {
   text-decoration: underline;
   color: #00274c;
   background-color: #ffcb05;
 }
 @media (min-width: 450px) {
-  .fs-search-pager__item a:hover, .fs-search-pager__item a:active {
+  .fs-search-pager__item a:hover,
+  .fs-search-pager__item a:active {
     background-color: #f4bb06;
   }
 }
-.fs-search-pager__item a:hover svg, .fs-search-pager__item a:active svg {
+.fs-search-pager__item a:hover svg,
+.fs-search-pager__item a:active svg {
   fill: #00274c;
 }
 @media (min-width: 450px) {
   .fs-search-pager__item.is-active a {
-    background-color: #0d57aa;
     color: #fff;
+    background-color: #0d57aa;
   }
-  .fs-search-pager__item.is-active a:hover, .fs-search-pager__item.is-active a:active {
+  .fs-search-pager__item.is-active a:hover,
+  .fs-search-pager__item.is-active a:active {
     background-color: #002a5b;
   }
 }
 /**DatePicker widget*/
 .PresetDateRangePicker_button {
-  border: 2px solid #4696f1;
   color: #4696f1;
+  border: 2px solid #4696f1;
 }
 .PresetDateRangePicker_button__selected {
   color: #fff;
@@ -192,8 +206,8 @@ aside.fs-aside {
   border-right: 33px solid #083363;
 }
 .DayPickerKeyboardShortcuts_show__topRight {
-  border-bottom: 26px solid transparent;
   border-right: 33px solid #0d57aa;
+  border-bottom: 26px solid transparent;
 }
 .DayPickerKeyboardShortcuts_show__topRight:hover {
   border-right: 33px solid #083363;
@@ -206,43 +220,48 @@ aside.fs-aside {
   border-left: 33px solid #00274c;
 }
 .CalendarDay__selected_span {
-  background: #ebf4fe;
-  border: 1px solid #75b1f4;
   color: #0d57aa;
+  border: 1px solid #75b1f4;
+  background: #ebf4fe;
 }
-.CalendarDay__selected_span:active,.CalendarDay__selected_span:hover {
-  background: #d8d8d8;
-  border: 1px solid #b5b5b5;
+.CalendarDay__selected_span:active,
+.CalendarDay__selected_span:hover {
   color: #fff;
+  border: 1px solid #b5b5b5;
+  background: #d8d8d8;
 }
 .CalendarDay__last_in_range {
   border-right: #4696f1;
 }
-.CalendarDay__selected,.CalendarDay__selected:active,.CalendarDay__selected:hover {
-  background: #0d57aa;
-  border: 1px solid #0d57aa;
+.CalendarDay__selected,
+.CalendarDay__selected:active,
+.CalendarDay__selected:hover {
   color: #fff;
+  border: 1px solid #0d57aa;
+  background: #0d57aa;
 }
-.CalendarDay__hovered_span,.CalendarDay__hovered_span:hover {
-  background: #ebf4fe;
-  border: 1px solid #75b1f4;
+.CalendarDay__hovered_span,
+.CalendarDay__hovered_span:hover {
   color: #0d57aa;
+  border: 1px solid #75b1f4;
+  background: #ebf4fe;
 }
 .CalendarDay__hovered_span:active {
-  background: #ebf4fe;
-  border: 1px solid #75b1f4;
   color: #0d57aa;
+  border: 1px solid #75b1f4;
+  background: #ebf4fe;
 }
 .DateInput_input__focused {
   border-bottom: 2px solid #0d57aa;
 }
 .CalendarDay__highlighted_calendar {
+  color: #555;
   background: #fff2c0;
-  color: #555;
 }
-.CalendarDay__highlighted_calendar:active,.CalendarDay__highlighted_calendar:hover {
-  background: #ffcb05;
+.CalendarDay__highlighted_calendar:active,
+.CalendarDay__highlighted_calendar:hover {
   color: #555;
+  background: #ffcb05;
 }
 .DateInput_input::placeholder {
   color: #555;
@@ -250,14 +269,15 @@ aside.fs-aside {
 .DayPicker_weekHeader_li {
   display: inline-block !important;
 }
-.DateRangePickerInput_clearDates_default:focus,.DateRangePickerInput_clearDates_default:hover {
+.DateRangePickerInput_clearDates_default:focus,
+.DateRangePickerInput_clearDates_default:hover {
   border-radius: 0;
 }
 @media only screen and (max-width: 1350px) and (min-width: 901px) {
   .DateInput_input__small {
+    padding: 8px 4px 6px;
     font-size: 12px;
     line-height: 18px;
-    padding: 8px 4px 6px;
   }
   .DateInput__small {
     width: 70px;
@@ -265,19 +285,19 @@ aside.fs-aside {
 }
 .KeyboardShortcutRow_keyContainer {
   display: inline-block;
-  white-space: nowrap;
-  text-align: right;
   margin-right: 6px;
+  text-align: right;
+  white-space: nowrap;
 }
 .KeyboardShortcutRow_key {
-  font-family: monospace;
-  font-size: 12px;
+  padding: 2px 6px;
   text-transform: uppercase;
   background: #f6f6f6;
-  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 12px;
 }
 .KeyboardShortcutRow_action {
   display: inline;
-  word-break: break-word;
   margin-left: 8px;
+  word-break: break-word;
 }
