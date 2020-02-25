@@ -174,7 +174,7 @@ function search_api_federated_solr_search_api_solr_documents_alter(array &$docum
       $default_language_id = \Drupal::languageManager()->getDefaultLanguage()->getId();
       $string = $default_language_id . '_rendered_item';
 
-      if (substr_count($field_id, $string) > 0 && substr_count($field_id, $string) > 0) {
+      if (substr_count($field_id, $string) > 0 && substr_count($field_id, 'sort_') === 0) {
         $boost = $document->getFieldBoost($field_id);
         $modifier = $document->getFieldModifier($field_id);
 
