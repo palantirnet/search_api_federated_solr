@@ -60,6 +60,50 @@ INSTALLATION
    https://www.drupal.org/documentation/install/modules-themes/modules-8
    for further information.
 
+Solr Schemas
+------------
+
+This version of the module has been tested with the Schema files that ship with the 7.x-1.15 and 8.x-3.8 versions of the module. We recommend using the `7.x` schema files that ship with the 7.x-1.15 version.
+
+A few things to note when using these schema files:
+
+* 7.x-1.15
+ 
+The `7.x` schema files work by default when using this module. Note that on Drupal 8, you may see a warning: `There are some language-specific field types missing in schema of Solr server Drupal 7 schema - default: en.`
+
+This warning is due to the fact that the 8.x-3.x version of SearchAPI Solr requires the language module to be installed and assumes that search is language-sensitive. Federated Search only indexes content in a site's primary language. This warning can safely be ignored. 
+ 
+* 8.x-3.8
+
+The 8.x-3.8 version of SearchAPI Solr does not ship with default configuration files. Instead, it dynamically generates the files based on your configuration. If you use the exported configuration files, you will need to make the following edits.
+
+1. Add the following definition to `schema.xml`:
+
+`  <field name="content" type="text_ws" indexed="true" stored="true" termVectors="true"/>`
+
+This addition brings the schema into parity with how Drupal 7 behaves.
+
+2. Update the query handler to use `tm_rendered_item` in `solrconfig_extra.xml`:
+
+```
+<requestHandler name="/select" class="solr.SearchHandler">
+  <lst name="defaults">
+    <str name="defType">lucene</str>
+    <str name="df">tm_rendered_item</str>
+    <str name="echoParams">explicit</str>
+    <str name="omitHeader">true</str>
+    <str name="timeAllowed">${solr.selectSearchHandler.timeAllowed:-1}</str>
+    <str name="spellcheck">false</str>
+  </lst>
+  <arr name="last-components">
+    <str>spellcheck</str>
+    <str>elevator</str>
+  </arr>
+</requestHandler>
+
+```
+
+This will force the search index to search for our federated content. You may also set this value in `settings.php` if you prefer, as specified in the SearchAPI Solr documentation.
 
 CONFIGURATION
 -------------
