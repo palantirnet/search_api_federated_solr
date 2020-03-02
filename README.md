@@ -38,15 +38,20 @@ REQUIREMENTS
 Search API Federated Solr requires the following modules:
 
  * Search API (https://www.drupal.org/project/search_api)
- * Search API Field Map (https://github.com/palantirnet/search_api_field_map)
- * SeachAPI Solr (https://www.drupal.org/project/search_api_solr) version 8.x-1.x, versions 8.x-2.x and newer not tested
+ * Search API Field Map (https://github.com/palantirnet/search_api_field_map) version 8.x-3.x
+ * SeachAPI Solr (https://www.drupal.org/project/search_api_solr) version 8.x-3.x
  * Token (https://www.drupal.org/project/token)
 
 The Search API Field Map module is used to provide common indexing across each site. See that module’s documentation for additional information.
 
 The module also relies on the [Federated Search React](https://github.com/palantirnet/federated-search-react) application, which is referenced as an external Drupal library.
 
-Apache Solr versions `4.5.1`, `5.x`, and `6.x` have been used with this module and it is likely that newer versions will also work.
+Apache Solr versions `7.7.2` have been used with this module and it is likely that newer versions will also work.
+
+Older Versions
+---
+
+The 8.x-2.x version of this module supports SearchAPI Solr 8.x-1.x and Solr 4.5. 
 
 INSTALLATION
 ------------
