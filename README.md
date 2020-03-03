@@ -210,6 +210,47 @@ For example, Federated Image uses a token specific to an image format supplied b
 
 If you prefer to use standard fields like the node title, be sure to rename the machine_name value to match the schema above.
 
+### Indexed item sample
+
+The record below is a JSON representation of a Drupal article indexed from Drupal 8.
+
+```
+"timestamp":"2020-03-02T20:41:42Z",
+"id":"jbm45a-federated_search-entity:node/10:en",
+"index_id":"federated_search",
+"sm_context_tags":["search_api_X2f_index_X3a_federated_search",
+  "search_api_solr_X2f_site_hash_X3a_jbm45a",
+  "drupal_X2f_langcode_X3a_en"],
+"hash":"jbm45a",
+"site":"http://d8.fs-demo.local/",
+"ds_federated_date":"2020-01-21T04:18:09Z",
+"sm_federated_terms":["Age>Mature",
+  "Age>Senior",
+  "Traits>Curious"],
+"ss_federated_title":"Boxer",
+"ss_federated_type":"Article",
+"tm_X3b_en_rendered_item":["Boxer",
+  "Take it, roll over dog bone collar great dance peanut butter puppies. Play dead dog house bark speak kibbles release down. Shake dog bone kong collar bang. great dance lab sit dog. Leap paw collar roll over, leash k9 speak tennis ball dog bowl. Log in or register to post comments Age Mature Traits Curious"],
+"spell":["Boxer",
+  "Take it, roll over dog bone collar great dance peanut butter puppies. Play dead dog house bark speak kibbles release down. Shake dog bone kong collar bang. great dance lab sit dog. Leap paw collar roll over, leash k9 speak tennis ball dog bowl. Log in or register to post comments Age Mature Traits Curious",
+  "Boxer Take it, roll over dog bone collar great dance peanut butter puppies. Play dead dog house bark speak kibbles release down. Shake dog bone kong collar bang. great dance lab sit dog. Leap paw collar roll over, leash k9 speak tennis ball dog bowl. Log in or register to post comments Age Mature Traits Curious",
+  "Boxer",
+  "Take it, roll over dog bone collar great dance peanut butter puppies. Play dead dog house bark speak kibbles release down. Shake dog bone kong collar bang. great dance lab sit dog. Leap paw collar roll over, leash k9 speak tennis ball dog bowl. Log in or register to post comments Age Mature Traits Curious"],
+"sm_site_name":["Drupal 8"],
+"sm_urls":["http://d8.fs-demo.local/node/10"],
+"ss_search_api_id":"entity:node/10:en",
+"ss_search_api_datasource":"entity:node",
+"ss_search_api_language":"en",
+"content":"Boxer Take it, roll over dog bone collar great dance peanut butter puppies. Play dead dog house bark speak kibbles release down. Shake dog bone kong collar bang. great dance lab sit dog. Leap paw collar roll over, leash k9 speak tennis ball dog bowl. Log in or register to post comments Age Mature Traits Curious",
+"tm_rendered_item":["Boxer",
+  "Take it, roll over dog bone collar great dance peanut butter puppies. Play dead dog house bark speak kibbles release down. Shake dog bone kong collar bang. great dance lab sit dog. Leap paw collar roll over, leash k9 speak tennis ball dog bowl. Log in or register to post comments Age Mature Traits Curious"],
+"_version_":1660086337667072000},
+```
+
+Note that Search API Solr 8.x-3.x adds a language prefix and field type notation to its fields (here `tm_X3b_en_rendered_item`). The Federated Solr module copies this value to `tm_rendered_item` in order to maintain compatibility across instances.
+
+For additional technical resources, you can see the [Federated Search Demo project](https://github.com/palantirnet/federated-search-demo).
+
 MAINTAINERS
 -----------
 
