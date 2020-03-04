@@ -60,7 +60,7 @@ INSTALLATION
 
   * Install as you would normally install a contributed Drupal module. Visit:
    https://www.drupal.org/documentation/install/modules-themes/modules-8
-   for further information.
+   for further information. The module needs to be installed and configured for every site in your index.
 
 ### Solr Schemas
 
@@ -114,7 +114,7 @@ On each site included in the federated search, you will need to:
   * Be aware that the 8.x-3.x version of Search API Solr requires a change to core files in order to run. See that module's documentation for more information.
 1. Configure a Search API server to connect to the shared Solr index.
 1. Configure a Search API index according to the [required schema documentation](https://www.drupal.org/docs/8/modules/search-api-federated-solr/federated-search-schema)
-    * Optional: To help facilitate autocomplete term partial queries, consider adding a Fulltext [Edge Ngram](https://lucene.apache.org/solr/guide/6_6/tokenizers.html) version of your title field to the index (See [example](https://github.com/palantirnet/federated-search-demo/blob/master/config/sites/d8/search_api.index.federated_search_index.yml#L86) in the Federated Search Demo site Solr index config).  Also consider adding that field as a default query field for your Solr server's default Request Handler.
+    * Optional: To help facilitate autocomplete term partial queries, consider adding a Fulltext [Edge Ngram](https://lucene.apache.org/solr/guide/6_6/tokenizers.html) version of your title field to the index. Also consider adding that field as a default query field for your Solr server's default Request Handler.
     * Optional: If your site uses a "search terms" or similar field to trigger a boost for items based on given search terms, consider adding a Fulltext [Edge Ngram](https://lucene.apache.org/solr/guide/6_6/tokenizers.html) version of that field to the index.  Also consider adding that field as a default query field for your Solr server's default Request Handler.
 1. Optional: Configure default fields for queries.  The default query field for search queries made through the proxy provided by this module is the `tm_rendered_item` field.  To set a different value for the default query fields there are two options:
     1. Set `$config['search_api_federated_solr.search_app.settings']['index']['query_fields']` to an array of _Fulltext_ field machine names (i.e. `['rendered_item', 'full_text_title']`) from your search index in `settings.php`.
@@ -170,13 +170,6 @@ To see debug information when using the proxy for your search queries, set `$con
 Then user your browsers developer tools to inspect  network traffic.  When your site makes a search query through the proxy, inspect the response for this request and you should now see a `debug` object added to the response object.
 
 *Note: we recommend leaving this set to `FALSE` for production environments, as it could have an impact on performance.*
-
-### Updating the bundled React application
-
-When changes to [federated-search-react](https://github.com/palantirnet/federated-search-react/) are made they'll need to be pulled into this module. To do so:
-
-1. [Publish a release](https://github.com/palantirnet/federated-search-react#publishing-releases) of Federated Search React.
-1. Update `search_api_federated_solr.libraries.yml` to reference the new release. Note: You'll need to edit the version number and the hash of both the CSS and JS files.
 
 ### More information
 
