@@ -643,7 +643,7 @@ function search_api_federated_solr_library() {
   // Search app.
   $libraries['search-app'] = array(
     'title' => 'Federated Search App',
-    'version' => variable_get('css_js_query_string', '0'),
+    'version' => 3,
     'js' => array(
       'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/js/runtime-main.9cb93041.js' => array(
         'scope' => 'footer',
