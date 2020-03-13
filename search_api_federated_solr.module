@@ -645,21 +645,21 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => variable_get('css_js_query_string', '0'),
     'js' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-beta2/js/runtime-main.9cb93041.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/js/runtime-main.9cb93041.js' => array(
         'scope' => 'footer',
         'type' => 'external',
       ),
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-beta2/js/2.7525757a.chunk.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/js/2.7525757a.chunk.js' => array(
         'scope' => 'footer',
         'type' => 'external',
       ),
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-beta2/js/main.cd684510.chunk.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/js/main.840c3ac1.chunk.js' => array(
         'scope' => 'footer',
         'type' => 'external',
       ),
     ),
     'css' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-beta2/css/main.873142e3.chunk.css' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/css/main.5e71a0eb.chunk.css' => array(
         'type' => 'external',
       ),
     ),
