@@ -13,7 +13,7 @@
 function page_search_api_federated_solr() {
   $data_federated_search_app_config = search_api_federated_solr_config_json();
   $element = [];
-  $element['#markup'] = '<div id="root" data-federated-search-app-config="'.htmlspecialchars($data_federated_search_app_config).'"><noscript>This search page requires Javascript in order to function.  <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">Learn how to enable Javascript in your browser.</a></noscript><p class="element-invisible" aria-hidden="true">Federated Solr Search App: If you see this message in your DevTools, it likely means there is an issue adding the app javascript library to this page.  Follow the steps in the search_api_federated_solr module README.</p></div>';
+  $element['#markup'] = '<div id="fs-root" data-federated-search-app-config="'.htmlspecialchars($data_federated_search_app_config).'"><noscript>This search page requires Javascript in order to function.  <a href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">Learn how to enable Javascript in your browser.</a></noscript><p class="element-invisible" aria-hidden="true">Federated Solr Search App: If you see this message in your DevTools, it likely means there is an issue adding the app javascript library to this page.  Follow the steps in the search_api_federated_solr module README.</p></div>';
   $element['#attached']['library'][] = ['search_api_federated_solr', 'search-app'];
 
   return $element;
