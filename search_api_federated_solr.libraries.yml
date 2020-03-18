@@ -2,17 +2,17 @@ search:
   version: 3.x
   css:
     theme:
-      https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/css/main.5e71a0eb.chunk.css:
+      https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc2/css/main.84bbf1e4.chunk.css:
         type: external
         minified: true
   js:
-    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/js/runtime-main.9cb93041.js:
+    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc2/js/runtime-main.9cb93041.js:
       preprocess: false
       minified: true
-    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/js/2.7525757a.chunk.js:
+    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc2/js/2.7525757a.chunk.js:
       preprocess: false
       minified: true
-    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc1/js/main.840c3ac1.chunk.js:
+    https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc2/js/main.7bc58018.chunk.js:
       preprocess: false
       minified: true
 
