@@ -166,3 +166,50 @@ search_api_federated_solr.search_app.settings:
         debug:
           type: boolean
           label: 'Flag to determine whether or not the proxy response should include debug info.'
+
+block.settings.federated_search_page_form_block:
+  type: block_settings
+  label: 'Federated Search Page Form block'
+  mapping:
+    autocomplete:
+      type: mapping
+      mapping:
+        isEnabled:
+          type: integer
+          label: 'Enable autocomplete for the search results page search form'
+        proxyIsDisabled:
+          type: integer
+          label: 'Disable proxy for autocomplete queries'
+        directUrl:
+          type: string
+          label: 'URL of the autocomplete direct endpoint (defaults to selected index solr server select handler).'
+        appendWildcard:
+          type: integer
+          label: 'When checked, the query will have a wildcard appended.'
+        suggestionRows:
+          type: string
+          label: 'The number of results to return from the autocomplete request.'
+        numChars:
+          type: string
+          label: 'The number of characters, after which the autocomplete request should be made.'
+        mode:
+          type: string
+          label: 'The type of results returned by the autocomplete request: results or terms.'
+        result:
+          type: mapping
+          mapping:
+            titleText:
+              type: string
+              label: 'The title text for the autocomplete results.'
+            hideDirectionsText:
+              type: integer
+              label: 'When true, the keyboard directions text will be hidden from autocomplete dropdown.'
+        username:
+          type: string
+          label: 'Username to be used for autocomplete direct requests basic auth.'
+        password:
+          type: string
+          label: 'Password to be used for autocomplete direct request basic auth.'
+        use_search_app_creds:
+          type: integer
+          label: 'Flag to indicate whether or not we are using basic auth credentials added to search app.'
