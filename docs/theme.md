@@ -41,3 +41,5 @@ The Sass/CSS assets that are included in docs/assets are examples only. They wil
 
 ### Upgrading from 7.x-2.x to 7.x-3.x
 Starting on version 3.x of the module, the CSS has been updated to a new namespacing. All CSS classes are now updated to have a "fs-" prefix and all base styles are applied within the main app ID of `#fs-root`, so any previously written CSS or SCSS overrides for version 2.x will need to be updated to reflect this namespace change.
+
+We also removed CSS classes provided by the Singularity grid system. This change makes it easier to drop the application into an existing theme or grid system.  
