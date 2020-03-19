@@ -12,6 +12,7 @@
     }
   ],
   "require": {
+    "drupal/core": "^8.0",
     "drupal/search_api_solr": "^3.8",
     "drupal/token": "^1.1",
     "drupal/search_api_field_map": "^3.0"
