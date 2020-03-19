@@ -645,21 +645,21 @@ function search_api_federated_solr_library() {
     'title' => 'Federated Search App',
     'version' => 3,
     'js' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc2/js/runtime-main.9cb93041.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0/js/runtime-main.9cb93041.js' => array(
         'scope' => 'footer',
         'type' => 'external',
       ),
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc2/js/2.7525757a.chunk.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0/js/2.7525757a.chunk.js' => array(
         'scope' => 'footer',
         'type' => 'external',
       ),
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc2/js/main.7bc58018.chunk.js' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0/js/main.7bc58018.chunk.js' => array(
         'scope' => 'footer',
         'type' => 'external',
       ),
     ),
     'css' => array(
-      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0-rc2/css/main.84bbf1e4.chunk.css' => array(
+      'https://cdn.jsdelivr.net/gh/palantirnet/federated-search-react@v3.0.0/css/main.71ede473.chunk.css' => array(
         'type' => 'external',
       ),
     ),
