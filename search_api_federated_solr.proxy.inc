@@ -191,12 +191,12 @@ function search_api_federated_solr_proxy() {
     }
   }
 
-  /* Test formatting.
+  // Only return the data we need.
   $response = (object) [
     'response' => $results->response,
     'facet_counts' => $results->facet_counts,
     'highlighting' => $results->highlighting,
-  ];*/
+  ];
 
-  return drupal_json_output($results);
+  return drupal_json_output($response);
 }
