@@ -69,7 +69,7 @@ class FederatedSearchPageBlockForm extends FormBase {
       }
     }
 
-    $form['#action'] = $this->getUrlGenerator()->generateFromRoute('search_api_federated_solr.search');
+    $form['#action'] = \Drupal::urlGenerator()->generateFromRoute('search_api_federated_solr.search');
     $form['#method'] = 'get';
 
     // Ensure that this form's render cache is invalidated when search app

@@ -1,7 +1,7 @@
 name: Search API Federated Solr
 type: module
 description: Allows indexing multiple Drupal sites into a single Solr search index.
-core: 8.x
+core_version_requirement: ^8 || ^9
 package: Search
 dependencies:
   - drupal:field
