@@ -7,8 +7,8 @@ namespace Drupal\search_api_federated_solr\Routing;
  * Contains Drupal\search_api_federated_solr\Routing\SearchApiFederatedSolrRoutes.
  */
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
@@ -21,9 +21,9 @@ class SearchApiFederatedSolrRoutes implements ContainerInjectionInterface {
   /**
    * The entity manager service.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
-  protected $entityManager;
+  protected $configFactory;
 
   /**
    * The language manager service.
@@ -35,13 +35,13 @@ class SearchApiFederatedSolrRoutes implements ContainerInjectionInterface {
   /**
    * Constructs a new SearchApiRoutes object.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory service.
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
-   *   The language manager service.
+   *   The language manager service. Currently unused.
    */
-  public function __construct(EntityManagerInterface $entity_manager, LanguageManagerInterface $language_manager) {
-    $this->entityManager = $entity_manager;
+  public function __construct(ConfigFactoryInterface $config_factory, LanguageManagerInterface $language_manager) {
+    $this->configFactory = $config_factory;
     $this->languageManager = $language_manager;
   }
 
@@ -50,7 +50,7 @@ class SearchApiFederatedSolrRoutes implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager'),
+      $container->get('config.factory'),
       $container->get('language_manager')
     );
   }
@@ -64,7 +64,7 @@ class SearchApiFederatedSolrRoutes implements ContainerInjectionInterface {
   public function routes() {
     $routes = [];
 
-    $app_config = \Drupal::config('search_api_federated_solr.search_app.settings');
+    $app_config = $this->configFactory->get('search_api_federated_solr.search_app.settings');
 
     $path = $app_config->get('path') ?: '/search-app';
 
