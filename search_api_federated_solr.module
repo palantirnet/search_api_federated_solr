@@ -78,39 +78,6 @@ function search_api_federated_solr_theme_suggestions_form_element_alter(&$sugges
 }
 
 /**
- * Change the way the index's field names are mapped to Solr field names.
- *
- * @param \Drupal\search_api\IndexInterface $index
- *   The index whose field mappings are altered.
- * @param array $fields
- *   An associative array containing the index field names mapped to their Solr
- *   counterparts. The special fields 'search_api_id' and 'search_api_relevance'
- *   are also included.
- */
-function search_api_federated_solr_search_api_solr_field_mapping_alter(IndexInterface $index, array &$fields) {
-
-  $singleFieldsMap = [
-    // Field name => new single value for solr.
-    "url" => "ss_url",
-  ];
-
-  // Iterate through the index fields and remap solr values where necessary.
-  foreach (array_keys($fields) as $key) {
-    // If this field is in our singleFieldsMap, remap it to its single value.
-    if (array_key_exists($key, $singleFieldsMap)) {
-      $fields[$key] = $singleFieldsMap[$key];
-    }
-
-    // Map all "mapped_field" property fields to their single value in solr.
-    $field = $index->getField($key);
-    if (method_exists($field, 'getPropertyPath') && 'mapped_field' == $field->getPropertyPath()) {
-      $fields[$key] = preg_replace("/^(\w)m_/", "$1s_", $fields[$key], 1);
-    }
-
-  };
-}
-
-/**
  * Implements hook_form_FORM_ID_alter() for the federated_search_page_block_form form.
  *
  * Since the exposed form is a GET form, we don't want it to send the form

@@ -38,6 +38,7 @@ class FederatedTerms extends ProcessorPluginBase {
         'description' => $this->t('Normalize multiple taxonomy terms into federated terms.'),
         'type' => 'string',
         'processor_id' => $this->getPluginId(),
+        'is_list' => TRUE,
       ];
       $properties['federated_terms'] = new FederatedTermsProperty($definition);
     }
