@@ -34,10 +34,14 @@ class SolrProxyController extends ControllerBase {
     /** @var \Drupal\search_api\ServerInterface $server */
     $server = Server::load($server_id);
 
-    // Get query data from route variables.
-    $qs = $request->getQueryString();
+    // Get query data from route variables. Note that Symfony 4.x no longer
+    // returns multiple occurrences of the same string, so we process from
+    $qs = $request->server->get('QUERY_STRING');
+
     // Parse the querystring, with support for multiple values for a key,
-    // not using array[] syntax.
+    // not using array[] syntax. This replaces / duplicates the Symfony method
+    // Request::normalizeQueryString() and normalizes our URL string for use
+    // with both JavaScript and PHP.
     // Can't use \Drupal\Core\Routing\RouteMatchInterface::getParameters()
     //   because the route doesn't / can't define qs params as parameters.
     // Can't use \Drupal\Component\Utility\UrlHelper::parse() because it uses
@@ -172,6 +176,7 @@ class SolrProxyController extends ControllerBase {
       // Create FacetSet fields.
       if (is_array($params) && array_key_exists('facet.field', $params) && is_array($params['facet.field'])) {
         foreach ($params['facet.field'] as $facet_field) {
+
           $facet_set->createFacetField($facet_field)->setField($facet_field);
         }
       }
