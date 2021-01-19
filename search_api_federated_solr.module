@@ -125,7 +125,7 @@ function search_api_federated_solr_parse_help($text) {
  * @param \Drupal\search_api\Item\ItemInterface[] $items
  *   An array of items to be indexed, keyed by their item IDs.
  */
-function search_api_federated_solr_search_api_solr_documents_alter(array &$documents, \Drupal\search_api\IndexInterface $index, array $items) {
+function search_api_federated_solr_search_api_solr_documents_alter(array &$documents, IndexInterface $index, array $items) {
   // The 8.x-3.x version of Search API Solr behaves differently from 7.x-1.x.
   // Notably, it uses Hungarian notation for fulltext fields, such that
   // "tm_rendered_item" is indexed as "tm_X3b_en_rendered_item". We rely on consistent
