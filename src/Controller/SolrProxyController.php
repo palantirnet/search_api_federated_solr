@@ -149,8 +149,8 @@ class SolrProxyController extends ControllerBase {
 
       // Set query sort, default to score (relevance).
       // Note: app only supports 1 sort at a time: date or score, desc
-      $sort = is_array($params) && array_key_exists('sort', $params) ? urldecode($params['sort']) : 'score=desc';
-      if ($sort_parts = explode("=", $sort)) {
+      $sort = is_array($params) && array_key_exists('sort', $params) ? urldecode($params['sort']) : 'score desc';
+      if ($sort_parts = explode(" ", $sort)) {
         $query->setSorts([$sort_parts[0] => $sort_parts[1]]);
       }
 
